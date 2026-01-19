@@ -1437,7 +1437,27 @@ with tab7:
         st.info(f"📁 Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 
-
+    audio_path = os.path.join(BASE_DIR, "assets", "je_suis.m4a")
+    if os.path.isfile(audio_path):
+        st.markdown(f"""
+        <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
+        🎵 Je Suis
+        </p>
+        """, unsafe_allow_html=True)
+        
+        audio_base64 = get_base64_image(audio_path)
+        if audio_base64:
+            st.markdown(f"""
+                <audio controls style="width: 100%; margin-bottom: 1.5rem;">
+                    <source src="data:audio/mp4;base64,{audio_base64}" type="audio/mp4">
+                    Votre navigateur ne supporte pas la lecture audio.
+                </audio>
+            """, unsafe_allow_html=True)
+        else:
+            st.warning("Impossible de charger le fichier audio")
+    else:
+        st.info(f"📁 Fichier audio non trouvé : {audio_path}")
+        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 # ==================== TAB 6: PRÉDICTIONS ====================
 with tab6:
     #  SI UN ARTISTE EST SÉLECTIONNÉ, AFFICHER SON ÉVOLUTION
