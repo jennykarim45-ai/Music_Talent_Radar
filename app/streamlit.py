@@ -1401,7 +1401,7 @@ with tab7:
         <p>
         🎹 <strong>Musicienne</strong> depuis l'enfance<br>
         📊 <strong>Data Analyst</strong> en reconversion<br>
-        💻 <strong>Python, SQL, Machine Learning</strong>
+        🚀 <strong>Objectif</strong> : allier mes deux passions pour découvrir les talents de demain !
         </p>
         </div>
         """, unsafe_allow_html=True)

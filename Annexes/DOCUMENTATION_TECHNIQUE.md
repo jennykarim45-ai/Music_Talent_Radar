@@ -1,11 +1,12 @@
-# 📘 MUSIC TALENT RADAR - DOCUMENTATION TECHNIQUE
+# 📘 MUSIC TALENT RADAR - DOCUMENTATION TECHNIQUE v1.1
 
 ## 🎯 Vue d'ensemble
 
 **Nom du projet** : Music Talent Radar  
 **Client** : JEK2 Records (label fictif)  
 **Développeur** : Jenny - Wild Code School  
-**Objectif** : Système de détection et d'analyse de talents musicaux émergents avec prédictions ML
+**Version** : 1.1.0 (Janvier 2026)  
+**Objectif** : Système de détection et d'analyse de talents musicaux émergents avec prédictions ML et alertes automatiques
 
 ---
 
@@ -18,10 +19,11 @@
 5. [Installation](#installation)
 6. [Configuration](#configuration)
 7. [Modules principaux](#modules)
-8. [API et intégrations](#api)
-9. [Machine Learning](#ml)
-10. [Déploiement](#déploiement)
-11. [Maintenance](#maintenance)
+8. [Système d'alertes](#alertes)
+9. [API et intégrations](#api)
+10. [Machine Learning](#ml)
+11. [Déploiement](#déploiement)
+12. [Maintenance](#maintenance)
 
 ---
 
@@ -30,18 +32,29 @@
 ### Architecture globale
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    INTERFACE UTILISATEUR                │
-│                   (Streamlit Web App)                   │
-└─────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│                    INTERFACE UTILISATEUR               │
+│                   (Streamlit Web App)                  │
+│   ┌──────────┬──────────┬──────────┬──────────────┐    │
+│   │ Vue      │ Top      │ Artistes │ Évolution    │    │
+│   │ Ensemble │ Artistes │ (Search) │              │    │
+│   ├──────────┼──────────┼──────────┼──────────────┤    │
+│   │ Alertes  │ Prédic.  │ À Propos │ Mon Profil   │    │
+│   │ (Auto)   │ (ML)     │          │ (Favoris)    │    │
+│   └──────────┴──────────┴──────────┴──────────────┘    │
+└────────────────────────────────────────────────────────┘
                            │
                            ▼
 ┌────────────────────────────────────────────────────────┐
-│                       APPLICATIVE                      │
+│                      APPLICATIVE                       │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
 │  │ Authentif.   │  │ Visualisation│  │ Prédictions  │  │
 │  │ (auth.py)    │  │ (streamlit)  │  │ (ml_pred.py) │  │
 │  └──────────────┘  └──────────────┘  └──────────────┘  │
+│  ┌──────────────┐  ┌──────────────┐                    │
+│  │ Alertes Auto │  │ Format Dates │                    │
+│  │ (generer.py) │  │ (DD/MM/YYYY) │                    │
+│  └──────────────┘  └──────────────┘                    │
 └────────────────────────────────────────────────────────┘
                            │
                            ▼
@@ -50,7 +63,7 @@
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
 │  │ SQLite/      │  │ CSV Files    │  │ APIs         │  │
 │  │ PostgreSQL   │  │ (import)     │  │ (Spotify/    │  │
-│  │              │  │              │  │  Deezer)     │  │
+│  │  + Alertes   │  │              │  │  Deezer)     │  │
 │  └──────────────┘  └──────────────┘  └──────────────┘  │
 └────────────────────────────────────────────────────────┘
 ```
@@ -60,8 +73,9 @@
 1. **Collecte** : Import CSV Spotify/Deezer → Base de données
 2. **Traitement** : Calcul de scores, nettoyage, agrégation
 3. **Analyse** : Modèle ML pour prédictions
-4. **Visualisation** : Dashboard Streamlit interactif
-5. **Suivi** : Système d'alertes et tracking artistes
+4. **Alertes** : Détection automatique croissance > 5%
+5. **Visualisation** : Dashboard Streamlit interactif
+6. **Suivi** : Système de favoris multi-sources
 
 ---
 
@@ -83,49 +97,58 @@
 - **K-Nearest Neighbors** (artistes similaires)
 - **StandardScaler** (normalisation)
 
+### Nouveautés v1.1
+- **Système d'alertes automatiques** (détection anomalies)
+- **Recherche dynamique** (liste déroulante)
+- **Sélection multi-sources** (checkboxes)
+- **Formatage dates** (DD/MM/YYYY)
+
 ### Déploiement
 - **Streamlit Community Cloud** (hébergement)
 - **GitHub** (versioning)
 
 ---
 
-## Structure du projet {#structure}
+##  Structure du projet {#structure}
 
 ```
 MusicTalentRadarAll/
 │
 ├── app/
-│   ├── streamlit.py              # Application principale
-│   └── auth.py                   # Authentification
+│   ├── streamlit.py                 # Application principale (v1.1)
+│   └── auth.py                      # Authentification
 │
 ├── data/
-│   ├── music_talent_radar_v2.db  # Base SQLite
-│   ├── predictions_ml.csv        # Prédictions générées
-│   ├── spotify_artists_*.csv     # Imports Spotify
-│   └── deezer_artists_*.csv      # Imports Deezer
+│   ├── music_talent_radar_v2.db     # Base SQLite
+│   ├── predictions_ml.csv           # Prédictions générées
+│   ├── spotify_artists_*.csv        # Imports Spotify
+│   └── deezer_artists_*.csv         # Imports Deezer
 │
 ├── assets/
-│   ├── logo.png                  # Logo JEK2
-│   ├── back.png                  # Image fond
-│   ├── moipiano.png              # Photo auteure
-│   └── ma_famille.m4a            # Composition audio
+│   ├── logo.png                     # Logo JEK2
+│   ├── back.png                     # Image fond
+│   ├── moipiano.png                 # Photo auteure
+│   └── ma_famille.m4a               # Composition audio
 │
-├── ml_prediction.py              # Script prédictions ML
-├── import_data.py                # Script import CSV
-├── filtrer_csv_emergents.py      # Filtrage artistes (permet de modifier le nombre de followers)
-├── nettoyer_base.py              # Nettoyage DB
-├── diagnostic_base.py            # Diagnostic DB
+├── ml_prediction.py                 # Script prédictions ML
+├── generer_alertes.py               #Alertes auto
+├── import_data.py                   # Script import CSV
+├── filtrer_csv_emergents.py         # Filtrage artistes
+├── nettoyer_base.py                 # Nettoyage DB
+├── diagnostic_base.py               # Diagnostic DB
 │
-├── requirements.txt              # Dépendances Python
+├── requirements.txt                 # Dépendances Python
 ├── .streamlit/
-│   └── config.toml              # Configuration Streamlit
-│
-└── README.md                     # Documentation
+│   └── config.toml                  # Config Streamlit
+├── Annexes
+│   ├── DOCUMENTATION_TECHINQUE.md   #Documentation
+│   └── GUIDE_UTILISATEUR.md         #Documentation 
+└── README.md                        # Documentation
 ```
 
 ---
 
-##  Base de données {#base-de-données}
+## Base de données {#base-de-données}
 
 ### Schéma SQLite
 
@@ -134,7 +157,7 @@ MusicTalentRadarAll/
 CREATE TABLE artistes (
     id_unique TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
-    source TEXT,              -- 'Spotify' ou 'Deezer'
+    source TEXT,              
     genre TEXT,
     followers INTEGER,
     fans INTEGER,
@@ -165,12 +188,12 @@ CREATE TABLE metriques_historique (
 );
 ```
 
-#### Table `alertes` (optionnelle)
+#### Table `alertes` 
 ```sql
 CREATE TABLE alertes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom_artiste TEXT,
-    type_alerte TEXT,
+    type_alerte TEXT,         -- '🚀 Forte Croissance', '⚠️ Baisse', etc.
     message TEXT,
     date_alerte TEXT,
     vu BOOLEAN DEFAULT 0
@@ -184,10 +207,55 @@ CREATE INDEX idx_artistes_source ON artistes(source);
 CREATE INDEX idx_artistes_genre ON artistes(genre);
 CREATE INDEX idx_metriques_date ON metriques_historique(date_collecte);
 CREATE INDEX idx_metriques_id ON metriques_historique(id_unique);
+CREATE INDEX idx_alertes_vu ON alertes(vu);  
 ```
 
 ---
+## Collecte de données automatisée
 
+Github /Actions/workflows
+```
+┌─────────────────────────────────────────────┐
+│         TOUS LES JOURS À 8H                 │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│  1. collecter_donnees.py                    │
+│     └→ Appels APIs Spotify/Deezer           │
+│     └→ Génération CSV                       │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│  2. filtrer_csv_emergents.py                │
+│     └→ Filtre < 60k followers               │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│  3. import_data.py                          │
+│     └→ Import dans SQLite                   │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│  4. ml_prediction.py                        │
+│     └→ Génération prédictions ML            │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│  5. generer_alertes.py                      │
+│     └→ Détection croissance > 5%            │
+└─────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│  6. Git Push                                │
+│     └→ Mise à jour Streamlit Cloud          │
+└─────────────────────────────────────────────┘
+```
 ##  Installation {#installation}
 
 ### Prérequis
@@ -200,14 +268,14 @@ CREATE INDEX idx_metriques_id ON metriques_historique(id_unique);
 
 ```bash
 # 1. Cloner le projet
-git clone https://github.com/jennykarim45-ai/MusicTalentRadarv1.git
+git clone https://github.com/username/MusicTalentRadar.git
 cd MusicTalentRadarAll
 
 # 2. Créer environnement virtuel
 python -m venv venv
 
-# bash
-source venv/Scripts/activate
+# Windows
+source venv/Scrips/activate
 
 # 3. Installer dépendances
 pip install -r requirements.txt
@@ -224,10 +292,40 @@ pandas==2.1.4
 plotly==5.18.0
 scikit-learn==1.4.0
 Pillow==10.2.0
-psycopg2-binary==2.9.9  
+psycopg2-binary==2.9.9  # Pour PostgreSQL prod
 ```
 
 ---
+
+## Configuration {#configuration}
+
+### Fichier `.streamlit/config.toml`
+
+```toml
+[theme]
+primaryColor = "#FF1B8D"
+backgroundColor = "#070707"
+secondaryBackgroundColor = "#000000"
+textColor = "#B18E57"
+font = "sans serif"
+
+[server]
+port = 8501
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+```
+
+### Variables d'environnement
+
+Pour PostgreSQL (production) :
+```bash
+# .env
+DATABASE_URL=postgresql://user:password@host:5432/database
+```
 
 ### Authentification
 
@@ -248,13 +346,14 @@ USERS = {
 
 ##  Modules principaux {#modules}
 
-### 1. streamlit.py (Application principale)
+### 1. streamlit.py (Application principale )
 
 **Responsabilités** :
 - Interface utilisateur
 - Visualisations interactives
 - Gestion des filtres
 - Navigation entre pages
+
 
 **Fonctions clés** :
 ```python
@@ -272,12 +371,12 @@ def get_fan_category(fans):
 **Pages (Tabs)** :
 1. Vue d'ensemble - KPIs et graphiques globaux
 2. Les Top - Top 30 par score
-3. Les Artistes - Grille avec pagination
-4. Évolution - Suivi temporel individuel
-5. Alertes - Notifications
-6. Prédictions - ML Top 10
+3. Les Artistes - Grille avec **✨ recherche + checkboxes**
+4. Évolution - Suivi temporel + **✨ artistes similaires (checkboxes)**
+5. Alertes - **✨ Notifications automatiques**
+6. Prédictions - ML Top 10 + **✨ checkboxes**
 7. À Propos - Présentation projet
-8. Mon Profil - Artistes suivis
+8. Mon Profil - **✨ Artistes suivis (ignore filtres)**
 
 ---
 
@@ -300,7 +399,7 @@ def get_fan_category(fans):
 3. Normalisation (StandardScaler)
 4. Entraînement modèle
 5. Génération probabilités
-6. Export predictions_ml.csv
+6. Export predictions_ml.csv (avec colonne 'followers')
 ```
 
 **Sortie** :
@@ -310,7 +409,58 @@ nom,proba_star,followers,popularity,score,genre,source
 
 ---
 
-### 3. import_data.py (Import CSV)
+### 3. generer_alertes.py 
+
+**Objectif** : Détecter automatiquement les artistes avec évolutions significatives
+
+**Critères de détection** :
+```python
+SEUIL_CROISSANCE = 5.0  # 5% minimum
+```
+
+**Types d'alertes générées** :
+
+1. **Forte Croissance** : Croissance ≥ 5% followers
+   ```
+   "Croissance de 12.3% des followers (50,000 → 56,422)"
+   ```
+
+2. **Baisse Significative** : Baisse ≤ -5% followers
+   ```
+   "Baisse de 16.7% des followers (30,000 → 25,000)"
+   ```
+
+3. **Score en Hausse** : Score +10% ou plus
+   ```
+   "Score de potentiel en hausse de 15.2% (51.2 → 58.9)"
+   ```
+
+4. **TRENDING** : Croissance ≥ 15% + Score > 60
+   ```
+   "Artiste en pleine ascension ! Croissance 18.5% avec score 58.3"
+   ```
+
+**Utilisation** :
+```bash
+# Générer les alertes
+python generer_alertes.py
+
+# Résultat visible dans TAB5 - Alertes
+```
+
+**Processus** :
+```python
+1. Charger métriques historiques
+2. Analyser évolutions par artiste
+3. Comparer dernière vs avant-dernière collecte
+4. Calculer croissance (%)
+5. Générer alertes si critères remplis
+6. Insérer dans table 'alertes'
+```
+
+---
+
+### 4. import_data.py (Import CSV)
 
 **Responsabilités** :
 - Import CSV Spotify/Deezer filtrés
@@ -329,7 +479,7 @@ nom,proba_star,followers,popularity,score,genre,source
 
 ---
 
-### 4. filtrer_csv_emergents.py (Filtrage)
+### 5. filtrer_csv_emergents.py (Filtrage)
 
 **Objectif** : Garder seulement artistes < 60k followers
 
@@ -348,7 +498,7 @@ SEUIL_FOLLOWERS = 60000  # Modifiable
 
 ---
 
-### 5. auth.py (Authentification)
+### 6. auth.py (Authentification)
 
 **Système** : Session-based avec Streamlit
 
@@ -368,14 +518,73 @@ def public_page_about():
 - **Username** : `admin`
 - **Password** : `admin123`
 
-**Sécurité** :
-- Hachage passwords (recommandé en prod)
-- Session persistence
-- Logout fonctionnel
 
 ---
 
-## 🔌 API et intégrations {#api}
+##  Système d'alertes {#alertes}
+
+### Architecture des alertes
+
+```
+┌─────────────────────────────────────┐
+│     generer_alertes.py              │
+│  (Script exécutable manuellement)   │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│  Analyse métriques historiques      │
+│  - Comparer dernières collectes     │
+│  - Calculer croissance (%)          │
+│  - Détecter anomalies               │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│  Génération alertes si critères     │
+│  - Croissance > 5%                  │
+│  - Baisse > 5%                      │
+│  - Score +10%                       │
+│  - Trending (Croissance +15%)       │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│  Insertion dans table 'alertes'     │
+│  (vu = 0 par défaut)                │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│  Affichage dans TAB5 - Alertes      │
+│  (Streamlit lit WHERE vu = 0)       │
+└─────────────────────────────────────┘
+```
+
+### Personnalisation
+
+**Modifier le seuil** :
+```python
+# Dans generer_alertes.py, ligne 10
+SEUIL_CROISSANCE = 3.0  # 3% au lieu de 5%
+```
+
+**Ajouter un nouveau type d'alerte** :
+```python
+# Exemple : Alerte seuil followers
+if followers_derniere >= 100000 and followers_avant < 100000:
+    alertes_a_inserer.append({
+        'nom_artiste': artiste,
+        'type_alerte': '🎯 Seuil Atteint',
+        'message': f"100k followers atteints ! ({int(followers_derniere):,})",
+        'date_alerte': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'vu': 0
+    })
+```
+
+---
+
+##  API et intégrations {#api}
 
 ### APIs utilisées (phase collecte)
 
@@ -393,11 +602,10 @@ def public_page_about():
 
 ---
 
-## 🤖 Machine Learning {#ml}
+##  Machine Learning {#ml}
 
 ### Modèle de prédiction
 
-**Type** : Classification binaire (star vs non-star)
 
 **Algorithme** : Régression Logistique
 ```python
@@ -441,6 +649,77 @@ X_scaled = scaler.fit_transform(X)
 
 ---
 
+##  Fonctionnalités Interface v1.1
+
+### Recherche d'artistes (TAB3)
+
+
+
+```python
+# Interface
+[🔍 Rechercher ▼] [📊 Trier par ▼] [📈 Ordre ▼]
+
+# Fonctionnement
+- "Tous" : Affiche tous les artistes (défaut)
+- Sélectionner un nom : Affiche SEULEMENT cet artiste
+```
+
+**Code** :
+```python
+col_search, col_tri1, col_tri2 = st.columns([2, 1, 1])
+
+with col_search:
+    selected_search = st.selectbox(
+        "🔍 Rechercher un artiste",
+        ["Tous"] + artistes_list,
+        key="search_artiste"
+    )
+
+if selected_search != "Tous":
+    artistes_sorted = filtered_df[filtered_df['nom_artiste'] == selected_search].copy()
+else:
+    artistes_sorted = filtered_df.copy()
+```
+
+---
+
+### Sélection multi-sources
+
+
+#### TAB3 - Les Artistes (déjà existant)
+```python
+is_checked = st.checkbox("", value=artist['nom_artiste'] in temp_interesses)
+```
+
+#### TAB6 - Prédictions 
+```python
+# Grille Top 10 avec checkboxes
+for artist in top10:
+    is_checked = st.checkbox("", value=artist['nom'] in temp_interesses)
+    [Photo + Nom + Score]
+    [Bouton "Voir évolution"]
+
+```
+
+#### TAB4 - Artistes Similaires 
+```python
+# 5 artistes similaires avec checkboxes
+for artist in similar_artists:
+    is_checked = st.checkbox("", value=artist['nom'] in temp_interesses)
+    [Photo + Nom + Score]
+    [Boutons "Écouter" + "Infos"]
+
+[VALIDER ARTISTES SIMILAIRES] # Bouton centralisé
+```
+
+**Workflow utilisateur** :
+1. Cocher artistes dans TAB3, TAB4, ou TAB6
+2. Cliquer "VALIDER"
+3. Retrouver dans TAB8 - Mon Profil
+
+---
+
+
 ## 🌐 Déploiement {#déploiement}
 
 ### Déploiement Streamlit Cloud
@@ -448,7 +727,7 @@ X_scaled = scaler.fit_transform(X)
 ```bash
 # 1. Push sur GitHub
 git add .
-git commit -m "Deploy ready"
+git commit -m "Deploy ready v1.1"
 git push origin main
 
 # 2. Connecter Streamlit Cloud à GitHub
@@ -462,19 +741,18 @@ git push origin main
 DATABASE_URL = "postgresql://..."
 ```
 
-### Structure pour déploiement
+### Fichiers à inclure
 
 ```
 MusicTalentRadarAll/
 ├── app/
-│   ├── streamlit.py
-│   └── auth.py
 ├── data/
-│   └── music_talent_radar_v2.db
+│   ├── music_talent_radar_v2.db  # Base SQLite
+│   └── predictions_ml.csv        # Prédictions
 ├── assets/
 ├── requirements.txt
-└── .streamlit/
-    └── config.toml
+├── .streamlit/
+└── generer_alertes.py 
 ```
 
 ### Variables d'environnement
@@ -490,34 +768,11 @@ DATABASE_URL = "postgresql://..."
 
 ---
 
-## 🔧 Maintenance {#maintenance}
-
-### Tâches régulières
-
-#### 1. Mise à jour des données
-```bash
-# Tous les 7 jours
-python filtrer_csv_emergents.py
-python import_data.py
-python ml_prediction.py
-```
-
-#### 2. Nettoyage base
-```bash
-# Si colonnes dupliquées
-python nettoyer_base.py
-```
-
-#### 3. Diagnostic
-```bash
-# En cas de problème
-python diagnostic_base.py
-```
-
 ### Monitoring
 
 **Métriques à surveiller** :
 - Nombre d'artistes actifs
+- Nombre d'alertes générées
 - Temps de chargement pages
 - Erreurs logs Streamlit
 - Taille base de données
@@ -528,40 +783,17 @@ python diagnostic_base.py
 ~/.streamlit/logs/
 ```
 
-### Troubleshooting
-
-#### Problème : Colonnes dupliquées
-```bash
-python nettoyer_base.py
-```
-
-#### Problème : Images manquantes
-```python
-# Vérifier dans streamlit.py (ligne ~420)
-# S'assurer du triple merge
-```
-
-#### Problème : Prédictions obsolètes
-```bash
-python ml_prediction.py
-```
-
-#### Problème : Artistes connus dans prédictions
-```bash
-# Vérifier colonne followers dans predictions_ml.csv
-# Régénérer si nécessaire
-```
-
 ---
 
-## 📊 Performances
+##  Performances
 
-### Métriques actuelles
+### Métriques actuelles au 19/01/2026
 
 - **Base de données** : 515 artistes, 517 métriques
 - **Temps chargement** : < 2 secondes
 - **Cache TTL** : 5 minutes
 - **Prédictions** : ~0.5 seconde (génération)
+- **Alertes** : ~2 secondes (génération)
 
 ### Optimisations
 
@@ -573,6 +805,7 @@ def load_data():
 
 # Index DB
 CREATE INDEX idx_metriques_date ON metriques_historique(date_collecte);
+CREATE INDEX idx_alertes_vu ON alertes(vu);
 
 # Filtres précoces
 filtered_df = latest_metrics_df.query('score_potentiel >= 50')
@@ -580,14 +813,13 @@ filtered_df = latest_metrics_df.query('score_potentiel >= 50')
 
 ---
 
-## 🔒 Sécurité
+## Sécurité
 
 ### Authentification
 
 - **Username** : `admin`
 - **Password** : `admin123`
-- **Session** : Persistante navigateur
-- **Recommandation prod** : Hacher passwords avec bcrypt
+
 
 ### Données sensibles
 
@@ -604,23 +836,7 @@ filtered_df = latest_metrics_df.query('score_potentiel >= 50')
 .streamlit/secrets.toml
 *.db (si contient données sensibles)
 
-# Toujours dans .gitignore
-```
 
----
-
-## 🧪 Tests
-
-### Tests unitaires (à implémenter)
-
-```python
-# test_data_processing.py
-def test_get_fan_category():
-    assert get_fan_category(5000) == "Micro (1k-10k)"
-    assert get_fan_category(50000) == "Moyen (30k-60k)"
-
-def test_normalize_name():
-    assert normalize_name("Mouh-Milano") == "mouh milano"
 ```
 
 ### Tests d'intégration
@@ -631,16 +847,17 @@ python filtrer_csv_emergents.py
 python import_data.py
 python diagnostic_base.py
 python ml_prediction.py
+python generer_alertes.py
 streamlit run app/streamlit.py
 ```
 
 ---
 
-## 📞 Support
+## Support
 
-**Développeur** : Jenny  
+**Développeur** : Jenny Benmouhoub 
 **Projet** : Wild Code School - Projet Final  
-**Contact** : [email ou GitHub]
+**Contact** : [GitHub]
 
 **Ressources** :
 - [Documentation Streamlit](https://docs.streamlit.io)
@@ -649,32 +866,12 @@ streamlit run app/streamlit.py
 
 ---
 
-## 📝 Changelog
-
 ### Version 1.0.0 (Janvier 2026)
-- ✅ Application Streamlit complète
-- ✅ Authentification fonctionnelle
-- ✅ 8 pages/onglets
-- ✅ Prédictions ML
-- ✅ Système d'alertes
-- ✅ 515 artistes émergents
-- ✅ Design responsive
+-  Application Streamlit complète
+-  Authentification fonctionnelle
+-  8 pages/onglets
+-  Prédictions ML
+-  Design responsive
 
-### À venir (v2.0)
-- [ ] Tests unitaires complets
-- [ ] CI/CD GitHub Actions
-- [ ] PostgreSQL production
-- [ ] API REST endpoints
-- [ ] Collecte automatisée
-- [ ] Dashboard admin
 
----
-
-## 📜 Licence
-
-Projet éducatif - Wild Code School  
-© 2026 Jenny - Tous droits réservés
-
----
-
-**FIN DE LA DOCUMENTATION TECHNIQUE**
+*Dernière mise à jour : 19 janvier 2026*
