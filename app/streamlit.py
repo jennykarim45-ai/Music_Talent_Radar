@@ -1085,6 +1085,10 @@ with tab4:
                                     yaxis_title="Followers/Fans",
                                     height=400
                                 )
+                                fig.update_xaxes(
+                                tickformat="%d/%m/%Y"  # Format 19/01/2026
+                                )
+
                                 st.plotly_chart(fig, use_container_width=True)
                                 st.caption("👥 L'évolution du nombre de followers/fans dans le temps. Une courbe ascendante indique une croissance régulière de l'audience.")
                         
@@ -1110,6 +1114,10 @@ with tab4:
                                 yaxis_title="Score de Potentiel",
                                 height=400
                             )
+                            fig.update_xaxes(
+                            tickformat="%d/%m/%Y"  # Format 19/01/2026
+                            )
+
                             st.plotly_chart(fig, use_container_width=True)
                             st.caption("L'évolution du score de potentiel dans le temps. Un score en hausse traduit une amélioration globale de la performance (engagement, croissance, popularité).")
                     
@@ -1460,6 +1468,9 @@ with tab6:
                                 yaxis_title="Followers/Fans",
                                 height=400
                             )
+                            fig.update_xaxes(
+                            tickformat="%d/%m/%Y"  
+                            )
                             st.plotly_chart(fig, use_container_width=True)
                     
                     with col2:
@@ -1484,6 +1495,10 @@ with tab6:
                             yaxis_title="Score de Potentiel",
                             height=400
                         )
+                        fig.update_xaxes(
+                            tickformat="%d/%m/%Y"  # Format 19/01/2026
+                        )
+                        
                         st.plotly_chart(fig, use_container_width=True)
             else:
                 st.warning(f"Aucune donnée trouvée pour {selected_artist}")
