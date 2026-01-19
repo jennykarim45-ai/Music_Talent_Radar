@@ -1408,9 +1408,9 @@ with tab7:
     
     st.markdown("---")
     st.markdown(f"""
-    <h4 style="color: {COLORS['accent3']}; font-weight: 700;">🎹 MES COMPOSITIONS</h4>
+    <h4 style="color: {COLORS['accent3']}; font-weight: 700;">🎹 MES OEUVRES MUSICALES</h4>
     <p style="color: {COLORS['text']}; font-size: 1.05rem;">
-    En parallèle de mon parcours en data, je compose et joue du piano. 
+    En parallèle de mon parcours en data, j'écris et je chante mes propres chansons'. 
     Découvrez mes créations musicales :
     </p>
     """, unsafe_allow_html=True)
