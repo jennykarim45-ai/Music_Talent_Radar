@@ -1,12 +1,13 @@
-# 📖 GUIDE UTILISATEUR - MUSIC TALENT RADAR
+#  GUIDE UTILISATEUR - MUSIC TALENT RADAR
 
-## 🎯 Introduction
+##  Introduction
 
 **Music Talent Radar** est une plateforme d'analyse et de détection de talents musicaux émergents développée pour **JEK2 Records**. Cet outil permet d'identifier les artistes à fort potentiel avant leur percée médiatique en analysant leurs données Spotify et Deezer.
+**url du site**: https://music-talent-radar.streamlit.app/
 
 ---
 
-## 🚀 Démarrage Rapide
+## Démarrage Rapide
 
 ### Connexion à l'application
 
@@ -17,11 +18,11 @@
    - **Mot de passe** : `admin123`
 4. **Cliquez** sur "Se connecter"
 
-> 💡 **Note** : Pour des raisons de sécurité, changez ces identifiants après la première connexion en production.
+
 
 ---
 
-## 📊 Découverte de l'Interface
+##  Découverte de l'Interface
 
 ### Barre latérale (Sidebar)
 
@@ -48,9 +49,9 @@ L'application comporte **8 onglets** :
 
 ---
 
-## 📖 Guide par Onglet
+##  Guide par Onglet
 
-### 1️⃣ VUE D'ENSEMBLE
+###  VUE D'ENSEMBLE
 
 **Objectif** : Vision panoramique de votre base de talents
 
@@ -74,7 +75,7 @@ L'application comporte **8 onglets** :
 
 ---
 
-### 2️⃣ LES TOP
+### LES TOP
 
 **Objectif** : Explorer les artistes les plus performants
 
@@ -106,7 +107,7 @@ L'application comporte **8 onglets** :
 
 ---
 
-### 3️⃣ LES ARTISTES
+### LES ARTISTES
 
 **Objectif** : Parcourir et sélectionner des artistes
 
@@ -136,7 +137,7 @@ L'application comporte **8 onglets** :
 
 ---
 
-### 4️⃣ ÉVOLUTION
+### ÉVOLUTION
 
 **Objectif** : Analyser la trajectoire d'un artiste
 
@@ -171,13 +172,13 @@ L'application comporte **8 onglets** :
 - **Actions** : Écouter, Voir infos
 
 #### Marquer comme intéressé
-1. ☑️ Cochez "Marquer comme intéressé"
+1. Cochez "Marquer comme intéressé"
 2. Cliquez sur **VALIDER**
 3. L'artiste est ajouté à **Mon Profil**
 
 ---
 
-### 5️⃣ ALERTES
+###  ALERTES
 
 **Objectif** : Recevoir des notifications importantes
 
@@ -195,11 +196,11 @@ L'application comporte **8 onglets** :
 
 **Statut** :
 - Seules les alertes **non lues** sont affichées
-- Message "✅ Aucune alerte" si tout est OK
+- Message " Aucune alerte" si tout est OK
 
 ---
 
-### 6️⃣ PRÉDICTIONS (Intelligence Artificielle)
+### PRÉDICTIONS (Intelligence Artificielle)
 
 **Objectif** : Identifier les futurs talents avec le ML
 
@@ -246,7 +247,7 @@ Le modèle prédit qu'un artiste deviendra une "star" si :
 
 ---
 
-### 7️⃣ À PROPOS DE JEK2
+### À PROPOS DE JEK2
 
 **Objectif** : Découvrir JEK2 Records et l'auteure du projet
 
@@ -269,13 +270,13 @@ Le modèle prédit qu'un artiste deviendra une "star" si :
 - **Compétences** : Python, SQL, Machine Learning
 
 #### Compositions musicales
-- 🎹 **Lecteur audio** intégré
+- **Lecteur audio** intégré
 - Écoute de compositions originales au piano
 - Exemple : "Ma Famille"
 
 ---
 
-### 8️⃣ MON PROFIL
+### MON PROFIL
 
 **Objectif** : Gérer vos artistes d'intérêt
 
@@ -292,12 +293,12 @@ Le modèle prédit qu'un artiste deviendra une "star" si :
 
 #### Liste des artistes
 Pour chaque artiste :
-- ✅ **Case cochée** (confirmation visuelle)
+- **Case cochée** (confirmation visuelle)
 - **Photo de profil**
 - **Nom complet**
 - **Informations** : Plateforme, Genre
 - **Métriques** : Score, Followers/Fans
-- 📈 **Bouton "Voir évolution"** : Redirection vers l'onglet Évolution
+- **Bouton "Voir évolution"** : Redirection vers l'onglet Évolution
 - 🗑️ **Bouton "Retirer"** : Suppression de la liste
 
 #### Workflow
@@ -308,7 +309,7 @@ Pour chaque artiste :
 
 ---
 
-## 🔍 Cas d'Usage Pratiques
+## Cas d'Usage Pratiques
 
 ### Scénario 1 : Découvrir de nouveaux talents Rap français
 
@@ -332,7 +333,7 @@ Pour chaque artiste :
 
 ---
 
-### Scénario 3 : Identifier les futures stars avec l'IA
+### Scénario 3 : Identifier les futures stars 
 
 1. **Onglet Prédictions** : Consultez le Top 10 ML
 2. **Observez** les probabilités (%)
@@ -351,7 +352,7 @@ Pour chaque artiste :
 
 ---
 
-## 💡 Conseils et Bonnes Pratiques
+## Conseils et Bonnes Pratiques
 
 ### Pour les A&R (Artists & Repertoire)
 
@@ -384,7 +385,7 @@ Pour chaque artiste :
 
 ---
 
-## 🔒 Sécurité et Confidentialité
+## Sécurité et Confidentialité
 
 ### Gestion des accès
 
@@ -398,15 +399,9 @@ Pour chaque artiste :
 - **Pas de données personnelles** sensibles
 - **Conformité** : Respect des CGU Spotify/Deezer
 
-### Bonnes pratiques
-
-- **Ne partagez pas** vos identifiants
-- **Déconnectez-vous** après chaque session
-- **Changez** le mot de passe par défaut en production
-
 ---
 
-## ❓ FAQ (Foire Aux Questions)
+## FAQ (Foire Aux Questions)
 
 ### Q1 : Pourquoi certains artistes n'ont pas de photo ?
 
@@ -416,7 +411,7 @@ Pour chaque artiste :
 
 ### Q2 : À quelle fréquence les données sont-elles mises à jour ?
 
-**R** : Les données sont collectées périodiquement (selon la configuration du scraping).
+**R** : Les données sont collectées automatiquement tous les jours à 8h du matin.
 
 ---
 
@@ -426,7 +421,7 @@ Pour chaque artiste :
 
 ---
 
-### Q4 : Le modèle ML est-il fiable ?
+### Q4 : Le modèle Machine Learning est-il fiable ?
 
 **R** : Le modèle a une précision de ~92% sur les données d'entraînement. Il constitue une **aide à la décision**, pas une vérité absolue.
 
@@ -434,7 +429,7 @@ Pour chaque artiste :
 
 ### Q5 : Pourquoi certains artistes connus apparaissent dans les prédictions ?
 
-**R** : Le modèle filtre automatiquement les artistes > 80k followers. Si un artiste connu apparaît, c'est qu'il est sous ce seuil.
+**R** : Le modèle filtre automatiquement les artistes > 60k followers. Si un artiste connu apparaît, c'est qu'il est sous ce seuil.
 
 ---
 
@@ -450,9 +445,9 @@ Pour chaque artiste :
 
 ---
 
-### Q8 : Puis-je modifier les seuils du modèle ML ?
+### Q8 : Comment contacter un artiste ?
 
-**R** : Non, cette fonctionnalité n'est accessible que dans le code source pour les développeurs.
+**R** : Pour des raisons de confidentialité, une proposition de contact doit être effectué auprès de JEK2 RECORDS.
 
 ---
 
@@ -468,12 +463,11 @@ Pour chaque artiste :
 ### Contact
 
 Pour toute question ou bug rencontré :
-- 📧 Email : support@jek2records.fr (fictif pour le projet)
-- 💬 Slack : #music-talent-radar
+-  Email : support@jek2records.fr (fictif)
 
 ---
 
-## 📚 Ressources Complémentaires
+##  Ressources Complémentaires
 
 ### Documentation
 
@@ -481,22 +475,16 @@ Pour toute question ou bug rencontré :
 - **Guide API** : Intégration Spotify/Deezer
 - **Guide ML** : Détails sur le modèle prédictif
 
-### Tutoriels vidéo
 
-- 🎥 Prise en main rapide (5 min)
-- 🎥 Analyse approfondie d'un artiste (10 min)
-- 🎥 Utilisation des prédictions ML (8 min)
 
----
-
-## 🎉 Conclusion
+##  Conclusion
 
 **Music Talent Radar** est un outil puissant pour identifier les talents musicaux émergents avant leur percée médiatique. En combinant :
 
-- ✅ **Données objectives** (Spotify/Deezer)
-- ✅ **Analyse temporelle** (évolutions)
-- ✅ **Intelligence Artificielle** (prédictions)
-- ✅ **Interface intuitive** (dashboard)
+-  **Données objectives** (Spotify/Deezer)
+-  **Analyse temporelle** (évolutions)
+-  **Machine Learning** (prédictions)
+-  **Interface intuitive** (dashboard)
 
 Vous disposez d'un avantage compétitif pour **découvrir les stars de demain** ! 🌟
 
@@ -504,4 +492,4 @@ Vous disposez d'un avantage compétitif pour **découvrir les stars de demain** 
 
 ---
 
-*Guide Utilisateur Music Talent Radar v1.0 - JEK2 Records - 2026*
+*Guide Utilisateur Music Talent Radar - JEK2 Records - 2026*
