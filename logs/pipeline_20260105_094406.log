@@ -1,0 +1,66 @@
+2026-01-05 09:44:06,512 - INFO - 
+======================================================================
+2026-01-05 09:44:06,512 - INFO -  MUSICTALENTRADAR v2 - PIPELINE ETL
+2026-01-05 09:44:06,512 - INFO - ======================================================================
+2026-01-05 09:44:06,512 - INFO - Début: 2026-01-05 09:44:06
+2026-01-05 09:44:06,513 - INFO - 
+Critères de détection:
+2026-01-05 09:44:06,513 - INFO -   • Spotify: 1,000 - 50,000 followers
+2026-01-05 09:44:06,513 - INFO -   • Deezer: 1,000 - 20,000 fans
+2026-01-05 09:44:06,513 - INFO -   • 10 genres musicaux
+2026-01-05 09:44:06,515 - INFO - 
+======================================================================
+2026-01-05 09:44:06,515 - INFO - PHASE 1 - EXTRACT: Collecte des données
+2026-01-05 09:44:06,515 - INFO - ======================================================================
+2026-01-05 09:44:06,516 - INFO -  Lancement de la collecte...
+
+2026-01-05 09:44:06,516 - INFO -  Collecte Spotify nécessaire...
+2026-01-05 09:44:06,516 - INFO - ======================================================================
+2026-01-05 09:44:06,516 - INFO -  Collecte Spotify
+2026-01-05 09:44:06,516 - INFO - ======================================================================
+2026-01-05 09:44:08,315 - ERROR -  Collecte Spotify - ÉCHEC
+2026-01-05 09:44:08,315 - ERROR - Code erreur: 1
+2026-01-05 09:44:08,316 - INFO - 
+ Collecte Deezer nécessaire...
+2026-01-05 09:44:08,316 - INFO - ======================================================================
+2026-01-05 09:44:08,316 - INFO -  Collecte Deezer
+2026-01-05 09:44:08,317 - INFO - ======================================================================
+2026-01-05 09:44:09,611 - ERROR -  Collecte Deezer - ÉCHEC
+2026-01-05 09:44:09,612 - ERROR - Code erreur: 1
+2026-01-05 09:44:09,612 - ERROR - Erreur: Traceback (most recent call last):
+  File "C:\Users\jenny\OneDrive\Documents\projetdata\projetdata\DataAnalyst_Projet3\MusicTalentRadarAll\deezer_scraper_v2.py", line 321, in <module>
+    main()
+  File "C:\Users\jenny\OneDrive\Documents\projetdata\projetdata\DataAnalyst_Projet3\MusicTalentRadarAll\deezer_scraper_v2.py", line 222, in main
+    print(f"\n\U0001f3b5 Genres: {', '.join(PLAYLISTS_BY_GENRE.keys())}\n")
+  File "C:\Users\jenny\.pyenv\pyenv-win\versions\3.11.9\Lib\encodings\cp1252.py", li
+2026-01-05 09:44:09,612 - ERROR -  ÉCHEC TOTAL DE LA COLLECTE
+2026-01-05 09:44:09,612 - ERROR -  La phase Extract a échoué
+2026-01-05 09:44:09,613 - INFO - 
+======================================================================
+2026-01-05 09:44:09,613 - INFO -  RAPPORT FINAL DU PIPELINE ETL
+2026-01-05 09:44:09,613 - INFO - ======================================================================
+2026-01-05 09:44:09,613 - INFO - 
+ Durée totale: 3 secondes (0.1 minutes)
+2026-01-05 09:44:09,613 - INFO - 
+ EXTRACT:
+2026-01-05 09:44:09,613 - INFO -   • Spotify: 0 artistes
+2026-01-05 09:44:09,615 - INFO -   • Deezer: 0 artistes
+2026-01-05 09:44:09,615 - INFO -   • Total collecté: 0 artistes
+2026-01-05 09:44:09,615 - INFO - 
+ TRANSFORM:
+2026-01-05 09:44:09,615 - INFO -   • Après nettoyage: 0 artistes
+2026-01-05 09:44:09,616 - INFO -   • Supprimés: 0 artistes
+2026-01-05 09:44:09,616 - INFO - 
+ LOAD:
+2026-01-05 09:44:09,616 - INFO -   • Base de données: data/music_talent_radar_v2.db
+2026-01-05 09:44:09,616 - WARNING - 
+ ERREURS (2):
+2026-01-05 09:44:09,617 - WARNING -   • Collecte Spotify: Command '['C:\\Users\\jenny\\OneDrive\\Documents\\projetdata\\projetdata\\DataAnalyst_Projet3\\MusicTalentRadarAll\\venv\\Scripts\\python.exe', 'spotify_scraper_v2.py']' returned non-zero exit status 1.
+2026-01-05 09:44:09,617 - WARNING -   • Collecte Deezer: Command '['C:\\Users\\jenny\\OneDrive\\Documents\\projetdata\\projetdata\\DataAnalyst_Projet3\\MusicTalentRadarAll\\venv\\Scripts\\python.exe', 'deezer_scraper_v2.py']' returned non-zero exit status 1.
+2026-01-05 09:44:09,619 - INFO - 
+ Statistiques sauvegardées: logs/stats_20260105_094409.json
+2026-01-05 09:44:09,619 - INFO -  Logs sauvegardés: logs/pipeline_20260105_094406.log
+2026-01-05 09:44:09,620 - INFO - 
+======================================================================
+2026-01-05 09:44:09,621 - INFO -  PIPELINE ETL TERMINÉ
+2026-01-05 09:44:09,621 - INFO - ======================================================================
