@@ -367,12 +367,12 @@ def get_fan_category(fans):
     """Catégorise par nombre de fans"""
     if fans < 10000:
         return "Micro (1k-10k)"
-    elif fans < 30000:
-        return "Petit (10k-30k)"
-    elif fans < 60000:
-        return "Moyen (30k-60k)"
+    elif fans < 20000:
+        return "Petit (10k-20k)"
+    elif fans < 40000:
+        return "Moyen (20k-40k)"
     else:
-        return "Large (60k-100k)"
+        return "Large (40k-60k)"
 
 # ==================== CHARGEMENT DONNÉES ====================
 try:
@@ -462,7 +462,7 @@ with st.sidebar:
     genres = ['Tous'] + sorted(genres_disponibles)
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
-    categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-30k)', 'Moyen (30k-60k)', 'Large (60k-100k)']
+    categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-20k)', 'Moyen (20k-40k)', 'Large (40k-60k)']
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
@@ -496,12 +496,22 @@ filtered_df = filtered_df[filtered_df['score_potentiel'] >= min_score].reset_ind
 # Top artistes
 top_df = filtered_df.sort_values('score_potentiel', ascending=False).reset_index(drop=True)
 
-# ✅ SUPPRIMER COLONNES DUPLIQUÉES + RESET INDEX
+# SUPPRIMER COLONNES DUPLIQUÉES + RESET INDEX
 filtered_df = filtered_df.loc[:, ~filtered_df.columns.duplicated()]
 top_df = top_df.loc[:, ~top_df.columns.duplicated()]
 filtered_df = filtered_df.reset_index(drop=True)
 top_df = top_df.reset_index(drop=True)
 
+# ==================== GÉNÉRER PRÉDICTIONS SI MANQUANT ====================
+if not os.path.exists('data/predictions_ml.csv'):
+    st.info(" Génération des prédictions ML en cours...")
+    try:
+        import ml_prediction
+        ml_prediction.main()
+        st.success(" Prédictions générées !")
+    except Exception as e:
+        st.warning(f" Impossible de générer les prédictions : {e}")
+        
 # ==================== TABS CLASSIQUES ====================
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "**📊 VUE D'ENSEMBLE**", 
