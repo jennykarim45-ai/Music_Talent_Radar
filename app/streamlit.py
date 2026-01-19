@@ -798,56 +798,56 @@ with tab3:
     
 
         #  BARRE DE RECHERCHE ET TRI
-        if len(filtered_df) > 0:
-            artistes_list = sorted(filtered_df['nom_artiste'].dropna().unique())
+    if len(filtered_df) > 0:
+        artistes_list = sorted(filtered_df['nom_artiste'].dropna().unique())
             
-            if len(artistes_list) == 0:
-                st.info("Aucun artiste ne correspond à vos filtres")
-            else:
-                # Ligne de recherche + tri
-                col_search, col_tri1, col_tri2 = st.columns([2, 1, 1])
+        if len(artistes_list) == 0:
+            st.info("Aucun artiste ne correspond à vos filtres")
+        else:
+            # Ligne de recherche + tri
+            col_search, col_tri1, col_tri2 = st.columns([2, 1, 1])
                 
-                with col_search:
-                    selected_search = st.selectbox(
-                        "🔍 Rechercher un artiste",
-                        ["Tous"] + artistes_list,
-                        key="search_artiste"
-                    )
+            with col_search:
+                selected_search = st.selectbox(
+                    "🔍 Rechercher un artiste",
+                    ["Tous"] + artistes_list,
+                    key="search_artiste"
+                )
                 
-                with col_tri1:
-                    tri_par = st.selectbox(
-                        "📊 Trier par",
-                        ["Score", "Followers/Fans"],
-                        key="tri_artistes"
-                    )
+            with col_tri1:
+                tri_par = st.selectbox(
+                    "📊 Trier par",
+                    ["Score", "Followers/Fans"],
+                    key="tri_artistes"
+                )
                 
-                with col_tri2:
-                    ordre = st.selectbox(
-                        "📈 Ordre",
-                        ["Décroissant", "Croissant"],
-                        key="ordre_artistes"
-                    )
+            with col_tri2:
+                ordre = st.selectbox(
+                    "📈 Ordre",
+                    ["Décroissant", "Croissant"],
+                    key="ordre_artistes"
+                )
                 
                 # Filtrage selon recherche
-                if selected_search != "Tous":
-                    artistes_sorted = filtered_df[filtered_df['nom_artiste'] == selected_search].copy()
-                else:
-                    artistes_sorted = filtered_df.copy()
+            if selected_search != "Tous":
+                artistes_sorted = filtered_df[filtered_df['nom_artiste'] == selected_search].copy()
+            else:
+                artistes_sorted = filtered_df.copy()
                 
                 # Tri
-                if tri_par == "Score":
-                    artistes_sorted = artistes_sorted.sort_values('score_potentiel', ascending=(ordre == "Croissant"))
-                else:
-                    artistes_sorted = artistes_sorted.sort_values('followers_total', ascending=(ordre == "Croissant"))
+            if tri_par == "Score":
+                artistes_sorted = artistes_sorted.sort_values('score_potentiel', ascending=(ordre == "Croissant"))
+            else:
+                artistes_sorted = artistes_sorted.sort_values('followers_total', ascending=(ordre == "Croissant"))
                 
-                # PAGINATION
-                ITEMS_PER_PAGE = 50
-                total_artistes = len(artistes_sorted)
-                total_pages = math.ceil(total_artistes / ITEMS_PER_PAGE)
+            # PAGINATION
+            ITEMS_PER_PAGE = 50
+            total_artistes = len(artistes_sorted)
+            total_pages = math.ceil(total_artistes / ITEMS_PER_PAGE)
                 
-                start_idx = (st.session_state.page_artistes - 1) * ITEMS_PER_PAGE
-                end_idx = start_idx + ITEMS_PER_PAGE
-                page_artistes = artistes_sorted.iloc[start_idx:end_idx]
+            start_idx = (st.session_state.page_artistes - 1) * ITEMS_PER_PAGE
+            end_idx = start_idx + ITEMS_PER_PAGE
+            page_artistes = artistes_sorted.iloc[start_idx:end_idx]
         
         
         for i in range(0, len(page_artistes), 5):
