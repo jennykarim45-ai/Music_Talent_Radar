@@ -17,7 +17,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
 
 # CRITERES
 MIN_FOLLOWERS = 1000
-MAX_FOLLOWERS = 100000  # Augmenté pour récupérer plus d'artistes
+MAX_FOLLOWERS = 60000  
 MIN_POPULARITY = 10
 MAX_POPULARITY = 60
 
@@ -291,24 +291,17 @@ def est_artiste_connu(artist_name, followers, popularity, artist_id=None, sp=Non
     # Normaliser le nom pour vérification
     name_lower = artist_name.lower().strip()
     
-    # CRITERE 1 : BLACKLIST (priorité absolue - RAPIDE)
+    # CRITERE 1 : BLACKLIST 
     for known in ARTISTES_CONNUS_BLACKLIST:
         if known in name_lower:
             return True  # Dans la blacklist = EXCLU
     
-    # CRITERE 2 : Trop de followers (RAPIDE)
-    if followers > 100000:
+    # CRITERE 2 : Trop de followers 
+    if followers > 60000:
         return True
+
     
-    # CRITERE 3 : Ancienneté - DÉSACTIVÉ pour Phase 1
-    # (Trop lent, on le remettra en Phase 2 après construction blacklist)
-    # if not artist_id or not sp:
-    #     return False
-    # first_year = get_first_album_year(artist_id, sp)
-    # if first_year and first_year < 2015:
-    #     return True
-    
-    return False  # Passe tous les tests = Émergent !
+    return False  
 
 def est_nom_exclu(nom):
     nom_lower = nom.lower().strip()
@@ -505,7 +498,7 @@ def main():
     print(f"  - Popularity: {MIN_POPULARITY} - {MAX_POPULARITY}")
     print(f"\nDetection artistes connus (2 criteres SEULEMENT):")
     print(f"  1. Blacklist (~220 artistes connus)")
-    print(f"  2. Followers > 100k")
+    print(f"  2. Followers > 60k")
     print(f"\nNote: Critère 'premier album < 2015' DÉSACTIVÉ pour Phase 1")
     print(f"      (Trop lent - sera appliqué en Phase 2)")
     print(f"\nExclusions supplementaires:")

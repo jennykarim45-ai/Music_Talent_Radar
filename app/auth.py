@@ -172,7 +172,7 @@ def public_page_about():
                 <tr style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05)); border-bottom: 2px solid rgba(239, 68, 68, 0.3);">
                     <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;">🎯 Audience</td>
                     <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;">40%</td>
-                    <td style="color: #e5e7eb; padding: 1rem;">Taille de la communauté (1k-100k fans)</td>
+                    <td style="color: #e5e7eb; padding: 1rem;">Taille de la communauté (1k-60k fans)</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(251, 146, 60, 0.05)); border-bottom: 2px solid rgba(251, 146, 60, 0.3);">
                     <td style="color: #fdba74; padding: 1rem; font-weight: 700; font-size: 1.05rem;">💬 Engagement</td>

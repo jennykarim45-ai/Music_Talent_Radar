@@ -7,7 +7,7 @@ import re
 BASE_URL = "https://api.deezer.com"
 
 MIN_FANS = 1000
-MAX_FANS = 100000  # Remonté à 100k pour Deezer
+MAX_FANS = 60000  
 
 PLAYLISTS_BY_GENRE = {
     'Pop': [1266970221, 1313621735],
@@ -476,7 +476,7 @@ def main():
     print(f"  - Fans: {MIN_FANS:,} - {MAX_FANS:,}")
     print(f"\nDetection artistes connus (2 criteres SEULEMENT):")
     print(f"  1. Blacklist (~220 artistes connus)")
-    print(f"  2. Fans > 100k")
+    print(f"  2. Fans > 60k")
     print(f"\nNote: Critère 'premier album < 2015' DÉSACTIVÉ pour Phase 1")
     print(f"      (Trop lent - sera appliqué en Phase 2)")
     print(f"\nExclusions supplementaires:")

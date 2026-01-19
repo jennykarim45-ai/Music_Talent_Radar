@@ -10,7 +10,7 @@ ENV/
 
 # Data
 data/*.csv
-*.db
+
 
 # IDE
 .vscode/

@@ -797,21 +797,39 @@ with tab3:
     st.markdown("## 🎤 Les Artistes")
     
     if len(filtered_df) > 0:
-        col_tri1, col_tri2 = st.columns(2)
-        
-        with col_tri1:
-            tri_par = st.selectbox(
-                "📊 Trier par",
-                ["Score", "Followers/Fans"],
-                key="tri_artistes"
+        #  BARRE DE RECHERCHE
+        artistes_list = sorted(filtered_df['nom_artiste'].dropna().unique())
+
+        if len(artistes_list) == 0:
+            st.info("Aucun artiste ne correspond à vos filtres")
+        else:
+            # Ligne de recherche + tri
+            col_search, col_tri1, col_tri2 = st.columns([2, 1, 1])
+            
+            with col_search:
+                selected_search = st.selectbox(
+                    "🔍 Rechercher un artiste",
+                    ["Tous"] + artistes_list,
+                    key="search_artiste"
+                )
+            
+            with col_tri1:
+                tri_par = st.selectbox(
+                    "📊 Trier par",
+                    ["Score", "Followers/Fans"],
+                    key="tri_artistes"
+                )
+            
+            with col_tri2:
+                ordre = st.selectbox(
+                    "📈 Ordre",
+                    ["Décroissant", "Croissant"],
+                    key="ordre_artistes"
             )
-        
-        with col_tri2:
-            ordre = st.selectbox(
-                "📈 Ordre",
-                ["Décroissant", "Croissant"],
-                key="ordre_artistes"
-            )
+    
+    #  FILTRER si un artiste est sélectionné
+    if selected_search != "Tous":
+        filtered_df = filtered_df[filtered_df['nom_artiste'] == selected_search].reset_index(drop=True)
         
         if tri_par == "Score":
             artistes_sorted = filtered_df.sort_values('score_potentiel', ascending=(ordre == "Croissant"))
@@ -1123,13 +1141,13 @@ with tab4:
                     
                     st.markdown("---")
                     st.markdown("### 🎵 Artistes Similaires")
-                    
+
                     candidates = filtered_df[
                         (filtered_df['nom_artiste'] != selected_artist) &
                         (filtered_df['genre'] == latest['genre']) &
                         (filtered_df['plateforme'] == latest['plateforme'])
                     ].copy()
-                    
+
                     if len(candidates) >= 2:
                         try:
                             from sklearn.neighbors import NearestNeighbors
@@ -1158,6 +1176,19 @@ with tab4:
                                 
                                 for idx, (col, (_, artist)) in enumerate(zip(cols, similar_artists.iterrows())):
                                     with col:
+                                        # ✅ CASE À COCHER
+                                        is_checked_sim = st.checkbox(
+                                            "",
+                                            value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
+                                            key=f"check_similar_{idx}_{artist['nom_artiste']}"
+                                        )
+                                        
+                                        if is_checked_sim and artist['nom_artiste'] not in st.session_state.temp_interesses_artistes:
+                                            st.session_state.temp_interesses_artistes.append(artist['nom_artiste'])
+                                        elif not is_checked_sim and artist['nom_artiste'] in st.session_state.temp_interesses_artistes:
+                                            st.session_state.temp_interesses_artistes.remove(artist['nom_artiste'])
+                                        
+                                        # Photo
                                         if 'image_url' in artist and pd.notna(artist['image_url']) and artist['image_url']:
                                             st.markdown(f"""
                                                 <div style="width: 100%; 
@@ -1185,7 +1216,7 @@ with tab4:
                                                 </div>
                                             """, unsafe_allow_html=True)
                                         
-                                        artist_name = artist['nom_artiste']
+                                        artist_name = artist['nom_artiste'] or "Artiste Inconnu"
                                         display_name = artist_name[:15] + '...' if len(artist_name) > 15 else artist_name
                                         st.markdown(f"**{display_name}**")
                                         st.caption(f"⭐ {artist['score_potentiel']:.1f}")
@@ -1197,41 +1228,78 @@ with tab4:
                                         if st.button("ℹ️ Infos", key=f"info_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                             st.session_state.selected_artist_evolution = artist['nom_artiste']
                                             st.rerun()
+                                
+                                # ✅ BOUTON VALIDATION (après les artistes similaires)
+                                st.markdown("---")
+                                
+                                col_left_sim, col_center_sim, col_right_sim = st.columns([2, 1, 2])
+                                with col_center_sim:
+                                    if st.button("VALIDER ARTISTES SIMILAIRES", key="valider_similaires", use_container_width=True):
+                                        for artiste in st.session_state.temp_interesses_artistes:
+                                            if artiste not in st.session_state.artistes_interesses:
+                                                st.session_state.artistes_interesses.append(artiste)
+                                        
+                                        st.success(f"✅ {len(st.session_state.temp_interesses_artistes)} artiste(s) similaire(s) ajouté(s) !")
+                                        st.session_state.temp_interesses_artistes = []
+                                        time.sleep(1)
+                                        st.rerun()
                             else:
                                 st.info("Pas assez d'artistes similaires")
                         
                         except Exception as e:
+                            # Fallback sans KNN (code identique avec checkboxes)
                             similar_artists = candidates.head(5)
                             
                             cols = st.columns(min(5, len(similar_artists)))
                             
                             for idx, (col, (_, artist)) in enumerate(zip(cols, similar_artists.iterrows())):
                                 with col:
-                                    if 'image_url' in artist and pd.notna(artist['image_url']) and artist['image_url']:
+                                    # ✅ CASE À COCHER
+                                    is_checked_sim = st.checkbox(
+                                        "",
+                                        value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
+                                        key=f"check_similar_fallback_{idx}_{artist['nom_artiste']}"
+                                    )
+                                    
+                                    if is_checked_sim and artist['nom_artiste'] not in st.session_state.temp_interesses_artistes:
+                                        st.session_state.temp_interesses_artistes.append(artist['nom_artiste'])
+                                    elif not is_checked_sim and artist['nom_artiste'] in st.session_state.temp_interesses_artistes:
+                                        st.session_state.temp_interesses_artistes.remove(artist['nom_artiste'])
+                                    
+                                    # Photo + Info (même code que ci-dessus)
+                                    if 'image_url' in artist and pd.notna(artist['image_url']):
                                         st.markdown(f"""
-                                            <div style="width: 100%; 
-                                                        aspect-ratio: 1/1;
-                                                        overflow: hidden;
-                                                        border-radius: 10px;">
-                                                <img src="{artist['image_url']}" 
-                                                    style="width: 100%; 
-                                                            height: 100%; 
-                                                            object-fit: cover;">
+                                            <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 10px;">
+                                                <img src="{artist['image_url']}" style="width: 100%; height: 100%; object-fit: cover;">
                                             </div>
                                         """, unsafe_allow_html=True)
                                     
-                                    artist_name = artist['nom_artiste']
+                                    artist_name = artist['nom_artiste'] or "Artiste Inconnu"
                                     display_name = artist_name[:15] + '...' if len(artist_name) > 15 else artist_name
                                     st.markdown(f"**{display_name}**")
                                     st.caption(f"⭐ {artist['score_potentiel']:.1f}")
                                     
                                     if 'url' in artist and pd.notna(artist['url']):
-                                        if st.button("🎵 Écouter", key=f"listen_{idx}_{artist['nom_artiste']}", use_container_width=True):
+                                        if st.button("🎵 Écouter", key=f"listen_fb_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                             st.markdown(f'<a href="{artist["url"]}" target="_blank">Ouvrir</a>', unsafe_allow_html=True)
                                     
-                                    if st.button("ℹ️ Infos", key=f"info_{idx}_{artist['nom_artiste']}", use_container_width=True):
+                                    if st.button("ℹ️ Infos", key=f"info_fb_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                         st.session_state.selected_artist_evolution = artist['nom_artiste']
                                         st.rerun()
+                            
+                            # Bouton validation fallback
+                            st.markdown("---")
+                            col_left_sim, col_center_sim, col_right_sim = st.columns([2, 1, 2])
+                            with col_center_sim:
+                                if st.button("VALIDER ARTISTES SIMILAIRES", key="valider_similaires_fb", use_container_width=True):
+                                    for artiste in st.session_state.temp_interesses_artistes:
+                                        if artiste not in st.session_state.artistes_interesses:
+                                            st.session_state.artistes_interesses.append(artiste)
+                                    
+                                    st.success(f"✅ {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
+                                    st.session_state.temp_interesses_artistes = []
+                                    time.sleep(1)
+                                    st.rerun()
                     else:
                         st.info("Pas assez d'artistes similaires disponibles")
     else:
@@ -1625,14 +1693,24 @@ with tab6:
                         matched = top10_with_images['image_url'].notna().sum()
                         
                 
-
-                
                 # Grille 5 colonnes
                 for row_idx in range(0, len(top10_with_images), 5):
                     cols = st.columns(5)
                     
                     for col_idx, (_, artist) in enumerate(list(top10_with_images.iloc[row_idx:row_idx+5].iterrows())):
                         with cols[col_idx]:
+                            #  CASE À COCHER
+                            is_checked = st.checkbox(
+                                "",
+                                value=artist['nom'] in st.session_state.temp_interesses_artistes,
+                                key=f"check_pred_{row_idx}_{col_idx}_{artist['nom']}"
+                            )
+                            
+                            if is_checked and artist['nom'] not in st.session_state.temp_interesses_artistes:
+                                st.session_state.temp_interesses_artistes.append(artist['nom'])
+                            elif not is_checked and artist['nom'] in st.session_state.temp_interesses_artistes:
+                                st.session_state.temp_interesses_artistes.remove(artist['nom'])
+                            
                             # Photo
                             if 'image_url' in artist and pd.notna(artist['image_url']) and artist['image_url']:
                                 st.markdown(f"""
@@ -1664,19 +1742,34 @@ with tab6:
                                 """, unsafe_allow_html=True)
                             
                             # Nom
-                            artist_name = artist['nom']
+                            artist_name = artist['nom'] or "Artiste Inconnu"
                             display_name = artist_name[:18] + '...' if len(artist_name) > 18 else artist_name
                             st.markdown(f"<div style='text-align: center;'><strong>{display_name}</strong></div>", unsafe_allow_html=True)
                             st.caption(f"⭐ {artist['proba_star']:.1%}")
                             
                             # Bouton
                             if st.button(
-                                " Détails",
+                                " Voir évolution",
                                 key=f"pred_detail_{row_idx}_{col_idx}_{artist['nom']}",
                                 use_container_width=True
                             ):
                                 st.session_state.selected_prediction_artist = artist['nom']
                                 st.rerun()
+
+                #  BOUTON VALIDATION (après la grille)
+                st.markdown("---")
+
+                col_left, col_center, col_right = st.columns([2, 1, 2])
+                with col_center:
+                    if st.button("VALIDER MES SELECTIONS", key="valider_predictions", use_container_width=True):
+                        for artiste in st.session_state.temp_interesses_artistes:
+                            if artiste not in st.session_state.artistes_interesses:
+                                st.session_state.artistes_interesses.append(artiste)
+                        
+                        st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
+                        st.session_state.temp_interesses_artistes = []
+                        time.sleep(1)
+                        st.rerun()
                 
                 # Statistiques
                 st.markdown("---")
@@ -1714,12 +1807,12 @@ with tab8:
     
     st.markdown("---")
     
-    st.markdown("### ⭐ Mes Artistes Intéressés")
+    st.markdown("### ⭐ Mes Artistes")
     
     if len(st.session_state.artistes_interesses) == 0:
         st.info(" Aucun artiste ajouté pour le moment. Explorez les pages 'Les Top', 'Les Artistes' ou 'Évolution' pour ajouter des artistes à votre sélection !")
     else:
-        artistes_data = filtered_df[filtered_df['nom_artiste'].isin(st.session_state.artistes_interesses)]
+        artistes_data = latest_metrics_df[latest_metrics_df['nom_artiste'].isin(st.session_state.artistes_interesses)]
         
         col1, col2, col3 = st.columns(3)
         with col1:
