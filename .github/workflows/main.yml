@@ -1,0 +1,42 @@
+name: Update Music Data
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # Tous les jours à 8h UTC
+  workflow_dispatch:  # Permet de lancer manuellement
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Collect data
+      env:
+        SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+        SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+      run: |
+        python collecter_donnees.py
+        python filtrer_csv_emergents.py
+        python import_data.py
+        python ml_prediction.py
+        python generer_alertes.py
+    
+    - name: Commit and push
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/
+        git commit -m "Auto-update data $(date +'%Y-%m-%d')" || exit 0
+        git push
