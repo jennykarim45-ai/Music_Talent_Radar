@@ -63,12 +63,12 @@ def create_database():
     
     conn.commit()
     conn.close()
-    print("✅ Base de données créée")
+    print("Base de données créée")
 
 def import_spotify():
     """Importer les artistes Spotify"""
     if not Path(SPOTIFY_CSV).exists():
-        print(f"❌ Fichier non trouvé: {SPOTIFY_CSV}")
+        print(f"Fichier non trouvé: {SPOTIFY_CSV}")
         return 0
     
     df = pd.read_csv(SPOTIFY_CSV)
@@ -137,13 +137,13 @@ def import_spotify():
     conn.commit()
     conn.close()
     
-    print(f"✅ Import Spotify: {len(df)} artistes")
+    print(f" Import Spotify: {len(df)} artistes")
     return len(df)
 
 def import_deezer():
     """Importer les artistes Deezer"""
     if not Path(DEEZER_CSV).exists():
-        print(f"❌ Fichier non trouvé: {DEEZER_CSV}")
+        print(f" Fichier non trouvé: {DEEZER_CSV}")
         return 0
     
     df = pd.read_csv(DEEZER_CSV)
@@ -212,7 +212,7 @@ def import_deezer():
     conn.commit()
     conn.close()
     
-    print(f"✅ Import Deezer: {len(df)} artistes")
+    print(f"Import Deezer: {len(df)} artistes")
     return len(df)
 
 def get_statistics():
@@ -238,28 +238,26 @@ def get_statistics():
     
     conn.close()
     
-    print("\n" + "="*70)
-    print("📊 STATISTIQUES BASE DE DONNÉES")
+    print("STATISTIQUES BASE DE DONNÉES")
     print("="*70)
-    print(f"\n🎵 Total artistes: {total}")
+    print(f"\nTotal artistes: {total}")
     
-    print(f"\n📱 Par source:")
+    print(f"\n Par source:")
     for source, count in by_source:
         print(f"   - {source}: {count} artistes")
     
-    print(f"\n🎸 Par genre:")
+    print(f"\n Par genre:")
     for genre, count in by_genre[:10]:
         print(f"   - {genre}: {count} artistes")
     
-    print(f"\n⭐ Par catégorie:")
+    print(f"\n Par catégorie:")
     for cat, count in by_category:
         print(f"   - {cat}: {count} artistes")
     
     print("\n" + "="*70)
 
 if __name__ == "__main__":
-    print("="*70)
-    print("🎵 MUSIC TALENT RADAR - Import Base de Données")
+    print("Import Base de Données")
     print("="*70)
     
     # Créer la base
@@ -272,5 +270,5 @@ if __name__ == "__main__":
     # Afficher les statistiques
     get_statistics()
     
-    print("\n✅ Import terminé!")
-    print(f"📂 Base de données: {DB_PATH}")
+    print("\nImport terminé")
+    print(f"Base de données: {DB_PATH}")

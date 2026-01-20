@@ -11,52 +11,52 @@ import os
 
 DB_PATH = 'data/music_talent_radar_v2.db'
 
-print("🚀 IMPORT DES CSV FILTRÉS DANS LA BASE DE DONNÉES\n")
+print("IMPORT DES CSV FILTRÉS DANS LA BASE DE DONNÉES\n")
 
 # Vérifier que les fichiers existent
 if not os.path.exists('data/spotify_artists_filtered.csv'):
-    print("❌ Fichier manquant : data/spotify_artists_filtered.csv")
-    print("👉 Lance d'abord : python filtrer_csv_emergents.py")
+    print("Fichier manquant : data/spotify_artists_filtered.csv")
+    print("Lance d'abord : python filtrer_csv_emergents.py")
     exit(1)
 
 if not os.path.exists('data/deezer_artists_filtered.csv'):
-    print("❌ Fichier manquant : data/deezer_artists_filtered.csv")
-    print("👉 Lance d'abord : python filtrer_csv_emergents.py")
+    print("Fichier manquant : data/deezer_artists_filtered.csv")
+    print("Lance d'abord : python filtrer_csv_emergents.py")
     exit(1)
 
 # Connexion à la base
 conn = sqlite3.connect(DB_PATH)
 cursor = conn.cursor()
 
-# ✅ DÉTECTER LES COLONNES DE LA TABLE ARTISTES
-print("🔍 Détection des colonnes de la table artistes...")
+# DÉTECTER LES COLONNES DE LA TABLE ARTISTES
+print("Détection des colonnes de la table artistes...")
 cursor.execute("PRAGMA table_info(artistes)")
 columns_info = cursor.fetchall()
 artistes_columns = [col[1] for col in columns_info]
 print(f"   Colonnes disponibles : {artistes_columns}\n")
 
-# ✅ DÉTECTER LES COLONNES DE LA TABLE METRIQUES_HISTORIQUE
+# DÉTECTER LES COLONNES DE LA TABLE METRIQUES_HISTORIQUE
 cursor.execute("PRAGMA table_info(metriques_historique)")
 columns_info = cursor.fetchall()
 metriques_columns = [col[1] for col in columns_info]
 print(f"   Colonnes metriques : {metriques_columns}\n")
 
 # 1. VIDER LES TABLES EXISTANTES
-print("🗑️  Nettoyage des tables existantes...")
+print(" Nettoyage des tables existantes...")
 cursor.execute("DELETE FROM artistes")
 cursor.execute("DELETE FROM metriques_historique")
 conn.commit()
-print("✅ Tables vidées\n")
+print("Tables vidées\n")
 
 # 2. CHARGER SPOTIFY
-print("📊 SPOTIFY")
+print("SPOTIFY")
 spotify_df = pd.read_csv('data/spotify_artists_filtered.csv')
 print(f"  Chargé : {len(spotify_df)} artistes")
 
 # Créer id_unique (nom + source)
 spotify_df['id_unique'] = spotify_df['nom'].str.lower().str.strip() + '_spotify'
 
-# ✅ PRÉPARER LES DONNÉES POUR ARTISTES (ADAPTATIF)
+# PRÉPARER LES DONNÉES POUR ARTISTES (ADAPTATIF)
 artistes_data = []
 for idx, row in spotify_df.iterrows():
     data_dict = {
@@ -88,12 +88,12 @@ for data in artistes_data:
     except sqlite3.IntegrityError:
         pass  # Déjà existant
     except Exception as e:
-        print(f"  ⚠️ Erreur artiste: {e}")
+        print(f" Erreur artiste: {e}")
 
 conn.commit()
-print(f"  ✅ {artistes_inserted} artistes insérés")
+print(f" {artistes_inserted} artistes insérés")
 
-# ✅ PRÉPARER LES DONNÉES POUR MÉTRIQUES (ADAPTATIF)
+# PRÉPARER LES DONNÉES POUR MÉTRIQUES (ADAPTATIF)
 metriques_data = []
 for idx, row in spotify_df.iterrows():
     data_dict = {
@@ -127,20 +127,20 @@ for data in metriques_data:
         cursor.execute(query, tuple(data.values()))
         metriques_inserted += 1
     except Exception as e:
-        print(f"  ⚠️ Erreur métrique: {e}")
+        print(f" Erreur métrique: {e}")
 
 conn.commit()
-print(f"  ✅ {metriques_inserted} métriques insérées\n")
+print(f" {metriques_inserted} métriques insérées\n")
 
 # 3. CHARGER DEEZER
-print("📊 DEEZER")
+print(" DEEZER")
 deezer_df = pd.read_csv('data/deezer_artists_filtered.csv')
 print(f"  Chargé : {len(deezer_df)} artistes")
 
 # Créer id_unique
 deezer_df['id_unique'] = deezer_df['nom'].str.lower().str.strip() + '_deezer'
 
-# ✅ PRÉPARER LES DONNÉES POUR ARTISTES (ADAPTATIF)
+# PRÉPARER LES DONNÉES POUR ARTISTES (ADAPTATIF)
 artistes_data = []
 for idx, row in deezer_df.iterrows():
     data_dict = {
@@ -172,12 +172,12 @@ for data in artistes_data:
     except sqlite3.IntegrityError:
         pass
     except Exception as e:
-        print(f"  ⚠️ Erreur artiste: {e}")
+        print(f"Erreur artiste: {e}")
 
 conn.commit()
-print(f"  ✅ {artistes_inserted} artistes insérés")
+print(f" {artistes_inserted} artistes insérés")
 
-# ✅ PRÉPARER LES DONNÉES POUR MÉTRIQUES (ADAPTATIF)
+# PRÉPARER LES DONNÉES POUR MÉTRIQUES (ADAPTATIF)
 metriques_data = []
 for idx, row in deezer_df.iterrows():
     data_dict = {
@@ -209,14 +209,14 @@ for data in metriques_data:
         cursor.execute(query, tuple(data.values()))
         metriques_inserted += 1
     except Exception as e:
-        print(f"  ⚠️ Erreur métrique: {e}")
+        print(f" Erreur métrique: {e}")
 
 conn.commit()
-print(f"  ✅ {metriques_inserted} métriques insérées\n")
+print(f" {metriques_inserted} métriques insérées\n")
 
 # 4. STATISTIQUES FINALES
 print("=" * 60)
-print("📊 STATISTIQUES FINALES\n")
+print(" STATISTIQUES FINALES\n")
 
 # Total artistes
 total_artistes = cursor.execute("SELECT COUNT(*) FROM artistes").fetchone()[0]
@@ -235,8 +235,8 @@ print(f"\nTotal métriques historique : {total_metriques}")
 conn.close()
 
 print("\n" + "=" * 60)
-print("✅ IMPORT TERMINÉ !")
-print("\n📋 PROCHAINES ÉTAPES :")
+print(" IMPORT TERMINÉ !")
+print("\n PROCHAINES ÉTAPES :")
 print("1. Lance : python ml_prediction.py")
 print("2. Lance : streamlit run app/streamlit.py")
 print("3. Va dans l'onglet Prédictions")

@@ -8,13 +8,13 @@ import pandas as pd
 
 DB_PATH = 'data/music_talent_radar_v2.db'
 
-print("🔍 DIAGNOSTIC DE LA BASE DE DONNÉES\n")
+print(" DIAGNOSTIC DE LA BASE DE DONNÉES\n")
 print("=" * 60)
 
 conn = sqlite3.connect(DB_PATH)
 
 # 1. VÉRIFIER LA TABLE ARTISTES
-print("\n📊 TABLE ARTISTES\n")
+print("\n TABLE ARTISTES\n")
 
 # Colonnes
 cursor = conn.cursor()
@@ -29,16 +29,16 @@ total = cursor.execute("SELECT COUNT(*) FROM artistes").fetchone()[0]
 print(f"\nTotal artistes : {total}")
 
 # Exemples
-print("\n📝 Exemples d'artistes :")
+print("\n Exemples d'artistes :")
 artistes_sample = pd.read_sql_query("SELECT * FROM artistes LIMIT 5", conn)
 print(artistes_sample[['id_unique', 'nom', 'source', 'genre']].to_string())
 
 # Vérifier les noms vides
 noms_vides = cursor.execute("SELECT COUNT(*) FROM artistes WHERE nom IS NULL OR nom = ''").fetchone()[0]
 if noms_vides > 0:
-    print(f"\n⚠️ PROBLÈME : {noms_vides} artistes ont un nom vide !")
+    print(f"\n PROBLÈME : {noms_vides} artistes ont un nom vide !")
 else:
-    print(f"\n✅ Tous les artistes ont un nom")
+    print(f"\n Tous les artistes ont un nom")
 
 # Vérifier les images
 if 'image_url' in [col[1] for col in columns]:
@@ -46,11 +46,11 @@ if 'image_url' in [col[1] for col in columns]:
     images_ok = total - images_vides
     print(f"Images : {images_ok}/{total} artistes ont une image ({images_ok/total*100:.1f}%)")
 else:
-    print("⚠️ Colonne image_url n'existe pas")
+    print(" Colonne image_url n'existe pas")
 
 # 2. VÉRIFIER LA TABLE METRIQUES_HISTORIQUE
 print("\n" + "=" * 60)
-print("\n📊 TABLE METRIQUES_HISTORIQUE\n")
+print("\n TABLE METRIQUES_HISTORIQUE\n")
 
 # Colonnes
 cursor.execute("PRAGMA table_info(metriques_historique)")
@@ -64,13 +64,13 @@ total_metriques = cursor.execute("SELECT COUNT(*) FROM metriques_historique").fe
 print(f"\nTotal métriques : {total_metriques}")
 
 # Exemples
-print("\n📝 Exemples de métriques :")
+print("\n Exemples de métriques :")
 metriques_sample = pd.read_sql_query("SELECT * FROM metriques_historique LIMIT 5", conn)
 print(metriques_sample.head().to_string())
 
 # 3. VÉRIFIER LA JOINTURE
 print("\n" + "=" * 60)
-print("\n🔗 TEST DE JOINTURE\n")
+print("\n TEST DE JOINTURE\n")
 
 query = """
     SELECT 
@@ -96,13 +96,13 @@ orphelins = cursor.execute("""
 """).fetchone()[0]
 
 if orphelins > 0:
-    print(f"\n⚠️ PROBLÈME : {orphelins} métriques n'ont pas d'artiste associé !")
+    print(f"\n PROBLÈME : {orphelins} métriques n'ont pas d'artiste associé !")
 else:
-    print(f"\n✅ Toutes les métriques sont associées à un artiste")
+    print(f"\n Toutes les métriques sont associées à un artiste")
 
 # 4. VÉRIFIER LA COLONNE UTILISÉE PAR STREAMLIT
 print("\n" + "=" * 60)
-print("\n📊 VÉRIFICATION POUR STREAMLIT\n")
+print("\n VÉRIFICATION POUR STREAMLIT\n")
 
 # Streamlit utilise cette requête
 query = """
@@ -123,33 +123,33 @@ print(streamlit_df.to_string())
 # Vérifier si nom_artiste est NULL
 noms_null = streamlit_df['nom_artiste'].isna().sum()
 if noms_null > 0:
-    print(f"\n⚠️ PROBLÈME : {noms_null}/5 artistes ont nom_artiste = NULL !")
+    print(f"\n PROBLÈME : {noms_null}/5 artistes ont nom_artiste = NULL !")
 else:
-    print(f"\n✅ Tous les artistes ont un nom_artiste")
+    print(f"\n Tous les artistes ont un nom_artiste")
 
 conn.close()
 
 print("\n" + "=" * 60)
-print("\n🎯 RÉSUMÉ\n")
+print("\n RÉSUMÉ\n")
 
 if total == 0:
-    print("❌ PROBLÈME CRITIQUE : La table artistes est vide !")
-    print("   👉 Relance : python import_data.py")
+    print(" PROBLÈME CRITIQUE : La table artistes est vide !")
+    print("  Relance : python import_data.py")
 elif total_metriques == 0:
-    print("❌ PROBLÈME CRITIQUE : La table metriques_historique est vide !")
-    print("   👉 Relance : python import_data.py")
+    print(" PROBLÈME CRITIQUE : La table metriques_historique est vide !")
+    print(" Relance : python import_data.py")
 elif noms_vides > 0:
-    print(f"⚠️ PROBLÈME : {noms_vides} artistes ont un nom vide")
-    print("   👉 Vérifie tes CSV sources")
+    print(f" PROBLÈME : {noms_vides} artistes ont un nom vide")
+    print("  Vérifie tes CSV sources")
 elif orphelins > 0:
-    print(f"⚠️ PROBLÈME : {orphelins} métriques orphelines")
-    print("   👉 Problème de jointure id_unique")
+    print(f"PROBLÈME : {orphelins} métriques orphelines")
+    print(" Problème de jointure id_unique")
 else:
-    print("✅ La base semble OK !")
+    print(" La base semble OK !")
     print(f"   - {total} artistes")
     print(f"   - {total_metriques} métriques")
     print(f"   - Jointures OK")
-    print("\n💡 Si Streamlit affiche encore des graphiques vides :")
+    print("\nSi Streamlit affiche encore des graphiques vides :")
     print("   1. Vérifie les filtres (Genre, Plateforme, Score)")
     print("   2. Vide le cache Streamlit")
     print("   3. Relance Streamlit")

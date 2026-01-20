@@ -130,6 +130,7 @@ MusicTalentRadarAll/
 │   ├── moipiano.png                 # Photo auteure
 │   └── ma_famille.m4a               # Composition audio
 │
+├── collecter_donnees.py             # Collecte des données
 ├── ml_prediction.py                 # Script prédictions ML
 ├── generer_alertes.py               #Alertes auto
 ├── import_data.py                   # Script import CSV
