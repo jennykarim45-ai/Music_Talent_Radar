@@ -8,7 +8,7 @@ env/
 ENV/
 
 # Data
-data/*.csv
+
 
 
 # IDE
@@ -18,4 +18,4 @@ data/*.csv
 
 # OS
 .DS_Store
-Thumbs.db
+
