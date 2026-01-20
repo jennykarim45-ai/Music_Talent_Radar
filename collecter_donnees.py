@@ -4,8 +4,8 @@ from datetime import datetime
 import os
 
 # Configuration Spotify
-SPOTIFY_CLIENT_ID = "ton_client_id"
-SPOTIFY_CLIENT_SECRET = "ton_client_secret"
+SPOTIFY_CLIENT_ID = '521adaf36b6948bb82d6c6f398f9004e'
+SPOTIFY_CLIENT_SECRET = '11fcdc06df214181bfa8e8580c86126d'
 
 def get_spotify_token():
     """Obtenir token d'authentification Spotify"""
