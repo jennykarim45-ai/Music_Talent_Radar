@@ -1411,8 +1411,8 @@ with tab5:
         alertes_df['date_alerte'] = pd.to_datetime(alertes_df['date_alerte'], errors='coerce')
         
         # Ajouter colonnes de tri
-        alertes_df['date_format_fr'] = alertes_df['date_alerte'].dt.strftime('%d/%m/%Y')
-        alertes_df['mois_annee'] = alertes_df['date_alerte'].dt.strftime('%m/%Y')
+        alertes_df['date_format_fr'] = alertes_df['date_alerte'].dt.strftime('%d/%m/%Y') # type: ignore
+        alertes_df['mois_annee'] = alertes_df['date_alerte'].dt.strftime('%m/%Y') # type: ignore
         
         # Extraire valeurs pour tri followers/score
         def extraire_variation_followers(message):

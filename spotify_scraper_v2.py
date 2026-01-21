@@ -334,10 +334,10 @@ def est_genre_exclu(genres_list):
 def get_artist_first_release_year(artist_id):
     try:
         albums = sp.artist_albums(artist_id, album_type='album,single', limit=50)
-        if not albums['items']:
+        if not albums['items']: # type: ignore
             return None
         years = []
-        for album in albums['items']:
+        for album in albums['items']: # type: ignore
             if 'release_date' in album:
                 try:
                     year = int(album['release_date'][:4])
@@ -365,31 +365,31 @@ def get_artist_info(artist_id):
         artist = sp.artist(artist_id)
         
         # Filtrage 1 : Nom (orchestres, DJs, etc.)
-        if est_nom_exclu(artist['name']):
+        if est_nom_exclu(artist['name']): # type: ignore
             return None
         
         # Filtrage 2 : Genres exclus
-        if est_genre_exclu(artist['genres']):
+        if est_genre_exclu(artist['genres']): # type: ignore
             return None
         
         # Filtrage 3 : DETECTION ARTISTE CONNU (Date premier album + popularité)
         if est_artiste_connu(
-            artist['name'], 
-            artist['followers']['total'],
-            artist['popularity'],
-            artist_id=artist['id'],  # ← Ajouté
+            artist['name'],  # type: ignore
+            artist['followers']['total'], # type: ignore
+            artist['popularity'], # type: ignore
+            artist_id=artist['id'],  # ← Ajouté # type: ignore
             sp=sp  # ← Ajouté
         ):
             return None  # Artiste connu détecté = EXCLU !
         
         return {
-            'id': artist['id'],
-            'nom': artist['name'],
-            'followers': artist['followers']['total'],
-            'popularity': artist['popularity'],
-            'genres': ', '.join(artist['genres'][:3]) if artist['genres'] else '',
-            'url_spotify': artist['external_urls']['spotify'],
-            'image_url': artist['images'][0]['url'] if artist['images'] else ''
+            'id': artist['id'], # type: ignore
+            'nom': artist['name'], # type: ignore
+            'followers': artist['followers']['total'], # type: ignore
+            'popularity': artist['popularity'], # type: ignore
+            'genres': ', '.join(artist['genres'][:3]) if artist['genres'] else '', # type: ignore
+            'url_spotify': artist['external_urls']['spotify'], # type: ignore
+            'image_url': artist['images'][0]['url'] if artist['images'] else '' # type: ignore
         }
     except Exception as e:
         return None
@@ -405,7 +405,7 @@ def search_artists_by_keyword(keyword, genre, limit=50):
     try:
         results = sp.search(q=keyword, type='artist', limit=limit)
         
-        for artist in results['artists']['items']:
+        for artist in results['artists']['items']: # type: ignore
             artist_id = artist['id']
             
             if artist_id not in seen_ids:
@@ -433,13 +433,13 @@ def get_similar_artists(artist_name, genre, max_results=20):
     
     try:
         results = sp.search(q=artist_name, type='artist', limit=1)
-        if not results['artists']['items']:
+        if not results['artists']['items']: # type: ignore
             return []
         
-        seed_id = results['artists']['items'][0]['id']
+        seed_id = results['artists']['items'][0]['id'] # type: ignore
         related = sp.artist_related_artists(seed_id)
         
-        for artist in related['artists'][:max_results]:
+        for artist in related['artists'][:max_results]: # type: ignore
             if is_eligible(artist['followers']['total'], artist['popularity']):
                 info = get_artist_info(artist['id'])
                 if info:
