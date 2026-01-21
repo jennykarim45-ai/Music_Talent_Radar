@@ -9,6 +9,7 @@ import requests
 import pandas as pd
 from datetime import datetime
 import time
+import os
 
 # ==================== CONFIGURATION ====================
 SPOTIFY_CLIENT_ID = '521adaf36b6948bb82d6c6f398f9004e'
