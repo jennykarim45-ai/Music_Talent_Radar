@@ -22,7 +22,7 @@ jobs:
       run: |
         pip install -r requirements.txt
     
-    - name: Collect data
+    - name: Collect les données
       env:
         SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
         SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}

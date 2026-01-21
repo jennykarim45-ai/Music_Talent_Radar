@@ -540,18 +540,28 @@ DEEZER_IDS = [
 # ==================== FONCTIONS ====================
 
 def get_spotify_token():
-    """Obtenir token d'authentification Spotify"""
-    auth_url = 'https://accounts.spotify.com/api/token'
+    """Obtenir le token d'accès Spotify"""
     
+    # Lire depuis les variables d'environnement
+    client_id = os.getenv('SPOTIFY_CLIENT_ID')
+    client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+    
+    # Vérifier que les credentials existent
+    if not client_id or not client_secret:
+        raise ValueError("SPOTIFY_CLIENT_ID et SPOTIFY_CLIENT_SECRET doivent être définis")
+    
+    auth_url = 'https://accounts.spotify.com/api/token'
     auth_response = requests.post(auth_url, {
         'grant_type': 'client_credentials',
-        'client_id': SPOTIFY_CLIENT_ID,
-        'client_secret': SPOTIFY_CLIENT_SECRET,
+        'client_id': client_id,
+        'client_secret': client_secret,
     })
     
+    # Vérifier la réponse
     if auth_response.status_code != 200:
-        print(f"ERREUR Spotify Auth: {auth_response.json()}")
-        return None
+        print(f"Erreur d'authentification Spotify: {auth_response.status_code}")
+        print(f"Réponse: {auth_response.text}")
+        raise Exception("Échec de l'authentification Spotify")
     
     return auth_response.json()['access_token']
 
