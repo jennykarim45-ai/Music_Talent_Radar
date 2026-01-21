@@ -9,6 +9,9 @@ jobs:
   collect-data:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write  # Permet de push les commits   
+
     steps:
       - uses: actions/checkout@v3
       
