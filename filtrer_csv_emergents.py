@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Script pour filtrer les CSV et garder seulement les artistes VRAIMENT émergents
 """

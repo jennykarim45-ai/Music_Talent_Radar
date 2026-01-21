@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Script de diagnostic de la base de données
 """

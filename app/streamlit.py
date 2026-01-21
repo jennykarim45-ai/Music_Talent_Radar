@@ -512,17 +512,93 @@ if not os.path.exists('data/predictions_ml.csv'):
     except Exception as e:
         st.warning(f" Impossible de générer les prédictions : {e}")
         
-# ==================== TABS CLASSIQUES ====================
+# ==================== TAB CLASSIQUES ====================
+# Gérer les query params pour la navigation
+query_params = st.query_params
+
+# Déterminer l'onglet actif
+if 'tab' in query_params:
+    tab_actif = query_params['tab']
+else:
+    tab_actif = 'vue_ensemble'
+
+# Mapper les noms d'onglets
+TAB_MAPPING = {
+    'vue_ensemble': 0,
+    'top': 1,
+    'explorer': 2,
+    'evolution': 3,
+    'alertes': 4,
+    'predictions': 5,
+    'profil': 6,
+    'connexion': 7
+}
+
+# Index de l'onglet actif
+if tab_actif in TAB_MAPPING:
+    selected_tab_index = TAB_MAPPING[tab_actif]
+else:
+    selected_tab_index = 0
+
+# ==================== STYLE PERSONNALISÉ POUR LES TABS ====================
+st.markdown("""
+    <style>
+    /* Style des onglets (tabs) */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background-color: #0E0E0E;  /* Fond noir */
+        padding: 10px;
+        border-radius: 10px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 60px;  /* Hauteur augmentée */
+        background-color: #1a1a1a;  /* Fond gris foncé pour chaque tab */
+        border-radius: 8px;
+        padding: 0 24px;  /* Plus d'espace horizontal */
+        font-size: 1.1rem;  /* Texte plus grand */
+        font-weight: 600;  /* Texte en gras */
+        color: #FFFFFF;  /* Texte blanc */
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: #2a2a2a;  /* Fond plus clair au survol */
+        border: 2px solid #FF1B8D;  /* Bordure rose au survol */
+        transform: translateY(-2px);  /* Petit effet de levée */
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #FF1B8D 0%, #47559D 100%);  /* Dégradé rose-bleu */
+        color: #FFFFFF !important;
+        border: 2px solid #FF1B8D;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(255, 27, 141, 0.4);  /* Ombre lumineuse */
+    }
+    
+    /* Icônes/emojis plus grands */
+    .stTabs [data-baseweb="tab"] span {
+        font-size: 1.2rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Créer les tabs
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-    "**📊 VUE D'ENSEMBLE**", 
-    "**🌟 LES TOP**", 
-    "**🎤 LES ARTISTES**", 
-    "**📈 ÉVOLUTION**", 
-    "**🔔 ALERTES**",
-    "**🔮 PRÉDICTIONS**",
-    "**ℹ️ À PROPOS DE JEK2**",
-    "**👤 MON PROFIL**"
+    "🏠 Vue d'ensemble",
+    "🌟 Les Top",
+    "🔍 Explorer",
+    "📈 Évolution",
+    "🔔 Alertes",
+    "🎯 Prédictions ML",
+    "⭐ Mon Profil",
+    "👤 Connexion"
 ])
+
+# Initialiser session_state pour la navigation
+if 'artiste_selectionne' not in st.session_state:
+    st.session_state['artiste_selectionne'] = None
 
 # ==================== TAB 1: VUE D'ENSEMBLE ====================
 with tab1:
@@ -975,14 +1051,26 @@ with tab4:
         if len(artistes_list) == 0:
             st.info("Aucun artiste ne correspond à vos filtres")
         else:
+            #  Initialiser session_state pour navigation
             if 'selected_artist_evolution' not in st.session_state:
                 st.session_state.selected_artist_evolution = artistes_list[0]
-            
+
+            if 'go_to_evolution' not in st.session_state:
+                st.session_state.go_to_evolution = False
+
+            # ✨  Vérifier si on v0ient des alertes
+            if st.session_state.go_to_evolution:
+                # Message de confirmation
+                st.success(f" Visualisation de l'artiste depuis les alertes : **{st.session_state.selected_artist_evolution}**")
+                # Réinitialiser le flag
+                st.session_state.go_to_evolution = False
+
+            # Vérifier que l'artiste est dans la liste
             if st.session_state.selected_artist_evolution not in artistes_list:
                 st.session_state.selected_artist_evolution = artistes_list[0]
-            
+
             selected_artist = st.selectbox(
-                "🎤 Artiste", 
+                " Artiste", 
                 artistes_list,
                 index=artistes_list.index(st.session_state.selected_artist_evolution)
             )
@@ -1182,7 +1270,7 @@ with tab4:
                                 
                                 for idx, (col, (_, artist)) in enumerate(zip(cols, similar_artists.iterrows())):
                                     with col:
-                                        # ✅ CASE À COCHER
+                                        #  CASE À COCHER
                                         is_checked_sim = st.checkbox(
                                             "",
                                             value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
@@ -1235,7 +1323,7 @@ with tab4:
                                             st.session_state.selected_artist_evolution = artist['nom_artiste']
                                             st.rerun()
                                 
-                                # ✅ BOUTON VALIDATION (après les artistes similaires)
+                                # BOUTON VALIDATION (après les artistes similaires)
                                 st.markdown("---")
                                 
                                 col_left_sim, col_center_sim, col_right_sim = st.columns([2, 1, 2])
@@ -1289,7 +1377,7 @@ with tab4:
                                         if st.button("🎵 Écouter", key=f"listen_fb_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                             st.markdown(f'<a href="{artist["url"]}" target="_blank">Ouvrir</a>', unsafe_allow_html=True)
                                     
-                                    if st.button("ℹ️ Infos", key=f"info_fb_{idx}_{artist['nom_artiste']}", use_container_width=True):
+                                    if st.button(" Infos", key=f"info_fb_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                         st.session_state.selected_artist_evolution = artist['nom_artiste']
                                         st.rerun()
                             
@@ -1302,7 +1390,7 @@ with tab4:
                                         if artiste not in st.session_state.artistes_interesses:
                                             st.session_state.artistes_interesses.append(artiste)
                                     
-                                    st.success(f"✅ {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
+                                    st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
                                     st.session_state.temp_interesses_artistes = []
                                     time.sleep(1)
                                     st.rerun()
@@ -1313,18 +1401,217 @@ with tab4:
 
 # ==================== TAB 5: ALERTES ====================
 with tab5:
-    st.markdown("### 🔔 Alertes")
-    if len(alertes_df) == 0:
-        st.info("✅ Aucune alerte pour le moment")
+    st.markdown("### 🔔 Alertes et Notifications")
+    
+    if alertes_df.empty:
+        st.success(" Aucune alerte pour le moment")
+        st.info(" Lancez `python generer_alertes.py` pour détecter les évolutions significatives")
     else:
-        for _, alert in alertes_df.iterrows():
-            st.markdown(f"""
-                <div class="metric-card">
-                    <h4>{alert['type_alerte']}</h4>
-                    <p><strong>{alert['nom_artiste']}</strong></p>
-                    <p>{alert['message']}</p>
-                </div>
-            """, unsafe_allow_html=True)
+        # Convertir date_alerte en datetime
+        alertes_df['date_alerte'] = pd.to_datetime(alertes_df['date_alerte'], errors='coerce')
+        
+        # Ajouter colonnes de tri
+        alertes_df['date_format_fr'] = alertes_df['date_alerte'].dt.strftime('%d/%m/%Y')
+        alertes_df['mois_annee'] = alertes_df['date_alerte'].dt.strftime('%m/%Y')
+        
+        # Extraire valeurs pour tri followers/score
+        def extraire_variation_followers(message):
+            """Extrait le % de variation des followers depuis le message"""
+            import re
+            # Recherche "Croissance de X%" ou "Baisse de X%"
+            match = re.search(r'(?:Croissance|Baisse) de ([\d.]+)%', message)
+            if match:
+                variation = float(match.group(1))
+                # Si c'est une baisse, mettre négatif
+                if 'Baisse' in message:
+                    return -variation
+                return variation
+            return 0
+        
+        def extraire_variation_score(message):
+            """Extrait le % de variation du score depuis le message"""
+            import re
+            # Recherche "Score ... en hausse de X%"
+            match = re.search(r'hausse de ([\d.]+)%', message)
+            if match:
+                return float(match.group(1))
+            return 0
+        
+        alertes_df['variation_followers'] = alertes_df.apply(
+            lambda row: extraire_variation_followers(row['message']) 
+            if 'followers' in row['message'].lower() else 0, 
+            axis=1
+        )
+        
+        alertes_df['variation_score'] = alertes_df.apply(
+            lambda row: extraire_variation_score(row['message']) 
+            if 'score' in row['message'].lower() else 0, 
+            axis=1
+        )
+        
+        # Statistiques
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("Total Alertes", len(alertes_df))
+        
+        with col2:
+            croissance_count = len(alertes_df[alertes_df['type_alerte'].str.contains('Croissance', na=False)])
+            st.metric("Croissances", croissance_count)
+        
+        with col3:
+            baisse_count = len(alertes_df[alertes_df['type_alerte'].str.contains('Baisse', na=False)])
+            st.metric("Baisses", baisse_count)
+        
+        with col4:
+            trending_count = len(alertes_df[alertes_df['type_alerte'].str.contains('TRENDING', na=False)])
+            st.metric("Trending", trending_count)
+        
+        st.markdown("---")
+        
+        # Filtres de tri
+        col_tri1, col_tri2, col_tri3 = st.columns(3)
+        
+        with col_tri1:
+            tri_type = st.selectbox(
+                " Trier par",
+                ["Date (récent)", "Date (ancien)", "Variation Followers ↑", "Variation Followers ↓", 
+                "Variation Score ↑", "Variation Score ↓", "Type d'alerte"],
+                key="tri_alertes"
+            )
+        
+        with col_tri2:
+            filtre_type = st.selectbox(
+                " Filtrer par type",
+                ["Tous"] + sorted(alertes_df['type_alerte'].unique().tolist()),
+                key="filtre_type_alerte"
+            )
+        
+        with col_tri3:
+            # Liste unique des mois/années
+            mois_disponibles = sorted(alertes_df['mois_annee'].dropna().unique().tolist(), reverse=True)
+            filtre_mois = st.selectbox(
+                " Filtrer par mois",
+                ["Tous"] + mois_disponibles,
+                key="filtre_mois_alerte"
+            )
+        
+        # Appliquer filtres
+        alertes_filtrees = alertes_df.copy()
+        
+        if filtre_type != "Tous":
+            alertes_filtrees = alertes_filtrees[alertes_filtrees['type_alerte'] == filtre_type]
+        
+        if filtre_mois != "Tous":
+            alertes_filtrees = alertes_filtrees[alertes_filtrees['mois_annee'] == filtre_mois]
+        
+        # Appliquer tri
+        if tri_type == "Date (récent)":
+            alertes_filtrees = alertes_filtrees.sort_values('date_alerte', ascending=False)
+        elif tri_type == "Date (ancien)":
+            alertes_filtrees = alertes_filtrees.sort_values('date_alerte', ascending=True)
+        elif tri_type == "Variation Followers ↑":
+            alertes_filtrees = alertes_filtrees.sort_values('variation_followers', ascending=False)
+        elif tri_type == "Variation Followers ↓":
+            alertes_filtrees = alertes_filtrees.sort_values('variation_followers', ascending=True)
+        elif tri_type == "Variation Score ↑":
+            alertes_filtrees = alertes_filtrees.sort_values('variation_score', ascending=False)
+        elif tri_type == "Variation Score ↓":
+            alertes_filtrees = alertes_filtrees.sort_values('variation_score', ascending=True)
+        elif tri_type == "Type d'alerte":
+            alertes_filtrees = alertes_filtrees.sort_values('type_alerte')
+        
+        # Affichage des alertes
+        st.markdown(f"### 📋 {len(alertes_filtrees)} alerte(s) affichée(s)")
+        
+        for idx, alerte in alertes_filtrees.iterrows():
+            # Déterminer la couleur selon le type
+            if '🚀' in alerte['type_alerte']:
+                color = "#21B178"
+                icon = ""
+            elif '⚠️' in alerte['type_alerte']:
+                color = "#FF6B6B"
+                icon = ""
+            elif '🔥' in alerte['type_alerte']:
+                color = "#FF1B8D"
+                icon = ""
+            elif '⭐' in alerte['type_alerte']:
+                color = "#FFD700"
+                icon = ""
+            else:
+                color = "#47559D"
+                icon = "📊"
+            
+            # Variation display
+            variation_display = ""
+            if alerte['variation_followers'] != 0:
+                signe = "+" if alerte['variation_followers'] > 0 else ""
+                variation_display = f" ({signe}{alerte['variation_followers']:.1f}%)"
+            elif alerte['variation_score'] != 0:
+                variation_display = f" (+{alerte['variation_score']:.1f}%)"
+            
+            # ✨ Layout avec bouton
+            col_card, col_button = st.columns([4, 1])
+            
+            with col_card:
+                st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #1a0a2e 0%, #2a1a3e 100%);
+                                padding: 1.5rem;
+                                border-radius: 10px;
+                                border-left: 4px solid {color};
+                                margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <div style="color: {color}; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem;">
+                                    {icon} {alerte['type_alerte']}{variation_display}
+                                </div>
+                                <div style="color: #B18E57; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">
+                                    {alerte['nom_artiste']}
+                                </div>
+                                <div style="color: #E0E0E0; font-size: 0.95rem; margin-bottom: 0.5rem;">
+                                    {alerte['message']}
+                                </div>
+                                <div style="color: #888; font-size: 0.85rem;">
+                                    {alerte['date_format_fr']}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+            
+            with col_button:
+                # ✨ BOUTON "Détails"
+                if st.button("Détails", key=f"voir_evolution_{idx}", help="Voir l'évolution détaillée de cet artiste"):
+                    # Stocker l'artiste sélectionné
+                    st.session_state.selected_artist_evolution = alerte['nom_artiste']
+                    st.session_state.go_to_evolution = True
+                    st.rerun()
+        
+        # Bouton pour marquer comme lues (optionnel)
+        st.markdown("---")
+        col_action1, col_action2, col_action3 = st.columns([2, 1, 2])
+        
+        with col_action2:
+            if st.button(" Marquer toutes comme lues", key="marquer_lues"):
+                try:
+                    if USE_POSTGRES:
+                        conn = psycopg2.connect(DB_URL)
+                        cursor = conn.cursor()
+                        cursor.execute("UPDATE alertes SET vu = TRUE")
+                        conn.commit()
+                        conn.close()
+                    else:
+                        conn = sqlite3.connect(DB_NAME)
+                        cursor = conn.cursor()
+                        cursor.execute("UPDATE alertes SET vu = 1")
+                        conn.commit()
+                        conn.close()
+                    
+                    st.success(" Toutes les alertes ont été marquées comme lues")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f" Erreur : {e}")
 
 # ==================== TAB 7: À PROPOS ====================
 with tab7:

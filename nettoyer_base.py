@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Script pour nettoyer la table metriques_historique et supprimer les colonnes en double
 """
