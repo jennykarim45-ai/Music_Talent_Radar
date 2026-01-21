@@ -1,8 +1,7 @@
 
 """
 Script de collecte automatique Spotify/Deezer
-Version: 2.0 - Production Ready avec 324 artistes Spotify + 191 artistes Deezer
-Auteur: Jenny - Wild Code School
+
 """
 
 import requests
@@ -716,12 +715,8 @@ if __name__ == "__main__":
     print(f"   - Deezer: {len(DEEZER_IDS)} artistes")
     print(f"   - Total: {len(SPOTIFY_IDS) + len(DEEZER_IDS)} artistes")
     
-    # Demander confirmation
-    choice = input("\n Lancer la collecte ? (o/n): ").lower()
-    if choice != 'o':
-        print(" Annulé")
-        exit(0)
-    
+    print("\n Lancement de la collecte...")
+
     # Collecter
     start_time = time.time()
     
@@ -746,7 +741,6 @@ if __name__ == "__main__":
     total = len(spotify_df) + len(deezer_df)
     
     
-    print(f" COLLECTE TERMINÉE EN {elapsed/60:.1f} minutes")
     print(f"Total : {total} artistes collectés")
     print(f"   - Spotify : {len(spotify_df)}/{len(SPOTIFY_IDS)} ({len(spotify_df)/len(SPOTIFY_IDS)*100:.1f}%)")
     print(f"   - Deezer : {len(deezer_df)}/{len(DEEZER_IDS)} ({len(deezer_df)/len(DEEZER_IDS)*100:.1f}%)")
