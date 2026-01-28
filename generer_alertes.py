@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
 """
-Script pour générer automatiquement des alertes avec détails complets
-Version 2.0 - Avec pourcentages, valeurs avant/après et dates formatées
+Script pour générer automatiquement des alertes - Avec pourcentages, valeurs avant/après et dates formatées
 """
 
 import sqlite3
@@ -11,7 +9,7 @@ from datetime import datetime
 DB_PATH = 'data/music_talent_radar_v2.db'
 SEUIL_CROISSANCE = 5.0  # 5% minimum pour déclencher une alerte
 
-print("🔔 GÉNÉRATION DES ALERTES AUTOMATIQUES v2.0\n")
+print(" GÉNÉRATION DES ALERTES AUTOMATIQUES v2.0\n")
 print("=" * 60)
 
 # Connexion à la base
@@ -21,7 +19,7 @@ cursor = conn.cursor()
 # 1. Vérifier si table alertes existe
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='alertes'")
 if not cursor.fetchone():
-    print("📝 Création de la table alertes...")
+    print(" Création de la table alertes...")
     cursor.execute("""
         CREATE TABLE alertes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,7 +39,7 @@ if not cursor.fetchone():
         )
     """)
     conn.commit()
-    print("✅ Table créée")
+    print(" Table créée")
 
 # 2. Charger toutes les métriques historiques
 metriques_df = pd.read_sql_query("""
@@ -53,11 +51,13 @@ metriques_df = pd.read_sql_query("""
     ORDER BY m.date_collecte ASC
 """, conn)
 
-print(f"\n📊 {len(metriques_df)} métriques chargées")
+print(f"\n {len(metriques_df)} métriques chargées")
 
 # 3. Analyser les évolutions par artiste
 alertes_generees = 0
 alertes_a_inserer = []
+
+metriques_df = metriques_df.loc[:, ~metriques_df.columns.duplicated()]
 
 for artiste in metriques_df['nom_artiste'].dropna().unique():
     artist_data = metriques_df[metriques_df['nom_artiste'] == artiste].copy()
@@ -99,10 +99,10 @@ for artiste in metriques_df['nom_artiste'].dropna().unique():
     
     # Date formatée
     date_alerte = datetime.now()
-    date_formatted = date_alerte.strftime('%d/%m/%Y')  # 20/01/2026
-    mois_annee = date_alerte.strftime('%m/%Y')  # 01/2026
+    date_formatted = date_alerte.strftime('%d/%m/%Y')  
+    mois_annee = date_alerte.strftime('%m/%Y')  
     
-    # 🔥 GÉNÉRATION DES ALERTES
+    #  GÉNÉRATION DES ALERTES
     
     # Alerte 1 : Forte croissance followers (> 5%)
     if pourcentage_followers >= SEUIL_CROISSANCE:
@@ -200,13 +200,13 @@ for artiste in metriques_df['nom_artiste'].dropna().unique():
         alertes_generees += 1
 
 # 4. Supprimer les anciennes alertes non lues (optionnel)
-print(f"\n🗑️  Suppression des anciennes alertes...")
+print(f"\n  Suppression des anciennes alertes...")
 cursor.execute("DELETE FROM alertes WHERE vu = 0")
 conn.commit()
-print("✅ Anciennes alertes supprimées")
+print(" Anciennes alertes supprimées")
 
 # 5. Insérer les nouvelles alertes
-print(f"\n💾 Insertion de {len(alertes_a_inserer)} nouvelles alertes...")
+print(f"\n Insertion de {len(alertes_a_inserer)} nouvelles alertes...")
 
 for alerte in alertes_a_inserer:
     cursor.execute("""
@@ -234,11 +234,11 @@ for alerte in alertes_a_inserer:
     ))
 
 conn.commit()
-print(f"✅ {len(alertes_a_inserer)} alertes insérées")
+print(f" {len(alertes_a_inserer)} alertes insérées")
 
 # 6. Afficher exemples avec détails
 print(f"\n" + "=" * 60)
-print("📋 EXEMPLES D'ALERTES GÉNÉRÉES\n")
+print(" EXEMPLES D'ALERTES GÉNÉRÉES\n")
 
 alertes_sample = pd.read_sql_query("""
     SELECT 
@@ -264,12 +264,5 @@ else:
 
 conn.close()
 
-print("=" * 60)
-print(f"✅ GÉNÉRATION TERMINÉE")
-print(f"\n📊 Statistiques :")
-print(f"   - {alertes_generees} alertes générées")
-print(f"   - Seuil croissance : {SEUIL_CROISSANCE}%")
-print(f"\n📋 Prochaines étapes :")
-print(f"   1. Relance Streamlit : streamlit run app/streamlit.py")
-print(f"   2. Va dans l'onglet Alertes")
-print(f"   3. Utilise les tris et filtres !")
+
+print(f" GÉNÉRATION TERMINÉE")

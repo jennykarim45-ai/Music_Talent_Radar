@@ -1,43 +1,82 @@
-name: Update Music Data
+name: Update Music Data Daily
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # Tous les jours à 8h 
-  workflow_dispatch:  # Pour lancer manuellement
+    - cron: '0 2 * * *'  # Tous les jours à 2h du matin (UTC)
+  workflow_dispatch:  # Permet de lancer manuellement depuis GitHub
 
 jobs:
-  collect-data:
+  collect-and-update:
     runs-on: ubuntu-latest
     
     permissions:
-      contents: write  # Permet de push les commits   
+      contents: write  # Pour pouvoir pousser des commits
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
       
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
       
-      - name: Collecter les données
+      - name: Create data directory
+        run: |
+          mkdir -p data
+      
+      - name: Step 1 - Collect data from Spotify & Deezer
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-        run:  python collecter_donnees.py
-              python filtrer_csv_emergents.py
-              python import_data.py
-              python ml_prediction.py
-              python generer_alertes.py
-      
-      - name: Commit and push
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          echo " Collecting artists from Spotify and Deezer..."
+          python collecte1.py
+        continue-on-error: false
+      
+      - name: Step 2 - Import data and calculate scores
+        run: |
+          echo " Importing data into database and calculating scores..."
+          python music_talent_radar.py --all
+        continue-on-error: false
+      
+      - name: Step 3 - Generate ML predictions
+        run: |
+          echo " Generating ML predictions..."
+          python ml_prediction.py
+        continue-on-error: true
+      
+      - name: Step 4 - Generate alerts
+        run: |
+          echo " Generating alerts..."
+          python generer_alertes.py
+        continue-on-error: true
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --exit-code data/ || echo "has_changes=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
           git add data/
-          git commit -m "Auto-update data $(date +'%Y-%m-%d')" || exit 0
+          git add artist_urls.csv
+          git commit -m " Auto-update: Music data $(date +'%Y-%m-%d %H:%M')" || exit 0
           git push
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo " Workflow completed!"
+          echo "Date: $(date)"
+          echo "Files updated:"
+          ls -lh data/

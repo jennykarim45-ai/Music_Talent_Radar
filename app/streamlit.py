@@ -43,6 +43,22 @@ if 'temp_interesse_evolution' not in st.session_state:
 if 'page_artistes' not in st.session_state:
     st.session_state.page_artistes = 1
     
+if 'selected_artist_evolution' not in st.session_state:
+    st.session_state.selected_artist_evolution = None
+
+if 'go_to_evolution' not in st.session_state:
+    st.session_state.go_to_evolution = False
+
+# ==================== NAVIGATION ====================
+# Initialiser la page active
+if 'active_page' not in st.session_state:
+    st.session_state.active_page = "Vue d'ensemble"
+
+# SI DEMANDE DE NAVIGATION VERS ÉVOLUTION (AVEC RERUN!)
+if st.session_state.get('go_to_evolution', False):
+    st.session_state.active_page = "Évolution"
+    st.session_state.go_to_evolution = False
+    st.rerun()
 # ============= AUTHENTIFICATION =============
 if not auth.require_authentication(): # type: ignore
     if st.session_state.get('show_login', False):
@@ -369,10 +385,10 @@ def get_fan_category(fans):
         return "Micro (1k-10k)"
     elif fans < 20000:
         return "Petit (10k-20k)"
-    elif fans < 40000:
-        return "Moyen (20k-40k)"
+    elif fans < 30000:
+        return "Moyen (20k-30k)"
     else:
-        return "Large (40k-60k)"
+        return "Large (30k-40k)"
 
 # ==================== CHARGEMENT DONNÉES ====================
 try:
@@ -403,9 +419,59 @@ try:
     latest_metrics_df = get_latest_metrics(metriques_df)
     latest_metrics_df = latest_metrics_df.reset_index(drop=True)
     
-    if latest_metrics_df.empty:
-        st.error(" Aucune métrique trouvée")
-        st.stop()
+    #  CRÉER LA COLONNE URL SI ELLE N'EXISTE PAS
+    if 'url' not in latest_metrics_df.columns:
+        print(" Colonne 'url' manquante, création...")
+        
+        # Créer colonne url vide
+        latest_metrics_df['url'] = ''
+        
+        # Remplir depuis artistes_df
+        if 'id_unique' in latest_metrics_df.columns and 'id_unique' in artistes_df.columns:
+            for idx, row in latest_metrics_df.iterrows():
+                id_unique = row.get('id_unique')
+                plateforme = row.get('plateforme', row.get('source', ''))
+                
+                matching = artistes_df[artistes_df['id_unique'] == id_unique]
+                
+                if len(matching) > 0:
+                    if plateforme == 'Spotify' and 'url_spotify' in artistes_df.columns:
+                        url = matching.iloc[0].get('url_spotify', '')
+                    elif plateforme == 'Deezer' and 'url_deezer' in artistes_df.columns:
+                        url = matching.iloc[0].get('url_deezer', '')
+                    else:
+                        # Essayer les deux
+                        url = matching.iloc[0].get('url_spotify', matching.iloc[0].get('url_deezer', ''))
+                    
+                    if url and pd.notna(url):
+                        latest_metrics_df.at[idx, 'url'] = url
+        
+        print(f" {latest_metrics_df['url'].notna().sum()} URLs ajoutées")
+
+    # Pareil pour metriques_df
+    if 'url' not in metriques_df.columns:
+        print(" Colonne 'url' manquante dans metriques_df, création...")
+        metriques_df['url'] = ''
+        
+        if 'id_unique' in metriques_df.columns and 'id_unique' in artistes_df.columns:
+            for idx, row in metriques_df.iterrows():
+                id_unique = row.get('id_unique')
+                plateforme = row.get('plateforme', row.get('source', ''))
+                
+                matching = artistes_df[artistes_df['id_unique'] == id_unique]
+                
+                if len(matching) > 0:
+                    if plateforme == 'Spotify' and 'url_spotify' in artistes_df.columns:
+                        url = matching.iloc[0].get('url_spotify', '')
+                    elif plateforme == 'Deezer' and 'url_deezer' in artistes_df.columns:
+                        url = matching.iloc[0].get('url_deezer', '')
+                    else:
+                        url = matching.iloc[0].get('url_spotify', matching.iloc[0].get('url_deezer', ''))
+                    
+                    if url and pd.notna(url):
+                        metriques_df.at[idx, 'url'] = url
+        
+        print(f" {metriques_df['url'].notna().sum()} URLs ajoutées à metriques_df")
     
     # Conversion scores
     if 'score' in latest_metrics_df.columns and 'score_potentiel' not in latest_metrics_df.columns:
@@ -429,19 +495,37 @@ except Exception as e:
     st.stop()
 
 # ==================== HEADER ====================
-col1, col2, col3 = st.columns([1, 4, 1])
+col_logo, col_title = st.columns([1, 3])
 
-with col2:
+with col_logo:
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if os.path.isfile(logo_path):
+        st.image(logo_path, width=150)
+
+with col_title:
     st.markdown('<div class="main-header">JEK2 RECORDS</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>', unsafe_allow_html=True)
 
 # ==================== SIDEBAR ====================
 with st.sidebar:
-    # Logo sans espace
-    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
-    if os.path.isfile(logo_path):
-        st.image(logo_path, width=200)
 
+    # Liste des pages
+    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
+    
+    page = st.radio(
+        "",
+        pages,
+        index=pages.index(st.session_state.active_page),
+        label_visibility="collapsed",
+        key="nav_radio"
+    )
+    
+    # Mettre à jour seulement si l'utilisateur a cliqué
+    if page != st.session_state.active_page:
+        st.session_state.active_page = page
+        st.rerun()
+    st.markdown("---")
+    
     # Filtres
     plateformes_disponibles = []
     if 'plateforme' in latest_metrics_df.columns and len(latest_metrics_df) > 0:
@@ -462,11 +546,16 @@ with st.sidebar:
     genres = ['Tous'] + sorted(genres_disponibles)
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
-    categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-20k)', 'Moyen (20k-40k)', 'Large (40k-60k)']
+    categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-20k)', 'Moyen (20k-30k)', 'Large (30k-40k)']
+    max_fans = st.slider("👥 Followers/Fans maximum", 1000, 40000, 40000, 1000)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
 
+    # Logo sans espace
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if os.path.isfile(logo_path):
+        st.image(logo_path, width=200)
 # ==================== FILTRES ====================
 filtered_df = latest_metrics_df.copy().reset_index(drop=True)
 
@@ -492,6 +581,9 @@ if selected_fans != 'Tous':
 
 # Filtre Score
 filtered_df = filtered_df[filtered_df['score_potentiel'] >= min_score].reset_index(drop=True)
+
+# Filtre Fans maximum  # 
+filtered_df = filtered_df[filtered_df['followers_total'] <= max_fans].reset_index(drop=True)
 
 # Top artistes
 top_df = filtered_df.sort_values('score_potentiel', ascending=False).reset_index(drop=True)
@@ -584,24 +676,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Créer les tabs
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-    "🏠 Vue d'ensemble",
-    "🌟 Les Top",
-    "🔍 Explorer",
-    "📈 Évolution",
-    "🔔 Alertes",
-    "🎯 Prédictions ML",
-    "⭐ Mon Profil",
-    "👤 Connexion"
-])
+
+# ==================== AFFICHAGE SELON PAGE ACTIVE ====================
 
 # Initialiser session_state pour la navigation
 if 'artiste_selectionne' not in st.session_state:
     st.session_state['artiste_selectionne'] = None
 
 # ==================== TAB 1: VUE D'ENSEMBLE ====================
-with tab1:
+if st.session_state.active_page == "Vue d'ensemble":
+    st.markdown("## 🏠 Vue d'ensemble")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("🎤 ARTISTES", len(filtered_df))
@@ -740,9 +824,9 @@ with tab1:
                 st.info("Aucun artiste Spotify avec ces filtres")
 
 # ==================== TAB 2: LES TOP ====================
-with tab2:
-    st.markdown("## 🌟 Les Top")
-    
+elif st.session_state.active_page == "Les Tops":
+    st.markdown("## 🏆 Les Tops")
+        
     if len(top_df) > 0:
         st.markdown("### 🏆 Top 30 Meilleurs Scores")
         top30_score = top_df.head(30)
@@ -869,115 +953,165 @@ with tab2:
         st.info("Aucun artiste disponible")
 
 # ==================== TAB 3: LES ARTISTES ====================
-with tab3:
+elif st.session_state.active_page == "Les artistes":
     st.markdown("## 🎤 Les Artistes")
     
-
-        #  BARRE DE RECHERCHE ET TRI
     if len(filtered_df) > 0:
         artistes_list = sorted(filtered_df['nom_artiste'].dropna().unique())
-            
+        
         if len(artistes_list) == 0:
             st.info("Aucun artiste ne correspond à vos filtres")
         else:
             # Ligne de recherche + tri
             col_search, col_tri1, col_tri2 = st.columns([2, 1, 1])
-                
+            
             with col_search:
                 selected_search = st.selectbox(
-                    "🔍 Rechercher un artiste",
+                    "Rechercher un artiste",
                     ["Tous"] + artistes_list,
                     key="search_artiste"
                 )
-                
+            
             with col_tri1:
                 tri_par = st.selectbox(
-                    "📊 Trier par",
+                    "Trier par",
                     ["Score", "Followers/Fans"],
                     key="tri_artistes"
                 )
-                
+            
             with col_tri2:
                 ordre = st.selectbox(
-                    "📈 Ordre",
+                    "Ordre",
                     ["Décroissant", "Croissant"],
                     key="ordre_artistes"
                 )
-                
-                # Filtrage selon recherche
+            
+            # Filtrage selon recherche
             if selected_search != "Tous":
                 artistes_sorted = filtered_df[filtered_df['nom_artiste'] == selected_search].copy()
             else:
                 artistes_sorted = filtered_df.copy()
-                
-                # Tri
+            
+            # Tri
             if tri_par == "Score":
                 artistes_sorted = artistes_sorted.sort_values('score_potentiel', ascending=(ordre == "Croissant"))
             else:
                 artistes_sorted = artistes_sorted.sort_values('followers_total', ascending=(ordre == "Croissant"))
-                
+            
             # PAGINATION
             ITEMS_PER_PAGE = 50
             total_artistes = len(artistes_sorted)
             total_pages = math.ceil(total_artistes / ITEMS_PER_PAGE)
-                
+            
             start_idx = (st.session_state.page_artistes - 1) * ITEMS_PER_PAGE
             end_idx = start_idx + ITEMS_PER_PAGE
             page_artistes = artistes_sorted.iloc[start_idx:end_idx]
-        
-        
-        for i in range(0, len(page_artistes), 5):
-            cols = st.columns(5)
             
-            for col_idx, (_, artist) in enumerate(list(page_artistes.iloc[i:i+5].iterrows())):
-                with cols[col_idx]:
-                    is_checked = st.checkbox(
-                        "",
-                        value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
-                        key=f"check_artiste_{start_idx + i + col_idx}_{artist['nom_artiste']}"
-                    )
-                    
-                    if is_checked and artist['nom_artiste'] not in st.session_state.temp_interesses_artistes:
-                        st.session_state.temp_interesses_artistes.append(artist['nom_artiste'])
-                    elif not is_checked and artist['nom_artiste'] in st.session_state.temp_interesses_artistes:
-                        st.session_state.temp_interesses_artistes.remove(artist['nom_artiste'])
-                    
-                    if 'image_url' in artist and pd.notna(artist['image_url']) and artist['image_url']:
-                        st.markdown(f"""
-                            <div style="width: 100%; 
-                                        aspect-ratio: 1/1;
-                                        overflow: hidden;
-                                        border-radius: 10px;
-                                        background: {COLORS['bg_card']};">
-                                <img src="{artist['image_url']}" 
-                                    style="width: 100%; 
-                                            height: 100%; 
-                                            object-fit: cover;">
-                            </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"""
-                            <div style="width: 100%; 
-                                        aspect-ratio: 1/1;
-                                        background: linear-gradient(135deg, {COLORS['accent1']}, {COLORS['accent2']}); 
-                                        border-radius: 10px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-size: 3rem;">
-                                🎵
-                            </div>
-                        """, unsafe_allow_html=True)
-                    
-                    artist_name = artist['nom_artiste']
-                    display_name = artist_name[:18] + '...' if len(artist_name) > 18 else artist_name
-                    st.markdown(f"**{display_name}**")
-                    st.caption(f"{artist['plateforme']} | {artist['genre']}")
-                    st.caption(f"⭐ {artist['score_potentiel']:.1f} | 👥 {int(artist['followers_total']):,}")
-                    
-                    if 'url' in artist and pd.notna(artist['url']):
-                        if st.button("🎵 Écouter", key=f"listen_artiste_{start_idx + i + col_idx}", use_container_width=True):
-                            st.markdown(f'<a href="{artist["url"]}" target="_blank">Ouvrir</a>', unsafe_allow_html=True)
+            # AFFICHAGE DES ARTISTES
+            for i in range(0, len(page_artistes), 5):
+                cols = st.columns(5)
+                
+                for col_idx, (_, artist) in enumerate(list(page_artistes.iloc[i:i+5].iterrows())):
+                    with cols[col_idx]:
+                        # Checkbox
+                        is_checked = st.checkbox(
+                            "Sélectionner",
+                            value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
+                            key=f"check_artiste_{start_idx + i + col_idx}",
+                            label_visibility="collapsed"
+                        )
+                        
+                        if is_checked and artist['nom_artiste'] not in st.session_state.temp_interesses_artistes:
+                            st.session_state.temp_interesses_artistes.append(artist['nom_artiste'])
+                        elif not is_checked and artist['nom_artiste'] in st.session_state.temp_interesses_artistes:
+                            st.session_state.temp_interesses_artistes.remove(artist['nom_artiste'])
+                        
+                        # Image
+                        if 'image_url' in artist and pd.notna(artist['image_url']) and artist['image_url']:
+                            st.markdown(f"""
+                                <div style="width: 100%; 
+                                            aspect-ratio: 1/1;
+                                            overflow: hidden;
+                                            border-radius: 10px;
+                                            background: {COLORS['bg_card']};">
+                                    <img src="{artist['image_url']}" 
+                                        style="width: 100%; 
+                                                height: 100%; 
+                                                object-fit: cover;">
+                                </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                                <div style="width: 100%; 
+                                            aspect-ratio: 1/1;
+                                            background: linear-gradient(135deg, {COLORS['accent1']}, {COLORS['accent2']}); 
+                                            border-radius: 10px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-size: 3rem;">
+                                    🎵
+                                </div>
+                            """, unsafe_allow_html=True)
+                        
+                        # Info artiste
+                        artist_name = artist['nom_artiste']
+                        display_name = artist_name[:18] + '...' if len(artist_name) > 18 else artist_name
+                        st.markdown(f"**{display_name}**")
+                        st.caption(f"{artist['plateforme']} | {artist.get('genre', 'N/A')}")
+                        st.caption(f"⭐ {artist['score_potentiel']:.1f} | 👥 {int(artist['followers_total']):,}")
+
+                        # AFFICHER LES 2 BOUTONS CÔTE À CÔTE
+                        col_ecouter, col_details = st.columns(2)
+
+                        with col_ecouter:
+                            # Récupérer l'URL
+                            url_artiste = artist.get('url', '')
+                            
+                            # Si pas d'URL, essayer de reconstruire
+                            if not url_artiste or pd.isna(url_artiste):
+                                plateforme = artist.get('plateforme', '')
+                                nom = artist.get('nom_artiste', '')
+                                
+                                if plateforme == 'Spotify':
+                                    # Essayer de trouver l'URL dans artistes_df
+                                    matching_artist = artistes_df[artistes_df['nom'] == nom]
+                                    if len(matching_artist) > 0 and 'url_spotify' in matching_artist.columns:
+                                        url_artiste = matching_artist.iloc[0].get('url_spotify', '')
+                                
+                                elif plateforme == 'Deezer':
+                                    matching_artist = artistes_df[artistes_df['nom'] == nom]
+                                    if len(matching_artist) > 0 and 'url_deezer' in matching_artist.columns:
+                                        url_artiste = matching_artist.iloc[0].get('url_deezer', '')
+                            
+                            # Afficher le bouton
+                            if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
+                                st.link_button(
+                                    "Ecouter",
+                                    str(url_artiste),
+                                    use_container_width=True
+                                )
+                            else:
+                                st.button(
+                                    "Ecouter",
+                                    disabled=True,
+                                    use_container_width=True,
+                                    key=f"disabled_ecouter_{start_idx}_{i}_{col_idx}"
+                                )
+
+                        with col_details:
+                            if st.button(
+                                "Détails",
+                                key=f"details_{start_idx}_{i}_{col_idx}",
+                                use_container_width=True
+                            ):
+                                st.session_state.selected_artist_evolution = artist['nom_artiste']
+                                st.session_state.previous_page = "Les artistes"
+                                st.session_state.go_to_evolution = True
+                                st.rerun()
+
+            
+
         
         st.markdown("---")
         
@@ -1041,9 +1175,22 @@ with tab3:
         st.info("Aucun artiste disponible")
 
 # ==================== TAB 4: EVOLUTION ====================
-with tab4:
-    st.markdown("### 📈 Évolution Temporelle")
+elif st.session_state.active_page == "Évolution":
+    st.markdown("## 📈 Évolution")
     
+        # BOUTON RETOUR
+    if st.session_state.get('previous_page'):
+        col_back, col_title = st.columns([1, 5])
+        with col_back:
+            if st.button("⬅️ Retour", use_container_width=True):
+                st.session_state.active_page = st.session_state.previous_page
+                st.session_state.previous_page = None
+                st.rerun()
+        with col_title:
+            st.markdown("")
+    else:
+        st.markdown("")
+        
     if len(metriques_df) > 0 and 'nom_artiste' in metriques_df.columns:
         filtered_artists = filtered_df.copy()
         artistes_list = sorted(filtered_artists['nom_artiste'].dropna().unique())
@@ -1058,7 +1205,7 @@ with tab4:
             if 'go_to_evolution' not in st.session_state:
                 st.session_state.go_to_evolution = False
 
-            # ✨  Vérifier si on v0ient des alertes
+            #   Vérifier si on v0ient des alertes
             if st.session_state.go_to_evolution:
                 # Message de confirmation
                 st.success(f" Visualisation de l'artiste depuis les alertes : **{st.session_state.selected_artist_evolution}**")
@@ -1130,7 +1277,8 @@ with tab4:
                             is_interesse = st.checkbox(
                                 f"⭐ Marquer {selected_artist} comme intéressé",
                                 value=selected_artist in st.session_state.artistes_interesses,
-                                key=f"check_evolution_{selected_artist}"
+                                key=f"check_evolution_{selected_artist}",
+                                label_visibility="collapsed"
                             )
                             
                             if is_interesse:
@@ -1197,13 +1345,13 @@ with tab4:
                                     yaxis_title="Followers/Fans",
                                     height=400
                                 )
-                                fig.update_xaxes(
-                                tickformat="%d/%m/%Y"  # Format 19/01/2026
-                                )
+                                fig.update_xaxes(tickformat="%d/%m/%Y")
 
                                 st.plotly_chart(fig, use_container_width=True)
                                 st.caption("👥 L'évolution du nombre de followers/fans dans le temps. Une courbe ascendante indique une croissance régulière de l'audience.")
-                        
+                            else:
+                                st.info("Pas de données de pour afficher l'évolution de cet artiste.")
+                                
                         with col2:
                             st.markdown("#### ⭐ Évolution du Score")
                             fig = px.line(
@@ -1232,7 +1380,9 @@ with tab4:
 
                             st.plotly_chart(fig, use_container_width=True)
                             st.caption("L'évolution du score de potentiel dans le temps. Un score en hausse traduit une amélioration globale de la performance (engagement, croissance, popularité).")
-                    
+                    else:
+                        st.info(" Pas assez de données historiques pour afficher l'évolution de cet artiste.")
+                        
                     st.markdown("---")
                     st.markdown("### 🎵 Artistes Similaires")
 
@@ -1272,9 +1422,10 @@ with tab4:
                                     with col:
                                         #  CASE À COCHER
                                         is_checked_sim = st.checkbox(
-                                            "",
+                                            "⭐",
                                             value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
-                                            key=f"check_similar_{idx}_{artist['nom_artiste']}"
+                                            key=f"check_similar_{idx}_{artist['nom_artiste']}",
+                                            label_visibility="collapsed"
                                         )
                                         
                                         if is_checked_sim and artist['nom_artiste'] not in st.session_state.temp_interesses_artistes:
@@ -1350,9 +1501,10 @@ with tab4:
                                 with col:
                                     # ✅ CASE À COCHER
                                     is_checked_sim = st.checkbox(
-                                        "",
+                                        "⭐",
                                         value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
-                                        key=f"check_similar_fallback_{idx}_{artist['nom_artiste']}"
+                                        key=f"check_similar_fallback_{idx}_{artist['nom_artiste']}",
+                                        label_visibility="collapsed"
                                     )
                                     
                                     if is_checked_sim and artist['nom_artiste'] not in st.session_state.temp_interesses_artistes:
@@ -1400,8 +1552,8 @@ with tab4:
         st.info("Aucune donnée disponible")
 
 # ==================== TAB 5: ALERTES ====================
-with tab5:
-    st.markdown("### 🔔 Alertes et Notifications")
+elif st.session_state.active_page == "Alertes":
+    st.markdown("## 🔔 Alertes")
     
     if alertes_df.empty:
         st.success(" Aucune alerte pour le moment")
@@ -1550,7 +1702,7 @@ with tab5:
             elif alerte['variation_score'] != 0:
                 variation_display = f" (+{alerte['variation_score']:.1f}%)"
             
-            # ✨ Layout avec bouton
+            # Layout avec bouton
             col_card, col_button = st.columns([4, 1])
             
             with col_card:
@@ -1580,14 +1732,41 @@ with tab5:
                 """, unsafe_allow_html=True)
             
             with col_button:
-                # ✨ BOUTON "Détails"
-                if st.button("Détails", key=f"voir_evolution_{idx}", help="Voir l'évolution détaillée de cet artiste"):
-                    # Stocker l'artiste sélectionné
+                #  DEUX BOUTONS EMPILÉS
+                # Récupérer URL
+                url_artiste = ""
+                matching = latest_metrics_df[latest_metrics_df['nom_artiste'] == alerte['nom_artiste']]
+                if len(matching) > 0 and 'url' in matching.columns:
+                    url_artiste = matching.iloc[0].get('url', '')
+                
+                # Bouton Écouter
+                if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
+                    st.link_button(
+                        "Ecouter",
+                        str(url_artiste),
+                        use_container_width=True,
+                    )
+                else:
+                    st.button(
+                        "Ecouter",
+                        disabled=True,
+                        use_container_width=True,
+                        key=f"disabled_alerte_ecouter_{idx}"
+                    )
+                
+                # Bouton Détails
+                if st.button(
+                    "Détails",
+                    key=f"alerte_details_{idx}",
+                    use_container_width=True
+                ):
                     st.session_state.selected_artist_evolution = alerte['nom_artiste']
+                    st.session_state.previous_page = "Alertes"
                     st.session_state.go_to_evolution = True
                     st.rerun()
+                    
         
-        # Bouton pour marquer comme lues (optionnel)
+        # Bouton pour marquer comme lues 
         st.markdown("---")
         col_action1, col_action2, col_action3 = st.columns([2, 1, 2])
         
@@ -1614,8 +1793,8 @@ with tab5:
                     st.error(f" Erreur : {e}")
 
 # ==================== TAB 7: À PROPOS ====================
-with tab7:
-    st.markdown("## 🎵 À PROPOS DE JEK2 RECORDS")
+elif st.session_state.active_page == "A propos":
+    st.markdown("## ℹ️ À Propos")
     
     col1, col2 = st.columns([2, 1])
     
@@ -1746,7 +1925,9 @@ with tab7:
         st.info(f"📁 Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 # ==================== TAB 6: PRÉDICTIONS ====================
-with tab6:
+elif st.session_state.active_page == "Prédictions":
+    st.markdown("## 🔮 Prédictions")
+    
     #  SI UN ARTISTE EST SÉLECTIONNÉ, AFFICHER SON ÉVOLUTION
     if 'selected_prediction_artist' in st.session_state and st.session_state.selected_prediction_artist:
         selected_artist = st.session_state.selected_prediction_artist
@@ -1886,7 +2067,7 @@ with tab6:
         
     else:
         #  AFFICHAGE DES PRÉDICTIONS
-        st.markdown("## 🔮 Prédictions")
+        st.markdown("")
         
         st.markdown(f"""
         <div class="info-box">
@@ -1947,39 +2128,39 @@ with tab6:
                 
                 st.markdown("### Cliquez pour voir l'évolution détaillée")
                 
-                #  FONCTION DE NORMALISATION
+                # FONCTION DE NORMALISATION AMÉLIORÉE
                 def normalize_name(name):
-                    """Normalise un nom pour le matching"""
+                    """Normalise un nom pour le matching - VERSION STRICTE"""
                     if pd.isna(name):
                         return ""
-                    return str(name).lower().strip().replace('-', ' ').replace('_', ' ')
-                
-                #  CRÉER COLONNES NORMALISÉES
+                    # Enlever accents, espaces, tirets, apostrophes, mettre en minuscules
+                    import unicodedata
+                    name = str(name).lower().strip()
+                    name = unicodedata.normalize('NFD', name)
+                    name = ''.join(c for c in name if unicodedata.category(c) != 'Mn')
+                    name = name.replace('-', '').replace('_', '').replace("'", '').replace(' ', '')
+                    return name
+
+                # CRÉER COLONNES NORMALISÉES
                 top10_with_images = top10.copy()
                 top10_with_images['nom_normalized'] = top10_with_images['nom'].apply(normalize_name)
-                
-                
-                
+
                 # Merge 1: latest_metrics_df
                 if 'nom_artiste' in latest_metrics_df.columns and 'image_url' in latest_metrics_df.columns:
-                    temp_latest = latest_metrics_df[['nom_artiste', 'image_url']].copy()
+                    temp_latest = latest_metrics_df[['nom_artiste', 'image_url', 'url']].copy()
                     temp_latest = temp_latest.dropna(subset=['image_url'])
                     temp_latest = temp_latest[temp_latest['image_url'] != '']
                     temp_latest['nom_normalized'] = temp_latest['nom_artiste'].apply(normalize_name)
                     temp_latest = temp_latest.drop_duplicates('nom_normalized', keep='first')
                     
-                                        
                     top10_with_images = top10_with_images.merge(
-                        temp_latest[['nom_normalized', 'image_url']],
+                        temp_latest[['nom_normalized', 'image_url', 'url']],
                         on='nom_normalized',
                         how='left'
                     )
-                    
-                    matched = top10_with_images['image_url'].notna().sum()
-                    
-                
+
                 # Merge 2: artistes_df (fallback)
-                if 'image_url' not in top10_with_images.columns or top10_with_images['image_url'].isna().sum() > 0:
+                if 'image_url' not in top10_with_images.columns or top10_with_images['image_url'].isna().any():
                     if 'nom' in artistes_df.columns and 'image_url' in artistes_df.columns:
                         temp_artistes = artistes_df[['nom', 'image_url']].copy()
                         temp_artistes = temp_artistes.dropna(subset=['image_url'])
@@ -1987,23 +2168,21 @@ with tab6:
                         temp_artistes['nom_normalized'] = temp_artistes['nom'].apply(normalize_name)
                         temp_artistes = temp_artistes.drop_duplicates('nom_normalized', keep='first')
                         
-                        
-                        
+                        # Merge avec suffixes
                         top10_with_images = top10_with_images.merge(
                             temp_artistes[['nom_normalized', 'image_url']],
                             on='nom_normalized',
                             how='left',
-                            suffixes=('', '_artistes')
+                            suffixes=('', '_fallback')
                         )
                         
-                        if 'image_url_artistes' in top10_with_images.columns:
+                        # Remplir les images manquantes
+                        if 'image_url_fallback' in top10_with_images.columns:
                             if 'image_url' not in top10_with_images.columns:
-                                top10_with_images['image_url'] = top10_with_images['image_url_artistes']
+                                top10_with_images['image_url'] = top10_with_images['image_url_fallback']
                             else:
-                                top10_with_images['image_url'] = top10_with_images['image_url'].fillna(top10_with_images['image_url_artistes'])
-                            top10_with_images = top10_with_images.drop('image_url_artistes', axis=1)
-                        
-                        matched = top10_with_images['image_url'].notna().sum()
+                                top10_with_images['image_url'].fillna(top10_with_images['image_url_fallback'], inplace=True)
+                            top10_with_images.drop('image_url_fallback', axis=1, inplace=True)
                         
                 
                 # Grille 5 colonnes
@@ -2014,9 +2193,10 @@ with tab6:
                         with cols[col_idx]:
                             #  CASE À COCHER
                             is_checked = st.checkbox(
-                                "",
+                                "⭐",
                                 value=artist['nom'] in st.session_state.temp_interesses_artistes,
-                                key=f"check_pred_{row_idx}_{col_idx}_{artist['nom']}"
+                                key=f"check_pred_{row_idx}_{col_idx}_{artist['nom']}",
+                                label_visibility="collapsed"
                             )
                             
                             if is_checked and artist['nom'] not in st.session_state.temp_interesses_artistes:
@@ -2059,15 +2239,41 @@ with tab6:
                             display_name = artist_name[:18] + '...' if len(artist_name) > 18 else artist_name
                             st.markdown(f"<div style='text-align: center;'><strong>{display_name}</strong></div>", unsafe_allow_html=True)
                             st.caption(f"⭐ {artist['proba_star']:.1%}")
-                            
-                            # Bouton
-                            if st.button(
-                                " Voir évolution",
-                                key=f"pred_detail_{row_idx}_{col_idx}_{artist['nom']}",
-                                use_container_width=True
-                            ):
-                                st.session_state.selected_prediction_artist = artist['nom']
-                                st.rerun()
+
+                            # BOUTONS CÔTE À CÔTE
+                            col_ecouter_pred, col_evo_pred = st.columns(2)
+
+                            with col_ecouter_pred:
+                                # Chercher URL dans latest_metrics_df
+                                url_artiste = ""
+                                matching = latest_metrics_df[latest_metrics_df['nom_artiste'] == artist['nom']]
+                                if len(matching) > 0 and 'url' in matching.columns:
+                                    url_artiste = matching.iloc[0].get('url', '')
+                                
+                                if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
+                                    st.link_button(
+                                        "Ecouter",
+                                        str(url_artiste),
+                                        use_container_width=True
+                                    )
+                                else:
+                                    st.button(
+                                        "Ecouter",
+                                        disabled=True,
+                                        use_container_width=True,
+                                        key=f"disabled_pred_ecouter_{row_idx}_{col_idx}"
+                                    )
+
+                            with col_evo_pred:
+                                if st.button(
+                                    "Détails",
+                                    key=f"pred_detail_{row_idx}_{col_idx}_{artist['nom']}",
+                                    use_container_width=True
+                                ):
+                                    st.session_state.selected_prediction_artist = artist['nom']
+                                    st.session_state.go_to_evolution = True
+                                    st.session_state.active_tab = 3
+                                    st.rerun()
 
                 #  BOUTON VALIDATION (après la grille)
                 st.markdown("---")
@@ -2106,7 +2312,7 @@ with tab6:
             st.error(traceback.format_exc())
 
 # ==================== TAB 8: MON PROFIL ====================
-with tab8:
+elif st.session_state.active_page == "Mon Profil":
     st.markdown("## 👤 Mon Profil")
     
     col_user, col_logout = st.columns([3, 1])
@@ -2140,6 +2346,10 @@ with tab8:
         st.markdown("---")
         
         for idx, artiste_nom in enumerate(st.session_state.artistes_interesses):
+            # CRÉER UNE CLÉ UNIQUE basée sur nom + index
+            safe_nom = str(artiste_nom).replace(' ', '_').replace("'", '').replace('-', '_')[:30]
+            unique_id = f"{safe_nom}_{idx}"
+            
             artist_row = filtered_df[filtered_df['nom_artiste'] == artiste_nom]
             
             if len(artist_row) > 0:
@@ -2176,12 +2386,42 @@ with tab8:
                 
                 with col_actions:
                     st.write("")
-                    if st.button("Détails", key=f"profil_voir_{idx}", use_container_width=True):
+                    
+                    # URL de l'artiste
+                    url_artiste = artist.get('url', '')
+                    
+                    # Bouton Écouter
+                    if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
+                        st.link_button(
+                            "Ecouter",
+                            str(url_artiste),
+                            use_container_width=True
+                        )
+                    else:
+                        st.button(
+                            "Ecouter",
+                            disabled=True,
+                            use_container_width=True,
+                            key=f"profil_ecouter_disabled_{unique_id}"
+                        )
+                    
+                    # Bouton Détails
+                    if st.button(
+                        "Détails",
+                        key=f"profil_details_{unique_id}",
+                        use_container_width=True
+                    ):
                         st.session_state.selected_artist_evolution = artiste_nom
-                        st.session_state.redirect_to_evolution = True
+                        st.session_state.previous_page = "Mon Profil"
+                        st.session_state.go_to_evolution = True
                         st.rerun()
                     
-                    if st.button("🗑️ Retirer", key=f"profil_del_{idx}", use_container_width=True):
+                    # Bouton Retirer
+                    if st.button(
+                        "🗑️",
+                        key=f"profil_del_{unique_id}",
+                        use_container_width=True
+                    ):
                         st.session_state.artistes_interesses.remove(artiste_nom)
                         st.rerun()
                 
@@ -2192,10 +2432,11 @@ with tab8:
                     st.markdown(f"🎵 **{artiste_nom}**")
                     st.caption("(Non visible avec les filtres actuels)")
                 with col2:
-                    if st.button("🗑️ Retirer", key=f"profil_del_missing_{idx}", use_container_width=True):
+                    if st.button("🗑️ Retirer", key=f"profil_del_missing_{unique_id}", use_container_width=True):
                         st.session_state.artistes_interesses.remove(artiste_nom)
                         st.rerun()
                 st.markdown("---")
+                
 
 # Footer
 st.divider()

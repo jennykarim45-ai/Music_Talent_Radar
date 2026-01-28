@@ -1,104 +1,133 @@
+"""
+ml_prediction.py - Prédiction des futurs talents avec ML
+Utilise un modèle simple pour identifier les artistes à fort potentiel
+"""
+
 import pandas as pd
+import numpy as np
 import sqlite3
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 import warnings
 warnings.filterwarnings('ignore')
 
-DATABASE_PATH = "data/music_talent_radar_v2.db"
+DB_PATH = 'data/music_talent_radar_v2.db'
 
 def main():
-    print("Entrainement du modele ML...")
+    """Générer prédictions ML"""
+    print("GÉNÉRATION DES PRÉDICTIONS ML")
     
-    # Charger les donnees DEPUIS LA BASE DE DONNEES
-    conn = sqlite3.connect(DATABASE_PATH)
-    
-    query = """
-        SELECT 
-            a.nom,
-            a.genre,
-            a.source as plateforme,
-            m.fans_followers,
-            m.popularity,
-            m.score
-        FROM artistes a
-        INNER JOIN metriques_historique m ON a.id_unique = m.id_unique
-        WHERE m.date_collecte = (
-            SELECT MAX(date_collecte) FROM metriques_historique WHERE id_unique = a.id_unique
-        )
-    """
-    
-    df = pd.read_sql_query(query, conn)
-    conn.close()
-    
-    if len(df) == 0:
-        print("ERREUR: Aucune donnee disponible dans la base")
-        return
-    
-    print(f"OK: {len(df)} artistes charges depuis la base de donnees")
-    
-    # Features avec normalisation
-    df['popularity'] = df['popularity'].fillna(df['fans_followers'] / 1000)
-    df['engagement'] = df['popularity'] / (df['fans_followers'] / 1000)
-    df['engagement'] = df['engagement'].fillna(0).replace([float('inf'), float('-inf')], 0)
-    
-    # Ajouter feature ratio score/followers
-    df['score_per_follower'] = df['score'] / (df['fans_followers'] / 1000)
-    df['score_per_follower'] = df['score_per_follower'].fillna(0).replace([float('inf'), float('-inf')], 0)
-    
-    # Label : top 10% = potentiel star (au lieu de 30%)
-    threshold = df['score'].quantile(0.90)  # TOP 10% uniquement
-    df['is_star'] = (df['score'] >= threshold).astype(int)
-    
-    print(f"Seuil 'star': {threshold:.1f}")
-    print(f"{df['is_star'].sum()} artistes classes 'star' (top 10%)")
-    
-    # Preparer X et y avec plus de features
-    X = df[['fans_followers', 'popularity', 'engagement', 'score_per_follower']].fillna(0)
-    y = df['is_star']
-    
-    # Verifier qu'on a assez de donnees
-    if len(df) < 10:
-        print("ATTENTION: Pas assez de donnees pour entrainer le modele (minimum 10)")
-        return
-    
-    # Split
-    test_size = min(0.2, 5 / len(df))  # Au moins 5 exemples en test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-    
-    # Normalisation
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-    
-    # Modele avec regularisation forte pour eviter overfitting
-    model = LogisticRegression(
-        max_iter=1000, 
-        random_state=42,
-        C=0.1,  # Regularisation forte
-        class_weight='balanced'  # Equilibrer les classes
-    )
-    model.fit(X_train_scaled, y_train)
-    
-    # Score
-    score = model.score(X_test_scaled, y_test)
-    print(f"Precision du modele: {score:.2%}")
-    
-    # Predictions sur tout le dataset
-    X_all_scaled = scaler.transform(X)
-    df['proba_star'] = model.predict_proba(X_all_scaled)[:, 1]
-    
-    # Sauvegarder avec colonne 'followers' pour Streamlit
-    predictions = df[['nom', 'genre', 'plateforme', 'score', 'proba_star']].copy()
-    predictions['followers'] = df['fans_followers']
-    predictions = predictions.sort_values('proba_star', ascending=False)
-    predictions.to_csv('data/predictions_ml.csv', index=False, encoding='utf-8-sig')
-    
-    print(f"Predictions sauvegardees: data/predictions_ml.csv")
-    print(f"\nTop 5 artistes a fort potentiel:")
-    for idx, row in predictions.head(5).iterrows():
-        print(f"  - {row['nom']}: {row['proba_star']:.1%} (score: {row['score']:.1f}, {int(row['followers'])} followers)")
+    try:
+        # 1. Charger les données
+        conn = sqlite3.connect(DB_PATH)
+        
+        df = pd.read_sql_query("""
+            SELECT 
+                nom_artiste as nom,
+                plateforme,
+                genre,
+                fans_followers,
+                followers,
+                fans,
+                popularity,
+                score_potentiel,
+                nb_albums,
+                nb_releases_recentes
+            FROM metriques_historique
+            WHERE fans_followers > 0
+        """, conn)
+        
+        conn.close()
+        
+        if len(df) == 0:
+            print(" Aucune donnée dans la base")
+            return False
+        
+        print(f" {len(df)} artistes chargés")
+        
+        # 2. Préparer les features
+        df['followers'] = df['fans_followers'].fillna(0)
+        df['popularity'] = df['popularity'].fillna(df['popularity'].mean())
+        df['nb_albums'] = df['nb_albums'].fillna(0)
+        df['nb_releases_recentes'] = df['nb_releases_recentes'].fillna(0)
+        
+        # Créer target (star = score > 70)
+        df['is_star'] = (df['score_potentiel'] > 70).astype(int)
+        
+        # Features pour le modèle
+        feature_cols = ['followers', 'popularity', 'score_potentiel', 'nb_albums', 'nb_releases_recentes']
+        
+        # Vérifier que les colonnes existent
+        available_features = [col for col in feature_cols if col in df.columns]
+        
+        if len(available_features) < 3:
+            print(" Pas assez de features disponibles")
+            # Créer prédictions basiques sans ML
+            df['proba_star'] = df['score_potentiel'] / 100
+            predictions = df[['nom', 'plateforme', 'genre', 'followers', 'proba_star']].copy()
+            predictions.to_csv('data/predictions_ml.csv', index=False)
+            print(f" {len(predictions)} prédictions générées (mode basique)")
+            return True
+        
+        X = df[available_features].fillna(0)
+        y = df['is_star']
+        
+        # 3. Entraîner modèle simple
+        if len(y.unique()) < 2:
+            # Pas assez de variance - prédictions basiques
+            df['proba_star'] = df['score_potentiel'] / 100
+        else:
+            # Normaliser
+            scaler = StandardScaler()
+            X_scaled = scaler.fit_transform(X)
+            
+            # Modèle Random Forest simple
+            model = RandomForestClassifier(
+                n_estimators=50,
+                max_depth=5,
+                random_state=42,
+                n_jobs=-1
+            )
+            
+            model.fit(X_scaled, y)
+            
+            # Prédictions
+            probas = model.predict_proba(X_scaled)[:, 1]
+            df['proba_star'] = probas
+        
+        # 4. Sauvegarder
+        predictions = df[['nom', 'plateforme', 'genre', 'followers', 'proba_star']].copy()
+        predictions = predictions.sort_values('proba_star', ascending=False)
+        predictions.to_csv('data/predictions_ml.csv', index=False)
+        
+        print(f" {len(predictions)} prédictions générées")
+        
+        # Stats
+        stars_predicted = (predictions['proba_star'] > 0.5).sum()
+        high_potential = (predictions['proba_star'] > 0.3).sum()
+        
+        print(f"\n Statistiques:")
+        print(f"   Stars prédites (>50%): {stars_predicted}")
+        print(f"   Haut potentiel (>30%): {high_potential}")
+        print(f"   Probabilité moyenne: {predictions['proba_star'].mean():.1%}")
+        
+        return True
+        
+    except Exception as e:
+        print(f" Erreur: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # Créer fichier vide pour éviter erreurs
+        pd.DataFrame({
+            'nom': [],
+            'plateforme': [],
+            'genre': [],
+            'followers': [],
+            'proba_star': []
+        }).to_csv('data/predictions_ml.csv', index=False)
+        
+        return False
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

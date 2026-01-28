@@ -38,8 +38,8 @@
 
 L'application comporte **8 onglets** :
 
-1. **📊 VUE D'ENSEMBLE** - Statistiques globales
-2. **🌟 LES TOP** - Classements des meilleurs artistes
+1. **🏠 VUE D'ENSEMBLE** - Statistiques globales
+2. **🏆 LES TOP** - Classements des meilleurs artistes
 3. **🎤 LES ARTISTES** - Catalogue complet avec recherche
 4. **📈 ÉVOLUTION** - Suivi temporel détaillé
 5. **🔔 ALERTES** - Notifications importantes
@@ -451,7 +451,7 @@ Pour chaque artiste :
 
 ---
 
-## 🆘 Support et Assistance
+##  Support et Assistance
 
 ### En cas de problème
 
@@ -486,9 +486,9 @@ Pour toute question ou bug rencontré :
 -  **Machine Learning** (prédictions)
 -  **Interface intuitive** (dashboard)
 
-Vous disposez d'un avantage compétitif pour **découvrir les stars de demain** ! 🌟
+Vous disposez d'un avantage compétitif pour **découvrir les stars de demain** ! 
 
-**Bonne découverte musicale !** 🎵✨
+**Bonne découverte musicale !** 
 
 ---
 

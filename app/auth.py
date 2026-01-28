@@ -160,6 +160,9 @@ def public_page_about():
     
     # Tableau TRÈS COLORÉ
     st.markdown("""
+        <p style='margin-top: 15px; color: #B18E57; font-style: italic;'>
+        Note : Le score varie de 0 à 100 selon la position de l'artiste dans la fourchette cible.
+        </p>        
         <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.95); border-radius: 15px; overflow: hidden; margin: 1rem 0; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
             <thead>
                 <tr style="background: linear-gradient(135deg, #dc2626 0%, #9333ea 50%, #2563eb 100%);">
@@ -170,22 +173,22 @@ def public_page_about():
             </thead>
             <tbody>
                 <tr style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05)); border-bottom: 2px solid rgba(239, 68, 68, 0.3);">
-                    <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;">🎯 Audience</td>
+                    <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Audience</td>
                     <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;">40%</td>
-                    <td style="color: #e5e7eb; padding: 1rem;">Taille de la communauté (1k-60k fans)</td>
+                    <td style="color: #e5e7eb; padding: 1rem;">Taille de la communauté (200 - 40 000 fans)</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(251, 146, 60, 0.05)); border-bottom: 2px solid rgba(251, 146, 60, 0.3);">
-                    <td style="color: #fdba74; padding: 1rem; font-weight: 700; font-size: 1.05rem;">💬 Engagement</td>
+                    <td style="color: #fdba74; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Engagement</td>
                     <td style="color: #fdba74; padding: 1rem; font-weight: 700; font-size: 1.05rem;">30%</td>
                     <td style="color: #e5e7eb; padding: 1rem;">Interactions avec les fans</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)); border-bottom: 2px solid rgba(34, 197, 94, 0.3);">
-                    <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;">🔥 Récurrance</td>
+                    <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Récurrance</td>
                     <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;">20%</td>
                     <td style="color: #e5e7eb; padding: 1rem;">Régularité des sorties</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));">
-                    <td style="color: #93c5fd; padding: 1rem; font-weight: 700; font-size: 1.05rem;">📈 Influence</td>
+                    <td style="color: #93c5fd; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Influence</td>
                     <td style="color: #93c5fd; padding: 1rem; font-weight: 700; font-size: 1.05rem;">10%</td>
                     <td style="color: #e5e7eb; padding: 1rem;">Présence multi-plateforme</td>
                 </tr>
@@ -223,7 +226,7 @@ def public_page_about():
     
     col1, col2, col3 = st.columns([2, 1, 2])
     with col2:
-        if st.button("🔐 Connexion", key="btn_connexion", use_container_width=True):
+        if st.button("CONNEXION", key="btn_connexion", use_container_width=True):
             st.session_state.show_login = True
             st.rerun()
 
@@ -323,7 +326,7 @@ def login_form():
                 font-size: 2.5rem; 
                 font-weight: 900;
                 text-transform: uppercase;
-            ">🔐 CONNEXION</h1>
+            ">CONNEXION</h1>
         </div>
     """, unsafe_allow_html=True)
     
@@ -340,10 +343,10 @@ def login_form():
                     st.session_state.logged_in = True
                     st.session_state.username = username
                     st.session_state.show_login = False
-                    st.success("✅ Connexion réussie !")
+                    st.success(" Connexion réussie !")
                     st.rerun()
                 else:
-                    st.error("❌ Identifiants incorrects")
+                    st.error(" Identifiants incorrects")
         
         if st.button("← Retour", key="back_to_about"):
             st.session_state.show_login = False
