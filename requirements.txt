@@ -7,3 +7,4 @@ scikit-learn
 numpy
 matplotlib
 seaborn
+python-dotenv
