@@ -13,8 +13,30 @@ from datetime import datetime
 import time
 import re
 import unicodedata
-from dotenv import load_dotenv
-load_dotenv()
+import sys
+# Chargement optionnel du fichier .env (local uniquement)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print(" Variables d'environnement chargées depuis .env")
+except ImportError:
+    print(" Utilisation des variables d'environnement système (GitHub Actions)")
+    
+# Détection automatique du mode non-interactif
+IS_AUTO_MODE = (
+    '--auto' in sys.argv or 
+    '--force' in sys.argv or 
+    os.getenv('GITHUB_ACTIONS') == 'true' or
+    os.getenv('CI') == 'true'
+)
+
+if IS_AUTO_MODE:
+    print(" MODE AUTOMATIQUE ACTIVÉ (pas d'interaction utilisateur)")
+    
+    # Fonction pour remplacer tous les input()
+    def input(prompt=""):
+        print(f"{prompt} [AUTO: oui]")
+        return 'o'  # Toujours répondre 'oui'
 
 # ============================================================================
 # CONFIGURATION API
