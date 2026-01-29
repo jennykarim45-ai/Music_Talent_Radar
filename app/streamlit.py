@@ -495,7 +495,7 @@ except Exception as e:
     st.stop()
 
 # ==================== HEADER ====================
-col_logo, col_title = st.columns([1, 3])
+col_logo, col_title, col_logo2 = st.columns([1, 4, 1])
 
 with col_logo:
     logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
@@ -506,6 +506,10 @@ with col_title:
     st.markdown('<div class="main-header">JEK2 RECORDS</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>', unsafe_allow_html=True)
 
+with col_logo2:
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if os.path.isfile(logo_path):
+        st.image(logo_path, width=150)
 # ==================== SIDEBAR ====================
 with st.sidebar:
 
