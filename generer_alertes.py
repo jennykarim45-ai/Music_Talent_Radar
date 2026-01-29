@@ -7,7 +7,7 @@ import pandas as pd
 from datetime import datetime
 
 DB_PATH = 'data/music_talent_radar_v2.db'
-SEUIL_CROISSANCE = 5.0  # 5% minimum pour déclencher une alerte
+SEUIL_CROISSANCE = 2.0  # 2% minimum pour déclencher une alerte
 
 print(" GÉNÉRATION DES ALERTES AUTOMATIQUES v2.0\n")
 print("=" * 60)

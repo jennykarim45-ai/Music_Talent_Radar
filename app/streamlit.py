@@ -1087,13 +1087,13 @@ elif st.session_state.active_page == "Les artistes":
                             # Afficher le bouton
                             if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
                                 st.link_button(
-                                    "Ecouter",
+                                    "▶️",
                                     str(url_artiste),
                                     use_container_width=True
                                 )
                             else:
                                 st.button(
-                                    "Ecouter",
+                                    "▶️",
                                     disabled=True,
                                     use_container_width=True,
                                     key=f"disabled_ecouter_{start_idx}_{i}_{col_idx}"
@@ -1101,7 +1101,7 @@ elif st.session_state.active_page == "Les artistes":
 
                         with col_details:
                             if st.button(
-                                "Détails",
+                                "Infos",
                                 key=f"details_{start_idx}_{i}_{col_idx}",
                                 use_container_width=True
                             ):
@@ -1742,13 +1742,13 @@ elif st.session_state.active_page == "Alertes":
                 # Bouton Écouter
                 if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
                     st.link_button(
-                        "Ecouter",
+                        "▶️",
                         str(url_artiste),
                         use_container_width=True,
                     )
                 else:
                     st.button(
-                        "Ecouter",
+                        "▶️",
                         disabled=True,
                         use_container_width=True,
                         key=f"disabled_alerte_ecouter_{idx}"
@@ -1756,7 +1756,7 @@ elif st.session_state.active_page == "Alertes":
                 
                 # Bouton Détails
                 if st.button(
-                    "Détails",
+                    "Infos",
                     key=f"alerte_details_{idx}",
                     use_container_width=True
                 ):
@@ -2252,13 +2252,13 @@ elif st.session_state.active_page == "Prédictions":
                                 
                                 if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
                                     st.link_button(
-                                        "Ecouter",
+                                        "▶️",
                                         str(url_artiste),
                                         use_container_width=True
                                     )
                                 else:
                                     st.button(
-                                        "Ecouter",
+                                        "▶️",
                                         disabled=True,
                                         use_container_width=True,
                                         key=f"disabled_pred_ecouter_{row_idx}_{col_idx}"
@@ -2266,7 +2266,7 @@ elif st.session_state.active_page == "Prédictions":
 
                             with col_evo_pred:
                                 if st.button(
-                                    "Détails",
+                                    "Infos",
                                     key=f"pred_detail_{row_idx}_{col_idx}_{artist['nom']}",
                                     use_container_width=True
                                 ):
@@ -2393,13 +2393,13 @@ elif st.session_state.active_page == "Mon Profil":
                     # Bouton Écouter
                     if url_artiste and pd.notna(url_artiste) and str(url_artiste).strip() != '':
                         st.link_button(
-                            "Ecouter",
+                            "▶️",
                             str(url_artiste),
                             use_container_width=True
                         )
                     else:
                         st.button(
-                            "Ecouter",
+                            "▶️",
                             disabled=True,
                             use_container_width=True,
                             key=f"profil_ecouter_disabled_{unique_id}"
@@ -2407,7 +2407,7 @@ elif st.session_state.active_page == "Mon Profil":
                     
                     # Bouton Détails
                     if st.button(
-                        "Détails",
+                        "Infos",
                         key=f"profil_details_{unique_id}",
                         use_container_width=True
                     ):
