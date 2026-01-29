@@ -52,11 +52,11 @@ if 'go_to_evolution' not in st.session_state:
 # ==================== NAVIGATION ====================
 # Initialiser la page active
 if 'active_page' not in st.session_state:
-    st.session_state.active_page = "Vue d'ensemble"
+    st.session_state.active_page = "🏠 Vue d'ensemble"
 
 # SI DEMANDE DE NAVIGATION VERS ÉVOLUTION (AVEC RERUN!)
 if st.session_state.get('go_to_evolution', False):
-    st.session_state.active_page = "Évolution"
+    st.session_state.active_page = "📈 Évolution"
     st.session_state.go_to_evolution = False
     st.rerun()
 # ============= AUTHENTIFICATION =============
@@ -1106,7 +1106,7 @@ elif st.session_state.active_page == "🎤 Les artistes":
                                 use_container_width=True
                             ):
                                 st.session_state.selected_artist_evolution = artist['nom_artiste']
-                                st.session_state.previous_page = "Les artistes"
+                                st.session_state.previous_page = "🎤 Les artistes"
                                 st.session_state.go_to_evolution = True
                                 st.rerun()
 
@@ -1291,7 +1291,7 @@ elif st.session_state.active_page == "📈 Évolution":
                                 if st.session_state.temp_interesse_evolution:
                                     if st.session_state.temp_interesse_evolution not in st.session_state.artistes_interesses:
                                         st.session_state.artistes_interesses.append(st.session_state.temp_interesse_evolution)
-                                        st.success(f"✅ {st.session_state.temp_interesse_evolution} ajouté !")
+                                        st.success(f" {st.session_state.temp_interesse_evolution} ajouté !")
                                     else:
                                         st.info("Déjà dans vos artistes intéressés")
                                 else:
@@ -1484,7 +1484,7 @@ elif st.session_state.active_page == "📈 Évolution":
                                             if artiste not in st.session_state.artistes_interesses:
                                                 st.session_state.artistes_interesses.append(artiste)
                                         
-                                        st.success(f"✅ {len(st.session_state.temp_interesses_artistes)} artiste(s) similaire(s) ajouté(s) !")
+                                        st.success(f"{len(st.session_state.temp_interesses_artistes)} artiste(s) similaire(s) ajouté(s) !")
                                         st.session_state.temp_interesses_artistes = []
                                         time.sleep(1)
                                         st.rerun()
@@ -1674,7 +1674,7 @@ elif st.session_state.active_page == "🔔 Alertes":
             alertes_filtrees = alertes_filtrees.sort_values('type_alerte')
         
         # Affichage des alertes
-        st.markdown(f"### 📋 {len(alertes_filtrees)} alerte(s) affichée(s)")
+        st.markdown(f"###  {len(alertes_filtrees)} alerte(s) affichée(s)")
         
         for idx, alerte in alertes_filtrees.iterrows():
             # Déterminer la couleur selon le type
@@ -1761,7 +1761,7 @@ elif st.session_state.active_page == "🔔 Alertes":
                     use_container_width=True
                 ):
                     st.session_state.selected_artist_evolution = alerte['nom_artiste']
-                    st.session_state.previous_page = "Alertes"
+                    st.session_state.previous_page = "🔔 Alertes"
                     st.session_state.go_to_evolution = True
                     st.rerun()
                     
@@ -2412,7 +2412,7 @@ elif st.session_state.active_page == "👤 Mon Profil":
                         use_container_width=True
                     ):
                         st.session_state.selected_artist_evolution = artiste_nom
-                        st.session_state.previous_page = "Mon Profil"
+                        st.session_state.previous_page = "👤 Mon Profil"
                         st.session_state.go_to_evolution = True
                         st.rerun()
                     
