@@ -512,10 +512,18 @@ with st.sidebar:
     # Liste des pages
     pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
     
+    # Protection contre les noms de pages invalides
+    try:
+        current_index = pages.index(st.session_state.active_page)
+    except ValueError:
+        # Si la page n'existe plus, revenir à la première
+        current_index = 0
+        st.session_state.active_page = pages[0]
+
     page = st.radio(
         "",
         pages,
-        index=pages.index(st.session_state.active_page),
+        index=current_index,
         label_visibility="collapsed",
         key="nav_radio"
     )
