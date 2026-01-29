@@ -30,6 +30,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+import streamlit.components.v1 as components
+
+# Désactive les reruns automatiques sur certains événements
+if 'init' not in st.session_state:
+    st.session_state.init = True
+    
 # Initialiser les artistes intéressés dans session_state
 if 'artistes_interesses' not in st.session_state:
     st.session_state.artistes_interesses = []
@@ -252,7 +258,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=3600, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:
@@ -349,6 +355,46 @@ def load_data():
         import traceback
         st.error(traceback.format_exc())
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+# APRÈS la fonction load_data()
+
+@st.cache_data(ttl=3600)
+def get_latest_metrics_cached(metriques_df_json):
+    """Version cachée de get_latest_metrics"""
+    metriques_df = pd.read_json(metriques_df_json)
+    return get_latest_metrics(metriques_df)
+
+@st.cache_data(ttl=3600)
+def apply_filters(df, plateforme, genre, fans_cat, min_score, max_fans):
+    """Applique les filtres - CACHED"""
+    filtered = df.copy()
+    
+    # Exclure Electro-EDM
+    if 'genre' in filtered.columns:
+        filtered = filtered[filtered['genre'] != "Electro-EDM"]
+    
+    if plateforme != 'Tous':
+        filtered = filtered[filtered['plateforme'] == plateforme]
+    if genre != 'Tous':
+        filtered = filtered[filtered['genre'] == genre]
+    if fans_cat != 'Tous':
+        filtered = filtered[filtered['categorie_fans'] == fans_cat]
+    
+    filtered = filtered[filtered['score_potentiel'] >= min_score]
+    filtered = filtered[filtered['followers_total'] <= max_fans]
+    
+    return filtered.reset_index(drop=True)
+
+@st.cache_data(ttl=3600)
+def create_bar_chart(data, x, y, color, title):
+    """Crée un graphique Plotly - CACHED"""
+    fig = px.bar(data, x=x, y=y, color=color)
+    fig.update_layout(
+        plot_bgcolor=COLORS['bg_card'],
+        paper_bgcolor=COLORS['bg_card'],
+        font_color=COLORS['text'],
+        title=title
+    )
+    return fig
 
 def get_latest_metrics(metriques_df):
     """Récupère les dernières métriques par artiste/plateforme"""
@@ -535,7 +581,7 @@ with st.sidebar:
     # Mettre à jour seulement si l'utilisateur a cliqué
     if page != st.session_state.active_page:
         st.session_state.active_page = page
-        st.rerun()
+
     st.markdown("---")
     
     # Filtres
@@ -569,33 +615,15 @@ with st.sidebar:
     if os.path.isfile(logo_path):
         st.image(logo_path, width=200)
 # ==================== FILTRES ====================
-filtered_df = latest_metrics_df.copy().reset_index(drop=True)
+filtered_df = apply_filters(
+    latest_metrics_df,
+    selected_plateforme,
+    selected_genre,
+    selected_fans,
+    min_score,
+    max_fans
+)
 
-# Exclure Electro-EDM
-if 'genre' in filtered_df.columns and len(filtered_df) > 0:
-    try:
-        filtered_df = filtered_df.query('genre != "Electro-EDM"').reset_index(drop=True)
-    except:
-        mask = (filtered_df['genre'] != 'Electro-EDM').values
-        filtered_df = filtered_df[mask].copy().reset_index(drop=True)
-
-# Filtre Plateforme
-if selected_plateforme != 'Tous':
-    filtered_df = filtered_df[filtered_df['plateforme'] == selected_plateforme].reset_index(drop=True)
-
-# Filtre Genre
-if selected_genre != 'Tous':
-    filtered_df = filtered_df[filtered_df['genre'] == selected_genre].reset_index(drop=True)
-
-# Filtre Fans
-if selected_fans != 'Tous':
-    filtered_df = filtered_df[filtered_df['categorie_fans'] == selected_fans].reset_index(drop=True)
-
-# Filtre Score
-filtered_df = filtered_df[filtered_df['score_potentiel'] >= min_score].reset_index(drop=True)
-
-# Filtre Fans maximum  # 
-filtered_df = filtered_df[filtered_df['followers_total'] <= max_fans].reset_index(drop=True)
 
 # Top artistes
 top_df = filtered_df.sort_values('score_potentiel', ascending=False).reset_index(drop=True)
@@ -1011,13 +1039,13 @@ elif st.session_state.active_page == "Les artistes":
                 artistes_sorted = artistes_sorted.sort_values('followers_total', ascending=(ordre == "Croissant"))
             
             # PAGINATION
-            ITEMS_PER_PAGE = 50
+            ITEMS_PER_PAGE = 10
             total_artistes = len(artistes_sorted)
             total_pages = math.ceil(total_artistes / ITEMS_PER_PAGE)
             
             start_idx = (st.session_state.page_artistes - 1) * ITEMS_PER_PAGE
             end_idx = start_idx + ITEMS_PER_PAGE
-            page_artistes = artistes_sorted.iloc[start_idx:end_idx]
+            page_artistes = filtered_df.nlargest(ITEMS_PER_PAGE, 'score_potentiel')
             
             # AFFICHAGE DES ARTISTES
             for i in range(0, len(page_artistes), 5):
@@ -1496,7 +1524,7 @@ elif st.session_state.active_page == "Évolution":
                                             if artiste not in st.session_state.artistes_interesses:
                                                 st.session_state.artistes_interesses.append(artiste)
                                         
-                                        st.success(f"✅ {len(st.session_state.temp_interesses_artistes)} artiste(s) similaire(s) ajouté(s) !")
+                                        st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) similaire(s) ajouté(s) !")
                                         st.session_state.temp_interesses_artistes = []
                                         time.sleep(1)
                                         st.rerun()
@@ -1511,7 +1539,7 @@ elif st.session_state.active_page == "Évolution":
                             
                             for idx, (col, (_, artist)) in enumerate(zip(cols, similar_artists.iterrows())):
                                 with col:
-                                    # ✅ CASE À COCHER
+                                    #  CASE À COCHER
                                     is_checked_sim = st.checkbox(
                                         "⭐",
                                         value=artist['nom_artiste'] in st.session_state.temp_interesses_artistes,
@@ -1686,7 +1714,7 @@ elif st.session_state.active_page == "Alertes":
             alertes_filtrees = alertes_filtrees.sort_values('type_alerte')
         
         # Affichage des alertes
-        st.markdown(f"### 📋 {len(alertes_filtrees)} alerte(s) affichée(s)")
+        st.markdown(f"### {len(alertes_filtrees)} alerte(s) affichée(s)")
         
         for idx, alerte in alertes_filtrees.iterrows():
             # Déterminer la couleur selon le type
@@ -1877,7 +1905,7 @@ elif st.session_state.active_page == "A propos":
         de mon projet final à la <strong>Wild Code School</strong>.
         </p>
         <p>
-        🎹 <strong>Musicienne</strong> depuis l'enfance<br>
+        🎹 <strong>Parolière - Interprète - Pianiste </strong> depuis l'enfance<br>
         📊 <strong>Data Analyst</strong> en reconversion<br>
         🚀 <strong>Objectif</strong> : allier mes deux passions pour découvrir les talents de demain !
         </p>
@@ -1912,7 +1940,7 @@ elif st.session_state.active_page == "A propos":
         else:
             st.warning("Impossible de charger le fichier audio")
     else:
-        st.info(f"📁 Fichier audio non trouvé : {audio_path}")
+        st.info(f" Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 
     audio_path = os.path.join(BASE_DIR, "assets", "je_suis.m4a")
@@ -1934,7 +1962,7 @@ elif st.session_state.active_page == "A propos":
         else:
             st.warning("Impossible de charger le fichier audio")
     else:
-        st.info(f"📁 Fichier audio non trouvé : {audio_path}")
+        st.info(f"Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 # ==================== TAB 6: PRÉDICTIONS ====================
 elif st.session_state.active_page == "Prédictions":
