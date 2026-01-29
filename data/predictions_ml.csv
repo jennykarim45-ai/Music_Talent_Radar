@@ -1,16 +1,16 @@
 nom,plateforme,genre,followers,proba_star
 Vernis Rouge,Spotify,Pop,35116,1.0
 Bobbyezz,Spotify,Rap-HipHop-RnB,35972,1.0
-Lushe,Spotify,Rap-HipHop-RnB,34942,0.98
-HolyBrune,Spotify,Electro,39982,0.98
 Bleu Soleil,Spotify,Pop,37581,0.98
-La Plaie,Spotify,Rap-HipHop-RnB,38250,0.96
-Eloïz,Spotify,Pop,39744,0.96
+HolyBrune,Spotify,Electro,39982,0.98
+Lushe,Spotify,Rap-HipHop-RnB,34942,0.98
 WIXO & LA2S,Spotify,Rap-HipHop-RnB,34986,0.96
+Eloïz,Spotify,Pop,39744,0.96
+La Plaie,Spotify,Rap-HipHop-RnB,38250,0.96
 HMZ,Spotify,Rap-HipHop-RnB,32918,0.955
-Stavo,Spotify,Rap-HipHop-RnB,34794,0.94
 Jayel,Spotify,Rap-HipHop-RnB,36713,0.94
 Bianca Costa,Spotify,Rap-HipHop-RnB,32273,0.94
+Stavo,Spotify,Rap-HipHop-RnB,34794,0.94
 63OG,Spotify,Rap-HipHop-RnB,33287,0.94
 ZZ,Spotify,Rap-HipHop-RnB,27560,0.86
 Ino Casablanca,Spotify,Rap-HipHop-RnB,31589,0.84
@@ -18,36 +18,27 @@ Hulk,Spotify,Afrobeat-Amapiano,33116,0.075
 THÉA,Spotify,Pop,34877,0.06
 Lenaïg,Spotify,Pop,35185,0.04
 RDN,Spotify,Rap-HipHop-RnB,15549,0.02
-Diez,Spotify,Rap-HipHop-RnB,17109,0.02
-ANAÏS MVA,Spotify,Pop,34153,0.02
-2zg,Spotify,Rap-HipHop-RnB,28825,0.02
-Janie,Spotify,Pop,34962,0.02
-Noé Preszow,Spotify,Pop,35841,0.02
-Félix Radu,Spotify,Pop,32509,0.02
 MC YOSHI,Spotify,Afrobeat-Amapiano,17644,0.02
+ANAÏS MVA,Spotify,Pop,34153,0.02
+Félix Radu,Spotify,Pop,32509,0.02
 2 Mètres,Spotify,Rap-HipHop-RnB,16938,0.02
+Diez,Spotify,Rap-HipHop-RnB,17109,0.02
+Noé Preszow,Spotify,Pop,35841,0.02
+Janie,Spotify,Pop,34962,0.02
+2zg,Spotify,Rap-HipHop-RnB,28825,0.02
 Huntrill,Spotify,Rap-HipHop-RnB,24031,0.02
 Metah,Spotify,Rap-HipHop-RnB,22073,0.005
-Жека,Deezer,Indie-Alternative,11268,0.0
-La Clinique,Deezer,Pop,6186,0.0
-SG Lewis,Deezer,Jazz-Soul,24637,0.0
-Leck,Deezer,Pop,18784,0.0
-Cheba Souad,Deezer,Pop,27113,0.0
-Mazouzi,Deezer,Pop,1771,0.0
-Cheb Hasni Sghir,Deezer,Pop,1817,0.0
 Nakk,Deezer,Pop,16668,0.0
-Justin Hurwitz,Deezer,Jazz-Soul,23843,0.0
 Escobar Macson,Deezer,Pop,6598,0.0
+La Clinique,Deezer,Pop,6186,0.0
+Cheb Hasni Sghir,Deezer,Pop,1817,0.0
 Rai,Deezer,Pop,5813,0.0
-Steel Alive,Spotify,Electro,2842,0.0
 P.R2B,Spotify,Electro,17634,0.0
-Ismatricule,Spotify,Electro,11332,0.0
-Bomel,Spotify,Electro,10021,0.0
-Ryan Gosling,Deezer,Jazz-Soul,19437,0.0
-Leon Thomas,Deezer,Pop,12157,0.0
+Mazouzi,Deezer,Pop,1771,0.0
+Cheba Souad,Deezer,Pop,27113,0.0
+Leck,Deezer,Pop,18784,0.0
 Nakk Mendosa,Deezer,Pop,19106,0.0
-Chase Matthew,Deezer,Pop,4127,0.0
-Emma Stone,Deezer,Jazz-Soul,8388,0.0
+Leon Thomas,Deezer,Pop,12157,0.0
 Ravyn Lenae,Deezer,Pop,17362,0.0
 Megan Moroney,Deezer,Pop,7534,0.0
 Ella Langley,Deezer,Pop,11429,0.0
@@ -57,249 +48,258 @@ Keshi,Deezer,Pop,28205,0.0
 Role Model,Deezer,Pop,18965,0.0
 Lauren Alaina,Deezer,Pop,13817,0.0
 Riley Green,Deezer,Pop,25704,0.0
-HEDIA,Deezer,Jazz-Soul,1474,0.0
 Hardy,Deezer,Pop,29437,0.0
 Michael Marcagi,Deezer,Pop,2382,0.0
-Solano,Deezer,Jazz-Soul,6009,0.0
-Leita,Spotify,Electro,222,0.0
-ELOI,Spotify,Electro,24906,0.0
-Hedges,Spotify,Jazz-Soul,309,0.0
+Steel Alive,Spotify,Electro,2842,0.0
 FRENCHGRL,Spotify,Electro,5138,0.0
 SOROSORO,Spotify,Jazz-Soul,2297,0.0
-Palm Trees,Deezer,Jazz-Soul,1023,0.0
 Gus,Spotify,Jazz-Soul,7362,0.0
 NESSA,Spotify,Jazz-Soul,489,0.0
 Annie Lalalove,Spotify,Jazz-Soul,6044,0.0
+Hedges,Spotify,Jazz-Soul,309,0.0
 Malter,Spotify,Jazz-Soul,2464,0.0
-JLOW,Spotify,Electro,8805,0.0
 Elle Valenci,Spotify,Jazz-Soul,24585,0.0
-Laurent Bardainne,Spotify,Jazz-Soul,16988,0.0
+Maïa,Spotify,Electro,9180,0.0
 Tigre d'Eau Douce,Spotify,Jazz-Soul,4857,0.0
 Little Angel en Français,Spotify,Jazz-Soul,2327,0.0
 Oasis de musique jazz relaxant,Spotify,Jazz-Soul,217,0.0
 Jazz douce musique d'ambiance,Spotify,Jazz-Soul,3190,0.0
-Mec touché,Spotify,Electro,1457,0.0
-Ødyssey,Deezer,Jazz-Soul,13721,0.0
-French Accent,Spotify,Electro,548,0.0
-sheng,Spotify,Electro,11341,0.0
-KELSON,Spotify,Electro,11817,0.0
-Adamé,Spotify,Electro,9997,0.0
-F200,Spotify,Electro,2589,0.0
-John Alenca,Spotify,Electro,1374,0.0
-Huko,Deezer,Jazz-Soul,1162,0.0
-Owen River,Spotify,Electro,2579,0.0
-Oordaya,Spotify,Electro,4529,0.0
-Zonmai,Spotify,Electro,2040,0.0
-Jazir,Spotify,Electro,1330,0.0
-Mauvais djo,Spotify,Electro,14733,0.0
-Boris & Moris,Spotify,Electro,1518,0.0
-Maïa,Spotify,Electro,9180,0.0
+The Jazzbastards,Spotify,Jazz-Soul,781,0.0
+tn_490,Spotify,Indie-Alternative,21529,0.0
+Camille Jansen,Spotify,Rock-Metal,20716,0.0
+Nicola Sirkis,Spotify,Rock-Metal,2340,0.0
+Laurent Bardainne,Spotify,Jazz-Soul,16988,0.0
+Ismatricule,Spotify,Electro,11332,0.0
+Bomel,Spotify,Electro,10021,0.0
+Leita,Spotify,Electro,222,0.0
+ELOI,Spotify,Electro,24906,0.0
+JLOW,Spotify,Electro,8805,0.0
 AZKA,Spotify,Electro,8125,0.0
+Boris & Moris,Spotify,Electro,1518,0.0
+Mauvais djo,Spotify,Electro,14733,0.0
+Mec touché,Spotify,Electro,1457,0.0
+Zonmai,Spotify,Electro,2040,0.0
+Oordaya,Spotify,Electro,4529,0.0
+Owen River,Spotify,Electro,2579,0.0
+John Alenca,Spotify,Electro,1374,0.0
+F200,Spotify,Electro,2589,0.0
+Adamé,Spotify,Electro,9997,0.0
+KELSON,Spotify,Electro,11817,0.0
+sheng,Spotify,Electro,11341,0.0
+French Accent,Spotify,Electro,548,0.0
+Jazir,Spotify,Electro,1330,0.0
+Emma Stone,Deezer,Jazz-Soul,8388,0.0
+HEDIA,Deezer,Jazz-Soul,1474,0.0
 Starley,Deezer,Jazz-Soul,28047,0.0
 FRENSHIP,Deezer,Jazz-Soul,8034,0.0
-Wolkenfrei,Deezer,Indie-Alternative,2838,0.0
-Aztec Camera,Deezer,Rock-Metal,5765,0.0
-Yin Yin,Deezer,Rock-Metal,4117,0.0
-Arma Jackson,Deezer,Rock-Metal,32673,0.0
-Katie Tupper,Deezer,Rock-Metal,827,0.0
-Precious Pepala,Deezer,Rock-Metal,1737,0.0
-The Format,Deezer,Rock-Metal,4315,0.0
-Airod,Deezer,Rock-Metal,5312,0.0
-Jasper Tygner,Deezer,Rock-Metal,521,0.0
-Snail Mail,Deezer,Rock-Metal,10286,0.0
-Avalon Emerson,Deezer,Rock-Metal,2818,0.0
-Asco,Deezer,Rock-Metal,225,0.0
-Heaven 17,Deezer,Rock-Metal,10166,0.0
-Jaromír Nohavica,Deezer,Indie-Alternative,20470,0.0
-Big Country,Deezer,Rock-Metal,15207,0.0
-A Flock of Seagulls,Deezer,Rock-Metal,23310,0.0
-Thompson Twins,Deezer,Rock-Metal,21379,0.0
-Honey Dijon,Deezer,Rock-Metal,19452,0.0
-P.M. Dawn,Deezer,Rock-Metal,2474,0.0
-İlhan Şeşen,Deezer,Indie-Alternative,2523,0.0
-Howard Jones,Deezer,Rock-Metal,17059,0.0
-Prefab Sprout,Deezer,Rock-Metal,24400,0.0
-Gary Numan,Deezer,Rock-Metal,29743,0.0
-Philip Oakey,Deezer,Rock-Metal,667,0.0
-Ultravox,Deezer,Rock-Metal,39047,0.0
-БумеR,Deezer,Indie-Alternative,8769,0.0
-Berksan,Deezer,Indie-Alternative,8706,0.0
-Gary Numan / Tubeway Army,Deezer,Rock-Metal,2125,0.0
-Johnyboy,Deezer,Indie-Alternative,3180,0.0
-Adrian von Ziegler,Deezer,Indie-Alternative,27129,0.0
-Gorillaz featuring De La Soul,Deezer,Rock-Metal,2215,0.0
-Toploader,Deezer,Rock-Metal,6131,0.0
-KickFlip,Deezer,Rock-Metal,5127,0.0
-Riordan,Deezer,Rock-Metal,372,0.0
 Emma Bale,Deezer,Jazz-Soul,8422,0.0
-Morgan Seatree,Deezer,Rock-Metal,1364,0.0
-Parmalee,Deezer,Pop,7030,0.0
-Zach Top,Deezer,Pop,4577,0.0
-Kevin Powers,Deezer,Pop,366,0.0
-Disco Lines,Deezer,Pop,5004,0.0
 Amel Zen,Deezer,Jazz-Soul,6735,0.0
 Winston Mcanuff,Deezer,Jazz-Soul,23760,0.0
-BigXthaPlug,Deezer,Pop,37296,0.0
-Dasha,Deezer,Pop,22702,0.0
 Grandmaster Flash & The Furious Five,Deezer,Jazz-Soul,23324,0.0
-Charlotte Plank,Deezer,Rock-Metal,2549,0.0
-tn_490,Spotify,Indie-Alternative,21529,0.0
-oskar med k,Deezer,Rock-Metal,2210,0.0
-Seyi Vibez,Deezer,Rock-Metal,20088,0.0
-Rivo,Deezer,Rock-Metal,3133,0.0
-The Paper Kites,Deezer,Rock-Metal,38894,0.0
-Todiefor,Deezer,Rock-Metal,10495,0.0
-Tinlicker,Deezer,Rock-Metal,23170,0.0
-Maesic,Deezer,Rock-Metal,827,0.0
-Rules,Deezer,Rock-Metal,518,0.0
-Barry Can’t Swim,Deezer,Rock-Metal,3492,0.0
-Bag Raiders,Deezer,Rock-Metal,30563,0.0
-Agnes,Deezer,Rock-Metal,12575,0.0
-Holly Humberstone,Deezer,Rock-Metal,10451,0.0
-Searows,Deezer,Rock-Metal,2907,0.0
-Victor Thompson,Deezer,Rock-Metal,12303,0.0
-Franky Rizardo,Deezer,Rock-Metal,12674,0.0
-ZEROBASEONE,Deezer,Rock-Metal,29552,0.0
-Christian Löffler,Deezer,Rock-Metal,29144,0.0
-Emily Makis,Deezer,Rock-Metal,1769,0.0
-Samm Henshaw,Deezer,Rock-Metal,32100,0.0
-The Jazzbastards,Spotify,Jazz-Soul,781,0.0
-Lé Will & Deuspi,Spotify,Afrobeat-Amapiano,22732,0.0
-Camille Jansen,Spotify,Rock-Metal,20716,0.0
-91 All Stars,Spotify,Rap-HipHop-RnB,27865,0.0
-Vatokrem 91,Spotify,Rap-HipHop-RnB,604,0.0
-Batata 914,Spotify,Rap-HipHop-RnB,467,0.0
-Will Power 912,Spotify,Rap-HipHop-RnB,954,0.0
-91,Spotify,Rap-HipHop-RnB,1147,0.0
-Santos 912,Spotify,Rap-HipHop-RnB,8580,0.0
-DL91 Era,Spotify,Rap-HipHop-RnB,18175,0.0
-Lille Fucker,Spotify,Rap-HipHop-RnB,2537,0.0
-Konieur,Spotify,Rap-HipHop-RnB,20760,0.0
-YLR,Spotify,Rap-HipHop-RnB,7380,0.0
-LILLE,Spotify,Rap-HipHop-RnB,1349,0.0
-Lille Saus,Spotify,Rap-HipHop-RnB,1952,0.0
-G-Kill,Spotify,Rap-HipHop-RnB,404,0.0
-lille Caesar,Spotify,Rap-HipHop-RnB,13415,0.0
-RD,Spotify,Rap-HipHop-RnB,13637,0.0
-T913,Spotify,Rap-HipHop-RnB,2505,0.0
-SPACE914,Spotify,Rap-HipHop-RnB,7789,0.0
-Rap2Rue,Spotify,Rap-HipHop-RnB,315,0.0
-Terco92,Spotify,Rap-HipHop-RnB,35165,0.0
-Snoobie92,Spotify,Rap-HipHop-RnB,19851,0.0
-KLN 93,Spotify,Rap-HipHop-RnB,31714,0.0
-Kasper 939,Spotify,Rap-HipHop-RnB,14338,0.0
-Sp93,Spotify,Rap-HipHop-RnB,20421,0.0
-VALO93,Spotify,Rap-HipHop-RnB,360,0.0
-Izzy93,Spotify,Rap-HipHop-RnB,22721,0.0
-Crie 930,Spotify,Rap-HipHop-RnB,13188,0.0
-93PUNX,Spotify,Rap-HipHop-RnB,7876,0.0
-Jaxxon936,Spotify,Rap-HipHop-RnB,795,0.0
-G93,Spotify,Rap-HipHop-RnB,959,0.0
-Sáez'93,Spotify,Rap-HipHop-RnB,2414,0.0
-IN.94,Spotify,Rap-HipHop-RnB,7361,0.0
-94fatso,Spotify,Rap-HipHop-RnB,10642,0.0
-ZABUZA,Spotify,Rap-HipHop-RnB,11373,0.0
-Jäde,Spotify,Rap-HipHop-RnB,22251,0.0
-Nicola Sirkis,Spotify,Rock-Metal,2340,0.0
-Voleur pnz,Spotify,Rap-HipHop-RnB,8165,0.0
-Gabi,Spotify,Rap-HipHop-RnB,4960,0.0
-Aj Ness,Spotify,Rap-HipHop-RnB,421,0.0
-LJK,Spotify,Rap-HipHop-RnB,10553,0.0
+Kevin Powers,Deezer,Pop,366,0.0
+Thompson Twins,Deezer,Rock-Metal,21379,0.0
+Aztec Camera,Deezer,Rock-Metal,5765,0.0
+A Flock of Seagulls,Deezer,Rock-Metal,23310,0.0
+Big Country,Deezer,Rock-Metal,15207,0.0
+Heaven 17,Deezer,Rock-Metal,10166,0.0
+Asco,Deezer,Rock-Metal,225,0.0
+Avalon Emerson,Deezer,Rock-Metal,2818,0.0
+Snail Mail,Deezer,Rock-Metal,10286,0.0
+P.M. Dawn,Deezer,Rock-Metal,2474,0.0
 Esteban,Spotify,Rap-HipHop-RnB,11195,0.0
 West Bank Records,Spotify,Rap-HipHop-RnB,21315,0.0
 La Zona,Spotify,Rap-HipHop-RnB,982,0.0
+Voleur pnz,Spotify,Rap-HipHop-RnB,8165,0.0
 Lawskie,Spotify,Rap-HipHop-RnB,3264,0.0
-Zitoune,Spotify,Rap-HipHop-RnB,20445,0.0
 Mitra,Spotify,Rap-HipHop-RnB,300,0.0
 Lulu Van Trapp,Spotify,Rap-HipHop-RnB,4601,0.0
 Tookie2Beriz,Spotify,Rap-HipHop-RnB,1535,0.0
-Solda,Spotify,Rap-HipHop-RnB,10194,0.0
+Justin Hurwitz,Deezer,Jazz-Soul,23843,0.0
 Ryflo,Spotify,Rap-HipHop-RnB,24176,0.0
 Vayn,Spotify,Rap-HipHop-RnB,6585,0.0
-2sick,Spotify,Rap-HipHop-RnB,337,0.0
-Narco G,Spotify,Rap-HipHop-RnB,630,0.0
-Emlo,Spotify,Rap-HipHop-RnB,1743,0.0
-Coco061,Spotify,Rap-HipHop-RnB,6372,0.0
-Lyan Paris,Spotify,Rap-HipHop-RnB,7123,0.0
-Walk in Paris,Spotify,Rap-HipHop-RnB,5235,0.0
-Ici c'est Paris,Spotify,Rap-HipHop-RnB,2041,0.0
-Gabriel Paris,Spotify,Rap-HipHop-RnB,4267,0.0
-Paris Richards,Spotify,Rap-HipHop-RnB,1538,0.0
-Cheb Aymen Parisien,Spotify,Rap-HipHop-RnB,27470,0.0
-Marseille Capitale du Rap,Spotify,Rap-HipHop-RnB,1722,0.0
-Lagui,Spotify,Rap-HipHop-RnB,9089,0.0
-Cyclope l'Héritier,Spotify,Rap-HipHop-RnB,13877,0.0
-Bendo,Spotify,Rap-HipHop-RnB,5604,0.0
-LRB490,Spotify,Rap-HipHop-RnB,17505,0.0
-Tedax Max,Spotify,Rap-HipHop-RnB,15612,0.0
+Richard Grey,Deezer,Jazz-Soul,4065,0.0
+Palm Trees,Deezer,Jazz-Soul,1023,0.0
+Ødyssey,Deezer,Jazz-Soul,13721,0.0
+Huko,Deezer,Jazz-Soul,1162,0.0
+Solano,Deezer,Jazz-Soul,6009,0.0
+SG Lewis,Deezer,Jazz-Soul,24637,0.0
+Ryan Gosling,Deezer,Jazz-Soul,19437,0.0
+Solda,Spotify,Rap-HipHop-RnB,10194,0.0
+Bag Raiders,Deezer,Rock-Metal,30563,0.0
+Barry Can’t Swim,Deezer,Rock-Metal,3492,0.0
+Rules,Deezer,Rock-Metal,518,0.0
+Maesic,Deezer,Rock-Metal,827,0.0
+Tinlicker,Deezer,Rock-Metal,23170,0.0
+The Paper Kites,Deezer,Rock-Metal,38894,0.0
+Morgan Seatree,Deezer,Rock-Metal,1364,0.0
+Rivo,Deezer,Rock-Metal,3133,0.0
+Jasper Tygner,Deezer,Rock-Metal,521,0.0
+oskar med k,Deezer,Rock-Metal,2210,0.0
+Charlotte Plank,Deezer,Rock-Metal,2549,0.0
+Dasha,Deezer,Pop,22702,0.0
+BigXthaPlug,Deezer,Pop,37296,0.0
+Disco Lines,Deezer,Pop,5004,0.0
+Charles Ludig,Spotify,Rock-Metal,1492,0.0
+Zach Top,Deezer,Pop,4577,0.0
+Parmalee,Deezer,Pop,7030,0.0
+Chase Matthew,Deezer,Pop,4127,0.0
+Seyi Vibez,Deezer,Rock-Metal,20088,0.0
+Airod,Deezer,Rock-Metal,5312,0.0
+The Format,Deezer,Rock-Metal,4315,0.0
+Precious Pepala,Deezer,Rock-Metal,1737,0.0
+Katie Tupper,Deezer,Rock-Metal,827,0.0
+Arma Jackson,Deezer,Rock-Metal,32673,0.0
+Yin Yin,Deezer,Rock-Metal,4117,0.0
+KickFlip,Deezer,Rock-Metal,5127,0.0
+Honey Dijon,Deezer,Rock-Metal,19452,0.0
+Agnes,Deezer,Rock-Metal,12575,0.0
+Todiefor,Deezer,Rock-Metal,10495,0.0
+Samm Henshaw,Deezer,Rock-Metal,32100,0.0
+Emily Makis,Deezer,Rock-Metal,1769,0.0
+Christian Löffler,Deezer,Rock-Metal,29144,0.0
+ZEROBASEONE,Deezer,Rock-Metal,29552,0.0
+Franky Rizardo,Deezer,Rock-Metal,12674,0.0
+Victor Thompson,Deezer,Rock-Metal,12303,0.0
+Searows,Deezer,Rock-Metal,2907,0.0
+Holly Humberstone,Deezer,Rock-Metal,10451,0.0
+Riordan,Deezer,Rock-Metal,372,0.0
+91,Spotify,Rap-HipHop-RnB,1147,0.0
+Santos 912,Spotify,Rap-HipHop-RnB,8580,0.0
+DL91 Era,Spotify,Rap-HipHop-RnB,18175,0.0
+91 All Stars,Spotify,Rap-HipHop-RnB,27865,0.0
+Lille Fucker,Spotify,Rap-HipHop-RnB,2537,0.0
+YLR,Spotify,Rap-HipHop-RnB,7380,0.0
+LILLE,Spotify,Rap-HipHop-RnB,1349,0.0
+Foxii,Spotify,Afrobeat-Amapiano,967,0.0
+G-Kill,Spotify,Rap-HipHop-RnB,404,0.0
+lille Caesar,Spotify,Rap-HipHop-RnB,13415,0.0
+RD,Spotify,Rap-HipHop-RnB,13637,0.0
+ZABUZA,Spotify,Rap-HipHop-RnB,11373,0.0
+Konieur,Spotify,Rap-HipHop-RnB,20760,0.0
+Jäde,Spotify,Rap-HipHop-RnB,22251,0.0
+Zitoune,Spotify,Rap-HipHop-RnB,20445,0.0
 RDR,Spotify,Rap-HipHop-RnB,4711,0.0
-949PAYA$o,Spotify,Rap-HipHop-RnB,32084,0.0
-949_creeper,Spotify,Rap-HipHop-RnB,21840,0.0
-Karma 94,Spotify,Rap-HipHop-RnB,6556,0.0
-Zaka Lavista,Spotify,Afrobeat-Amapiano,1568,0.0
-Yanishi,Spotify,Afrobeat-Amapiano,721,0.0
-Fouzia,Spotify,Afrobeat-Amapiano,5285,0.0
+Lille Saus,Spotify,Rap-HipHop-RnB,1952,0.0
+Sáez'93,Spotify,Rap-HipHop-RnB,2414,0.0
+G93,Spotify,Rap-HipHop-RnB,959,0.0
+Jaxxon936,Spotify,Rap-HipHop-RnB,795,0.0
+93PUNX,Spotify,Rap-HipHop-RnB,7876,0.0
+Crie 930,Spotify,Rap-HipHop-RnB,13188,0.0
+Izzy93,Spotify,Rap-HipHop-RnB,22721,0.0
+VALO93,Spotify,Rap-HipHop-RnB,360,0.0
+Sp93,Spotify,Rap-HipHop-RnB,20421,0.0
+Will Power 912,Spotify,Rap-HipHop-RnB,954,0.0
+KLN 93,Spotify,Rap-HipHop-RnB,31714,0.0
+Snoobie92,Spotify,Rap-HipHop-RnB,19851,0.0
+Terco92,Spotify,Rap-HipHop-RnB,35165,0.0
+Rap2Rue,Spotify,Rap-HipHop-RnB,315,0.0
+SPACE914,Spotify,Rap-HipHop-RnB,7789,0.0
+T913,Spotify,Rap-HipHop-RnB,2505,0.0
+Vatokrem 91,Spotify,Rap-HipHop-RnB,604,0.0
+Batata 914,Spotify,Rap-HipHop-RnB,467,0.0
+Kasper 939,Spotify,Rap-HipHop-RnB,14338,0.0
+Jaromír Nohavica,Deezer,Indie-Alternative,20470,0.0
+İlhan Şeşen,Deezer,Indie-Alternative,2523,0.0
+БумеR,Deezer,Indie-Alternative,8769,0.0
+Berksan,Deezer,Indie-Alternative,8706,0.0
+Johnyboy,Deezer,Indie-Alternative,3180,0.0
+Adrian von Ziegler,Deezer,Indie-Alternative,27129,0.0
+Жека,Deezer,Indie-Alternative,11268,0.0
+Tedax Max,Spotify,Rap-HipHop-RnB,15612,0.0
+Toploader,Deezer,Rock-Metal,6131,0.0
+Gorillaz featuring De La Soul,Deezer,Rock-Metal,2215,0.0
+Gary Numan / Tubeway Army,Deezer,Rock-Metal,2125,0.0
+Ultravox,Deezer,Rock-Metal,39047,0.0
+Philip Oakey,Deezer,Rock-Metal,667,0.0
+Gary Numan,Deezer,Rock-Metal,29743,0.0
+Prefab Sprout,Deezer,Rock-Metal,24400,0.0
+Howard Jones,Deezer,Rock-Metal,17059,0.0
+Wolkenfrei,Deezer,Indie-Alternative,2838,0.0
+LRB490,Spotify,Rap-HipHop-RnB,17505,0.0
+Bendo,Spotify,Rap-HipHop-RnB,5604,0.0
+Cyclope l'Héritier,Spotify,Rap-HipHop-RnB,13877,0.0
+Lagui,Spotify,Rap-HipHop-RnB,9089,0.0
+Marseille Capitale du Rap,Spotify,Rap-HipHop-RnB,1722,0.0
+Cheb Aymen Parisien,Spotify,Rap-HipHop-RnB,27470,0.0
+Paris Richards,Spotify,Rap-HipHop-RnB,1538,0.0
+Gabriel Paris,Spotify,Rap-HipHop-RnB,4267,0.0
+LJK,Spotify,Rap-HipHop-RnB,10553,0.0
+Walk in Paris,Spotify,Rap-HipHop-RnB,5235,0.0
+Lyan Paris,Spotify,Rap-HipHop-RnB,7123,0.0
+Coco061,Spotify,Rap-HipHop-RnB,6372,0.0
+Emlo,Spotify,Rap-HipHop-RnB,1743,0.0
+Narco G,Spotify,Rap-HipHop-RnB,630,0.0
+2sick,Spotify,Rap-HipHop-RnB,337,0.0
+Gabi,Spotify,Rap-HipHop-RnB,4960,0.0
+Aj Ness,Spotify,Rap-HipHop-RnB,421,0.0
+Ici c'est Paris,Spotify,Rap-HipHop-RnB,2041,0.0
 Mack H.D,Spotify,Afrobeat-Amapiano,21731,0.0
 SLK,Spotify,Afrobeat-Amapiano,29653,0.0
 Rambo goyard,Spotify,Afrobeat-Amapiano,12578,0.0
 Amapiano,Spotify,Afrobeat-Amapiano,26847,0.0
+Zaka Lavista,Spotify,Afrobeat-Amapiano,1568,0.0
 Onset Music Group,Spotify,Afrobeat-Amapiano,19213,0.0
-94brizzy,Spotify,Rap-HipHop-RnB,9769,0.0
 Thisizlondon,Spotify,Afrobeat-Amapiano,9861,0.0
-Ashvma,Spotify,Afrobeat-Amapiano,11031,0.0
+IN.94,Spotify,Rap-HipHop-RnB,7361,0.0
 Shayne,Spotify,Afrobeat-Amapiano,28774,0.0
 Shad Hottaboy,Spotify,Afrobeat-Amapiano,5255,0.0
 XVI,Spotify,Afrobeat-Amapiano,3636,0.0
 Boumidjal X,Spotify,Afrobeat-Amapiano,1897,0.0
-Vanou,Spotify,Afrobeat-Amapiano,1077,0.0
-Kamelon Officiel,Spotify,Afrobeat-Amapiano,13426,0.0
-KGS,Spotify,Afrobeat-Amapiano,1674,0.0
-K-Rosif,Spotify,Afrobeat-Amapiano,8468,0.0
-Jahlys,Spotify,Afrobeat-Amapiano,7996,0.0
-Foxii,Spotify,Afrobeat-Amapiano,967,0.0
-WEB,Spotify,Rock-Metal,15042,0.0
-Rocket,Spotify,Rock-Metal,1284,0.0
-Rocket Mike,Spotify,Rock-Metal,985,0.0
-KO KO MO,Spotify,Rock-Metal,30688,0.0
-Copycat,Spotify,Rock-Metal,4422,0.0
-L'Ordre Des Aventuriers,Spotify,Rock-Metal,1430,0.0
-Revnoir,Spotify,Rock-Metal,28679,0.0
-David Castello-Lopes,Spotify,Rock-Metal,15962,0.0
-Simia,Spotify,Rock-Metal,7601,0.0
-Ana Moreau,Spotify,Rock-Metal,4924,0.0
-Charles Ludig,Spotify,Rock-Metal,1492,0.0
 Danilo,Spotify,Afrobeat-Amapiano,7867,0.0
 wilsko,Spotify,Afrobeat-Amapiano,15070,0.0
 Harley,Spotify,Afrobeat-Amapiano,20067,0.0
-Haley James Scott,Spotify,Pop,9690,0.0
-Rallye,Spotify,Rap-HipHop-RnB,2411,0.0
-Jamso,Spotify,Rap-HipHop-RnB,13790,0.0
-S2,Spotify,Rap-HipHop-RnB,18579,0.0
-Molière l'opéra urbain,Spotify,Rap-HipHop-RnB,24438,0.0
-Amaury,Spotify,Pop,1336,0.0
-Esmée,Spotify,Pop,6621,0.0
-Laura Ferré,Spotify,Pop,14665,0.0
-RORI,Spotify,Pop,21983,0.0
-Ebony,Spotify,Pop,28879,0.0
-St Graal,Spotify,Pop,28129,0.0
-Zaoui,Spotify,Pop,25980,0.0
-Poppy Fusée,Spotify,Pop,6122,0.0
-Coline Rio,Spotify,Pop,29582,0.0
-Astral Bakers,Spotify,Pop,4278,0.0
-MC Salo,Spotify,Pop,2129,0.0
 Dounia Jari,Spotify,Afrobeat-Amapiano,5463,0.0
-Braeker,Spotify,Pop,29667,0.0
-Dolo Tonight,Spotify,Pop,9969,0.0
-TheFrenchKris,Spotify,Pop,8806,0.0
-Nour,Spotify,Pop,38062,0.0
-DAYSY,Spotify,Pop,9220,0.0
-Allan,Spotify,Pop,16144,0.0
-Ève,Spotify,Pop,10240,0.0
-Neaj,Spotify,Afrobeat-Amapiano,2459,0.0
-King Luca,Spotify,Afrobeat-Amapiano,6648,0.0
-Sons de la Nature Projet France,Spotify,Afrobeat-Amapiano,719,0.0
-Bruzer,Spotify,Afrobeat-Amapiano,4047,0.0
-Ilo Navahy,Spotify,Afrobeat-Amapiano,1154,0.0
-Doosko Niafo,Spotify,Afrobeat-Amapiano,4795,0.0
+Ashvma,Spotify,Afrobeat-Amapiano,11031,0.0
+Ana Moreau,Spotify,Rock-Metal,4924,0.0
+Simia,Spotify,Rock-Metal,7601,0.0
+David Castello-Lopes,Spotify,Rock-Metal,15962,0.0
+Revnoir,Spotify,Rock-Metal,28679,0.0
+L'Ordre Des Aventuriers,Spotify,Rock-Metal,1430,0.0
+Copycat,Spotify,Rock-Metal,4422,0.0
+KO KO MO,Spotify,Rock-Metal,30688,0.0
+Rocket Mike,Spotify,Rock-Metal,985,0.0
+Fouzia,Spotify,Afrobeat-Amapiano,5285,0.0
+WEB,Spotify,Rock-Metal,15042,0.0
+Lé Will & Deuspi,Spotify,Afrobeat-Amapiano,22732,0.0
+Jahlys,Spotify,Afrobeat-Amapiano,7996,0.0
+K-Rosif,Spotify,Afrobeat-Amapiano,8468,0.0
+KGS,Spotify,Afrobeat-Amapiano,1674,0.0
+Kamelon Officiel,Spotify,Afrobeat-Amapiano,13426,0.0
+Vanou,Spotify,Afrobeat-Amapiano,1077,0.0
+Yanishi,Spotify,Afrobeat-Amapiano,721,0.0
+Rocket,Spotify,Rock-Metal,1284,0.0
+Zaoui,Spotify,Pop,25980,0.0
+St Graal,Spotify,Pop,28129,0.0
+Ebony,Spotify,Pop,28879,0.0
+RORI,Spotify,Pop,21983,0.0
+Laura Ferré,Spotify,Pop,14665,0.0
+Esmée,Spotify,Pop,6621,0.0
+Amaury,Spotify,Pop,1336,0.0
 Dk2fois,Spotify,Afrobeat-Amapiano,21797,0.0
-Richard Grey,Deezer,Jazz-Soul,4065,0.0
+S2,Spotify,Rap-HipHop-RnB,18579,0.0
+Jamso,Spotify,Rap-HipHop-RnB,13790,0.0
+Rallye,Spotify,Rap-HipHop-RnB,2411,0.0
+94brizzy,Spotify,Rap-HipHop-RnB,9769,0.0
+Karma 94,Spotify,Rap-HipHop-RnB,6556,0.0
+949_creeper,Spotify,Rap-HipHop-RnB,21840,0.0
+949PAYA$o,Spotify,Rap-HipHop-RnB,32084,0.0
+94fatso,Spotify,Rap-HipHop-RnB,10642,0.0
+Molière l'opéra urbain,Spotify,Rap-HipHop-RnB,24438,0.0
+Doosko Niafo,Spotify,Afrobeat-Amapiano,4795,0.0
+Ilo Navahy,Spotify,Afrobeat-Amapiano,1154,0.0
+Bruzer,Spotify,Afrobeat-Amapiano,4047,0.0
+Sons de la Nature Projet France,Spotify,Afrobeat-Amapiano,719,0.0
+King Luca,Spotify,Afrobeat-Amapiano,6648,0.0
+Neaj,Spotify,Afrobeat-Amapiano,2459,0.0
+Ève,Spotify,Pop,10240,0.0
+Allan,Spotify,Pop,16144,0.0
+Poppy Fusée,Spotify,Pop,6122,0.0
+Nour,Spotify,Pop,38062,0.0
+TheFrenchKris,Spotify,Pop,8806,0.0
+Dolo Tonight,Spotify,Pop,9969,0.0
+Braeker,Spotify,Pop,29667,0.0
+MC Salo,Spotify,Pop,2129,0.0
+Haley James Scott,Spotify,Pop,9690,0.0
+Astral Bakers,Spotify,Pop,4278,0.0
+Coline Rio,Spotify,Pop,29582,0.0
+DAYSY,Spotify,Pop,9220,0.0
