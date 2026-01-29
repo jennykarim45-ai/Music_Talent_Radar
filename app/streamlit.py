@@ -510,7 +510,7 @@ with col_title:
 with st.sidebar:
 
     # Liste des pages
-    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
+    pages = ["🏠 Vue d'ensemble", "🏆 Les Tops", " 🎤 Les artistes", " 📈 Évolution", "🔔 Alertes", "🔮 Prédictions", "ℹ️ A propos", "👤 Mon Profil"]
     
     page = st.radio(
         "",
@@ -684,7 +684,7 @@ if 'artiste_selectionne' not in st.session_state:
     st.session_state['artiste_selectionne'] = None
 
 # ==================== TAB 1: VUE D'ENSEMBLE ====================
-if st.session_state.active_page == "Vue d'ensemble":
+if st.session_state.active_page == "🏠 Vue d'ensemble":
     st.markdown("## 🏠 Vue d'ensemble")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
@@ -824,7 +824,7 @@ if st.session_state.active_page == "Vue d'ensemble":
                 st.info("Aucun artiste Spotify avec ces filtres")
 
 # ==================== TAB 2: LES TOP ====================
-elif st.session_state.active_page == "Les Tops":
+elif st.session_state.active_page == "🏆 Les Tops":
     st.markdown("## 🏆 Les Tops")
         
     if len(top_df) > 0:
@@ -953,7 +953,7 @@ elif st.session_state.active_page == "Les Tops":
         st.info("Aucun artiste disponible")
 
 # ==================== TAB 3: LES ARTISTES ====================
-elif st.session_state.active_page == "Les artistes":
+elif st.session_state.active_page == "🎤 Les artistes":
     st.markdown("## 🎤 Les Artistes")
     
     if len(filtered_df) > 0:
@@ -1175,7 +1175,7 @@ elif st.session_state.active_page == "Les artistes":
         st.info("Aucun artiste disponible")
 
 # ==================== TAB 4: EVOLUTION ====================
-elif st.session_state.active_page == "Évolution":
+elif st.session_state.active_page == "📈 Évolution":
     st.markdown("## 📈 Évolution")
     
         # BOUTON RETOUR
@@ -1552,7 +1552,7 @@ elif st.session_state.active_page == "Évolution":
         st.info("Aucune donnée disponible")
 
 # ==================== TAB 5: ALERTES ====================
-elif st.session_state.active_page == "Alertes":
+elif st.session_state.active_page == "🔔 Alertes":
     st.markdown("## 🔔 Alertes")
     
     if alertes_df.empty:
@@ -1793,7 +1793,7 @@ elif st.session_state.active_page == "Alertes":
                     st.error(f" Erreur : {e}")
 
 # ==================== TAB 7: À PROPOS ====================
-elif st.session_state.active_page == "A propos":
+elif st.session_state.active_page == "ℹ️ A propos":
     st.markdown("## ℹ️ À Propos")
     
     col1, col2 = st.columns([2, 1])
@@ -1925,7 +1925,7 @@ elif st.session_state.active_page == "A propos":
         st.info(f"📁 Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 # ==================== TAB 6: PRÉDICTIONS ====================
-elif st.session_state.active_page == "Prédictions":
+elif st.session_state.active_page == "🔮 Prédictions":
     st.markdown("## 🔮 Prédictions")
     
     #  SI UN ARTISTE EST SÉLECTIONNÉ, AFFICHER SON ÉVOLUTION
@@ -2312,7 +2312,7 @@ elif st.session_state.active_page == "Prédictions":
             st.error(traceback.format_exc())
 
 # ==================== TAB 8: MON PROFIL ====================
-elif st.session_state.active_page == "Mon Profil":
+elif st.session_state.active_page == "👤 Mon Profil":
     st.markdown("## 👤 Mon Profil")
     
     col_user, col_logout = st.columns([3, 1])
