@@ -1917,9 +1917,34 @@ elif st.session_state.active_page == "A propos":
     <h4 style="color: {COLORS['accent3']}; font-weight: 700;">🎹 MES OEUVRES MUSICALES</h4>
     <p style="color: {COLORS['text']}; font-size: 1.05rem;">
     En parallèle de mon parcours en data, j'écris et je chante mes propres chansons'. 
+    Ayant très peu de moyen, j'utilise un microphone basique, Audacity et Bandlab.
     Découvrez mes créations musicales :
     </p>
     """, unsafe_allow_html=True)
+    
+    audio_path = os.path.join(BASE_DIR, "assets", "Princesse_Licorne.m4a")
+    if os.path.isfile(audio_path):
+        st.markdown(f"""
+        <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
+        🎵 Princesse Licorne
+        </p>
+        """, unsafe_allow_html=True)
+        
+        audio_base64 = get_base64_image(audio_path)
+        if audio_base64:
+            st.markdown(f"""
+                <audio controls style="width: 100%; margin-bottom: 1.5rem;">
+                    <source src="data:audio/mp4;base64,{audio_base64}" type="audio/mp4">
+                    Votre navigateur ne supporte pas la lecture audio.
+                </audio>
+            """, unsafe_allow_html=True)
+        else:
+            st.warning("Impossible de charger le fichier audio")
+    else:
+        st.info(f" Fichier audio non trouvé : {audio_path}")
+        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
+    
+    
     
     audio_path = os.path.join(BASE_DIR, "assets", "ma_famille.m4a")
     if os.path.isfile(audio_path):
@@ -2369,7 +2394,7 @@ elif st.session_state.active_page == "Mon Profil":
     st.markdown("### ⭐ Mes Artistes")
     
     if len(st.session_state.artistes_interesses) == 0:
-        st.info(" Aucun artiste ajouté pour le moment. Explorez les pages 'Les Top', 'Les Artistes' ou 'Évolution' pour ajouter des artistes à votre sélection !")
+        st.info(" Aucun artiste ajouté pour le moment. Explorez les pages 'Les Tops', 'Les Artistes' ou 'Évolution' pour ajouter des artistes à votre sélection !")
     else:
         artistes_data = latest_metrics_df[latest_metrics_df['nom_artiste'].isin(st.session_state.artistes_interesses)]
         
