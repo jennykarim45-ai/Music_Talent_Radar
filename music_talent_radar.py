@@ -620,7 +620,7 @@ def importer_en_base():
         # TOUJOURS synchroniser (pas seulement si vide)
         print(f" Synchronisation de metriques_historique (actuellement {count_avant} lignes)...")
         
-        cursor.execute("DELETE FROM metriques_historique") # (au début)
+        # cursor.execute("DELETE FROM metriques_historique")
             
             #  DÉFINIR LES VARIABLES 
         date_now = datetime.now().strftime('%Y-%m-%d')
