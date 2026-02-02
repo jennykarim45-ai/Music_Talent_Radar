@@ -617,55 +617,55 @@ def importer_en_base():
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
         count_avant = cursor.fetchone()[0]
         
-        if count_avant == 0:
-            print(" Table vide, remplissage depuis CSV...")
-            
-            # cursor.execute("DELETE FROM metriques_historique")
+        # TOUJOURS synchroniser (pas seulement si vide)
+        print(f" Synchronisation de metriques_historique (actuellement {count_avant} lignes)...")
+        
+        cursor.execute("DELETE FROM metriques_historique") # (au début)
             
             #  DÉFINIR LES VARIABLES 
-            date_now = datetime.now().strftime('%Y-%m-%d')
-            count_inserted = 0
+        date_now = datetime.now().strftime('%Y-%m-%d')
+        count_inserted = 0
             
             #  SPOTIFY 
-            if os.path.exists('data/spotify_filtered.csv'):
-                spotify_df = pd.read_csv('data/spotify_filtered.csv')
+        if os.path.exists('data/spotify_filtered.csv'):
+            spotify_df = pd.read_csv('data/spotify_filtered.csv')
                 
-                for _, row in spotify_df.iterrows():
-                    id_unique = f"{row['nom'].lower().strip()}_spotify"
-                    genre_mappe = row.get('categorie', mapper_genre(row.get('genres', '')))
+            for _, row in spotify_df.iterrows():
+                id_unique = f"{row['nom'].lower().strip()}_spotify"
+                genre_mappe = row.get('categorie', mapper_genre(row.get('genres', '')))
                     
-                    try:
-                        cursor.execute("""
-                            INSERT INTO metriques_historique (
-                                id_unique, nom_artiste, source, plateforme, genre,
-                                fans_followers, followers, fans, popularity,
-                                score_potentiel, score, date_collecte, url, image_url,
-                                nb_albums, nb_releases_recentes
-                            )
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        """, (
-                            id_unique,
-                            row['nom'],
-                            'Spotify',
-                            'Spotify',
-                            genre_mappe,
-                            int(row.get('followers', 0)),
-                            int(row.get('followers', 0)),
-                            None,
-                            int(row.get('popularity', 0)),
-                            0,
-                            0,
-                            date_now,
-                            row.get('url_spotify', ''),
-                            row.get('image_url', ''),
-                            int(row.get('nb_albums', 0)),
-                            int(row.get('nb_releases_recentes', 0))
-                        ))
+                try:
+                    cursor.execute("""
+                        INSERT INTO metriques_historique (
+                            id_unique, nom_artiste, source, plateforme, genre,
+                            fans_followers, followers, fans, popularity,
+                            score_potentiel, score, date_collecte, url, image_url,
+                            nb_albums, nb_releases_recentes
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        id_unique,
+                        row['nom'],
+                        'Spotify',
+                        'Spotify',
+                        genre_mappe,
+                        int(row.get('followers', 0)),
+                        int(row.get('followers', 0)),
+                        None,
+                        int(row.get('popularity', 0)),
+                        0,
+                        0,
+                        date_now,
+                        row.get('url_spotify', ''),
+                        row.get('image_url', ''),
+                        int(row.get('nb_albums', 0)),
+                        int(row.get('nb_releases_recentes', 0))
+                    ))
                         
-                        count_inserted += 1
+                    count_inserted += 1
                         
-                    except Exception as e:
-                        print(f"⚠️ {row['nom']}: {e}")
+                except Exception as e:
+                    print(f"⚠️ {row['nom']}: {e}")
             
             # DEEZER 
             if os.path.exists('data/deezer_filtered.csv'):
