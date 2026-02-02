@@ -620,7 +620,7 @@ def importer_en_base():
         if count_avant == 0:
             print(" Table vide, remplissage depuis CSV...")
             
-            # cursor.execute("DELETE FROM metriques_historique")
+            cursor.execute("DELETE FROM metriques_historique")
             
             #  DÉFINIR LES VARIABLES 
             date_now = datetime.now().strftime('%Y-%m-%d')
