@@ -59,7 +59,7 @@ alertes_a_inserer = []
 
 metriques_df = metriques_df.loc[:, ~metriques_df.columns.duplicated()]
 
-for artiste in metriques_df['nom_artiste'].dropna().unique():
+for artiste in metriques_df['nom_artiste'].dropna().unique:
     artist_data = metriques_df[metriques_df['nom_artiste'] == artiste].copy()
     
     if len(artist_data) < 2:
