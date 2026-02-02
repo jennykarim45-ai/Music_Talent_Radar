@@ -1922,7 +1922,7 @@ elif st.session_state.active_page == "A propos":
     </p>
     """, unsafe_allow_html=True)
     
-    audio_path = os.path.join(BASE_DIR, "assets", "Licorne.m4a")
+    audio_path = os.path.join(BASE_DIR, "assets", "Princesse_Licorne.m4a")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
