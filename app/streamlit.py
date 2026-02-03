@@ -605,7 +605,7 @@ with st.sidebar:
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
     categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-20k)', 'Moyen (20k-30k)', 'Large (30k-40k)']
-    max_fans = st.slider("👥 Followers/Fans maximum", 1000, 40000, 40000, 1000)
+    max_fans = st.slider("👥 Followers/Fans maximum", 200, 40000, 40000, 500)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
