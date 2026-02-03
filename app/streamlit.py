@@ -490,7 +490,7 @@ try:
                         url = matching.iloc[0].get('url_spotify', matching.iloc[0].get('url_deezer', ''))
                     
                     if url and pd.notna(url):
-                        latest_metrics_df.at[idx, 'url'] = url
+                        latest_metrics_df.at[idx, 'url'] = url # type: ignore
         
         print(f" {latest_metrics_df['url'].notna().sum()} URLs ajoutées")
 
@@ -515,7 +515,7 @@ try:
                         url = matching.iloc[0].get('url_spotify', matching.iloc[0].get('url_deezer', ''))
                     
                     if url and pd.notna(url):
-                        metriques_df.at[idx, 'url'] = url
+                        metriques_df.at[idx, 'url'] = url # type: ignore
         
         print(f" {metriques_df['url'].notna().sum()} URLs ajoutées à metriques_df")
     
@@ -605,7 +605,7 @@ with st.sidebar:
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
     categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-20k)', 'Moyen (20k-30k)', 'Large (30k-40k)']
-    max_fans = st.slider("👥 Followers/Fans maximum", 200, 40000, 40000, 500)
+    max_fans = st.slider("👥 Followers/Fans maximum", 200, 40000, 40000, 1000)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
@@ -1905,7 +1905,7 @@ elif st.session_state.active_page == "A propos":
         de mon projet final à la <strong>Wild Code School</strong>.
         </p>
         <p>
-        🎹 <strong>Parolière - Interprète - Pianiste </strong> depuis l'enfance<br>
+        🎹 <strong>Parolière - Interprète - Pianiste </strong><br>
         📊 <strong>Data Analyst</strong> en reconversion<br>
         🚀 <strong>Objectif</strong> : allier mes deux passions pour découvrir les talents de demain !
         </p>
