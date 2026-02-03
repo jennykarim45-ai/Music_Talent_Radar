@@ -667,52 +667,50 @@ def importer_en_base():
                 except Exception as e:
                     print(f"⚠️ {row['nom']}: {e}")
             
-            # DEEZER 
-            if os.path.exists('data/deezer_filtered.csv'):
-                deezer_df = pd.read_csv('data/deezer_filtered.csv')
+        # DEEZER 
+        if os.path.exists('data/deezer_filtered.csv'):
+            deezer_df = pd.read_csv('data/deezer_filtered.csv')
                 
-                for _, row in deezer_df.iterrows():
-                    id_unique = f"{row['nom'].lower().strip()}_deezer"
-                    genre_deezer = row.get('categorie', 'Autre')
+            for _, row in deezer_df.iterrows():
+                id_unique = f"{row['nom'].lower().strip()}_deezer"
+                genre_deezer = row.get('categorie', 'Autre')
                     
-                    try:
-                        cursor.execute("""
-                            INSERT INTO metriques_historique (
-                                id_unique, nom_artiste, source, plateforme, genre,
-                                fans_followers, followers, fans, popularity,
-                                score_potentiel, score, date_collecte, url, image_url,
-                                nb_albums, nb_releases_recentes
-                            )
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        """, (
-                            id_unique,
-                            row['nom'],
-                            'Deezer',
-                            'Deezer',
-                            genre_deezer,
-                            int(row.get('fans', 0)),
-                            None,
-                            int(row.get('fans', 0)),
-                            None,
-                            0,
-                            0,
-                            date_now,
-                            row.get('url_deezer', ''),
-                            row.get('image_url', ''),
-                            int(row.get('nb_albums', 0)),
-                            int(row.get('nb_releases_recentes', 0))
-                        ))
+                try:
+                    cursor.execute("""
+                        INSERT INTO metriques_historique (
+                            id_unique, nom_artiste, source, plateforme, genre,
+                            fans_followers, followers, fans, popularity,
+                            score_potentiel, score, date_collecte, url, image_url,
+                            nb_albums, nb_releases_recentes
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        id_unique,
+                        row['nom'],
+                        'Deezer',
+                        'Deezer',
+                        genre_deezer,
+                        int(row.get('fans', 0)),
+                        None,
+                        int(row.get('fans', 0)),
+                        None,
+                        0,
+                        0,
+                        date_now,
+                        row.get('url_deezer', ''),
+                        row.get('image_url', ''),
+                        int(row.get('nb_albums', 0)),
+                        int(row.get('nb_releases_recentes', 0))
+                    ))
                         
-                        count_inserted += 1
+                    count_inserted += 1
                         
-                    except Exception as e:
-                        print(f" {row['nom']}: {e}")
+                except Exception as e:
+                    print(f" {row['nom']}: {e}")
             
-            conn.commit()
-            print(f" {count_inserted} artistes copiés dans metriques_historique")
+        conn.commit()
+        print(f" {count_inserted} artistes copiés dans metriques_historique")
             
-        else:
-            print(f" metriques_historique déjà remplie ({count_avant} lignes)")
         
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
         count_final = cursor.fetchone()[0]
@@ -725,7 +723,8 @@ def importer_en_base():
         print(f" Erreur synchronisation : {e}")
         import traceback
         traceback.print_exc()
-
+        
+    conn.close()
     return True
 
 # ============================================================================
