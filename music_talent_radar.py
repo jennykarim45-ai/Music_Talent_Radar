@@ -511,7 +511,7 @@ def verifier_et_ajouter_colonnes_recurrence(cursor, conn):
 
 def importer_en_base():
     """Importer données filtrées en base"""
-    print(" MODULE 4 : IMPORT EN BASE DE DONNÉES")
+    print("✅ MODULE 4 : IMPORT EN BASE DE DONNÉES")
     
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -570,6 +570,7 @@ def importer_en_base():
     
     verifier_et_ajouter_colonne_date_maj(cursor, conn)
     verifier_et_ajouter_colonnes_recurrence(cursor, conn)
+    
     count = 0
     
     # Importer Spotify dans artistes
@@ -586,9 +587,7 @@ def importer_en_base():
             """, (id_unique, row['nom'], 'Spotify', categorie,
                 row.get('image_url', ''), row['url_spotify'], datetime.now().strftime('%Y-%m-%d')))
             count += 1
-        print(f"Spotify: {len(spotify_df)} artistes")
-        
-
+        print(f"✅ Spotify: {len(spotify_df)} artistes importés")
     
     # Importer Deezer dans artistes
     if os.path.exists('data/deezer_filtered.csv'):
@@ -604,36 +603,39 @@ def importer_en_base():
             """, (id_unique, row['nom'], 'Deezer', categorie,
                 row.get('image_url', ''), row['url_deezer'], datetime.now().strftime('%Y-%m-%d')))
             count += 1
-        print(f" Deezer: {len(deezer_df)} artistes")
+        print(f"✅ Deezer: {len(deezer_df)} artistes importés")
     
     conn.commit()
+    print(f"\n✅ Total: {count} artistes importés dans table 'artistes'")
     
-    print(f"\n {count} artistes importés")
-    
+    # ========================================================================
     # SYNCHRONISATION metriques_historique
-    print("\n Synchronisation de metriques_historique...")
-
+    # ========================================================================
+    print("\n📊 Synchronisation de metriques_historique...")
+    
     try:
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
         count_avant = cursor.fetchone()[0]
         
-        # TOUJOURS synchroniser (pas seulement si vide)
-        print(f" Synchronisation de metriques_historique (actuellement {count_avant} lignes)...")
+        print(f"   État actuel: {count_avant} lignes")
         
+        # ❌ NE PLUS JAMAIS SUPPRIMER L'HISTORIQUE !
         # cursor.execute("DELETE FROM metriques_historique")
-            
-            #  DÉFINIR LES VARIABLES 
+        
+        # Date d'aujourd'hui
         date_now = datetime.now().strftime('%Y-%m-%d')
         count_inserted = 0
-            
-            #  SPOTIFY 
+        
+        # ====================================================================
+        # INSERTION SPOTIFY
+        # ====================================================================
         if os.path.exists('data/spotify_filtered.csv'):
             spotify_df = pd.read_csv('data/spotify_filtered.csv')
-                
+            
             for _, row in spotify_df.iterrows():
                 id_unique = f"{row['nom'].lower().strip()}_spotify"
                 genre_mappe = row.get('categorie', mapper_genre(row.get('genres', '')))
-                    
+                
                 try:
                     cursor.execute("""
                         INSERT INTO metriques_historique (
@@ -661,20 +663,22 @@ def importer_en_base():
                         int(row.get('nb_albums', 0)),
                         int(row.get('nb_releases_recentes', 0))
                     ))
-                        
+                    
                     count_inserted += 1
-                        
+                    
                 except Exception as e:
-                    print(f"⚠️ {row['nom']}: {e}")
-            
-        # DEEZER 
+                    print(f"   ⚠️  Spotify - {row['nom']}: {e}")
+        
+        # ====================================================================
+        # INSERTION DEEZER
+        # ====================================================================
         if os.path.exists('data/deezer_filtered.csv'):
             deezer_df = pd.read_csv('data/deezer_filtered.csv')
-                
+            
             for _, row in deezer_df.iterrows():
                 id_unique = f"{row['nom'].lower().strip()}_deezer"
                 genre_deezer = row.get('categorie', 'Autre')
-                    
+                
                 try:
                     cursor.execute("""
                         INSERT INTO metriques_historique (
@@ -702,28 +706,28 @@ def importer_en_base():
                         int(row.get('nb_albums', 0)),
                         int(row.get('nb_releases_recentes', 0))
                     ))
-                        
+                    
                     count_inserted += 1
-                        
+                    
                 except Exception as e:
-                    print(f" {row['nom']}: {e}")
-            
+                    print(f"   ⚠️  Deezer - {row['nom']}: {e}")
+        
+        # ====================================================================
+        # COMMIT ET VÉRIFICATION
+        # ====================================================================
         conn.commit()
-        print(f" {count_inserted} artistes copiés dans metriques_historique")
-            
         
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
         count_final = cursor.fetchone()[0]
         
-        print(f"Vérification finale : {count_final} métriques dans la base")
-        
-        conn.close()
+        print(f"   ✅ {count_inserted} nouvelles lignes insérées")
+        print(f"   📊 Total dans la base: {count_final} métriques")
         
     except Exception as e:
-        print(f" Erreur synchronisation : {e}")
+        print(f"   ❌ Erreur synchronisation: {e}")
         import traceback
         traceback.print_exc()
-        
+    
     conn.close()
     return True
 
