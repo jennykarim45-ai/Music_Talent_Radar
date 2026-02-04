@@ -55,15 +55,42 @@ if 'selected_artist_evolution' not in st.session_state:
 if 'go_to_evolution' not in st.session_state:
     st.session_state.go_to_evolution = False
 
-# ==================== NAVIGATION ====================
-# Initialiser la page active
+# ==================== NAVIGATION - VERSION CORRIGÉE ====================
+# Au début du fichier, après les imports
+
+# Initialiser la page active (UNE SEULE FOIS)
 if 'active_page' not in st.session_state:
     st.session_state.active_page = "Vue d'ensemble"
 
-# SI DEMANDE DE NAVIGATION VERS ÉVOLUTION (AVEC RERUN!)
+# Gérer les demandes de navigation AVANT le reste
 if st.session_state.get('go_to_evolution', False):
     st.session_state.active_page = "Évolution"
     st.session_state.go_to_evolution = False
+
+# ============= SIDEBAR =============
+with st.sidebar:
+    # Liste des pages
+    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
+    
+    # Trouver l'index de la page active
+    try:
+        current_index = pages.index(st.session_state.active_page)
+    except:
+        current_index = 0
+        st.session_state.active_page = pages[0]
+    
+    # Radio sans callback
+    selected_page = st.radio(
+        "",
+        pages,
+        index=current_index,
+        label_visibility="collapsed"
+    )
+    
+    #  Mettre à jour UNIQUEMENT si différent
+    if selected_page != st.session_state.active_page:
+        st.session_state.active_page = selected_page
+        st.rerun()  
 
 # ============= AUTHENTIFICATION =============
 if not auth.require_authentication(): # type: ignore
