@@ -64,7 +64,7 @@ if 'active_page' not in st.session_state:
 if st.session_state.get('go_to_evolution', False):
     st.session_state.active_page = "Évolution"
     st.session_state.go_to_evolution = False
-    st.rerun()
+
 # ============= AUTHENTIFICATION =============
 if not auth.require_authentication(): # type: ignore
     if st.session_state.get('show_login', False):
@@ -258,7 +258,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=300, show_spinner="Chargement des données...")
+@st.cache_data(ttl=600, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:
@@ -558,18 +558,16 @@ with col_logo2:
         st.image(logo_path, width=150)
 # ==================== SIDEBAR ====================
 with st.sidebar:
-
     # Liste des pages
     pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
     
     # Protection contre les noms de pages invalides
-    try:
-        current_index = pages.index(st.session_state.active_page)
-    except ValueError:
-        # Si la page n'existe plus, revenir à la première
-        current_index = 0
+    if 'active_page' not in st.session_state or st.session_state.active_page not in pages:
         st.session_state.active_page = pages[0]
 
+    # Navigation avec radio (pas de rerun manuel)
+    current_index = pages.index(st.session_state.active_page)
+    
     page = st.radio(
         "",
         pages,
@@ -578,9 +576,8 @@ with st.sidebar:
         key="nav_radio"
     )
     
-    # Mettre à jour seulement si l'utilisateur a cliqué
-    if page != st.session_state.active_page:
-        st.session_state.active_page = page
+    # Mettre à jour directement (pas de rerun, Streamlit le gère automatiquement)
+    st.session_state.active_page = page
 
     st.markdown("---")
     
@@ -725,8 +722,10 @@ if 'artiste_selectionne' not in st.session_state:
 
 # ==================== TAB 1: VUE D'ENSEMBLE ====================
 if st.session_state.active_page == "Vue d'ensemble":
-    st.markdown("## 🏠 Vue d'ensemble")
-    col1, col2, col3, col4 = st.columns(4)
+    with st.spinner(""):
+        st.markdown("## 🏠 Vue d'ensemble")
+        col1, col2, col3, col4 = st.columns(4)
+        
     with col1:
         st.metric("🎤 ARTISTES", len(filtered_df))
     with col2:
@@ -865,7 +864,8 @@ if st.session_state.active_page == "Vue d'ensemble":
 
 # ==================== TAB 2: LES TOP ====================
 elif st.session_state.active_page == "Les Tops":
-    st.markdown("## 🏆 Les Tops")
+    with st.spinner(""):
+        st.markdown("## 🏆 Les Tops")
         
     if len(top_df) > 0:
         st.markdown("### 🏆 Top 30 Meilleurs Scores")
@@ -994,7 +994,8 @@ elif st.session_state.active_page == "Les Tops":
 
 # ==================== TAB 3: LES ARTISTES ====================
 elif st.session_state.active_page == "Les artistes":
-    st.markdown("## 🎤 Les Artistes")
+    with st.spinner(""):
+        st.markdown("## 🎤 Les Artistes")
     
     if len(filtered_df) > 0:
         artistes_list = sorted(filtered_df['nom_artiste'].dropna().unique())
@@ -1166,7 +1167,7 @@ elif st.session_state.active_page == "Les artistes":
                                 st.session_state.selected_artist_evolution = artist['nom_artiste']
                                 st.session_state.previous_page = "Les artistes"
                                 st.session_state.go_to_evolution = True
-                                st.rerun()
+
 
             
 
@@ -1182,8 +1183,6 @@ elif st.session_state.active_page == "Les artistes":
                 
                 st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
                 st.session_state.temp_interesses_artistes = []
-                time.sleep(1)
-                st.rerun()
         
         st.markdown("---")
         
@@ -1234,7 +1233,8 @@ elif st.session_state.active_page == "Les artistes":
 
 # ==================== TAB 4: EVOLUTION ====================
 elif st.session_state.active_page == "Évolution":
-    st.markdown("## 📈 Évolution")
+    with st.spinner(""):
+        st.markdown("## 📈 Évolution")
     
         # BOUTON RETOUR
     if st.session_state.get('previous_page'):
@@ -1357,8 +1357,7 @@ elif st.session_state.active_page == "Évolution":
                                         st.session_state.artistes_interesses.remove(selected_artist)
                                         st.success(f"❌ {selected_artist} retiré")
                                 
-                                time.sleep(1)
-                                st.rerun()
+
 
                         st.markdown("---")
                     
@@ -1530,7 +1529,6 @@ elif st.session_state.active_page == "Évolution":
                                         
                                         if st.button("ℹ️ Infos", key=f"info_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                             st.session_state.selected_artist_evolution = artist['nom_artiste']
-                                            st.rerun()
                                 
                                 # BOUTON VALIDATION (après les artistes similaires)
                                 st.markdown("---")
@@ -1544,8 +1542,6 @@ elif st.session_state.active_page == "Évolution":
                                         
                                         st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) similaire(s) ajouté(s) !")
                                         st.session_state.temp_interesses_artistes = []
-                                        time.sleep(1)
-                                        st.rerun()
                             else:
                                 st.info("Pas assez d'artistes similaires")
                         
@@ -1589,7 +1585,6 @@ elif st.session_state.active_page == "Évolution":
                                     
                                     if st.button(" Infos", key=f"info_fb_{idx}_{artist['nom_artiste']}", use_container_width=True):
                                         st.session_state.selected_artist_evolution = artist['nom_artiste']
-                                        st.rerun()
                             
                             # Bouton validation fallback
                             st.markdown("---")
@@ -1602,8 +1597,6 @@ elif st.session_state.active_page == "Évolution":
                                     
                                     st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
                                     st.session_state.temp_interesses_artistes = []
-                                    time.sleep(1)
-                                    st.rerun()
                     else:
                         st.info("Pas assez d'artistes similaires disponibles")
     else:
@@ -1611,7 +1604,8 @@ elif st.session_state.active_page == "Évolution":
 
 # ==================== TAB 5: ALERTES ====================
 elif st.session_state.active_page == "Alertes":
-    st.markdown("## 🔔 Alertes")
+    with st.spinner(""):
+        st.markdown("## 🔔 Alertes")
     
     if alertes_df.empty:
         st.success(" Aucune alerte pour le moment")
@@ -1821,7 +1815,6 @@ elif st.session_state.active_page == "Alertes":
                     st.session_state.selected_artist_evolution = alerte['nom_artiste']
                     st.session_state.previous_page = "Alertes"
                     st.session_state.go_to_evolution = True
-                    st.rerun()
                     
         
         # Bouton pour marquer comme lues 
@@ -1845,14 +1838,13 @@ elif st.session_state.active_page == "Alertes":
                         conn.close()
                     
                     st.success(" Toutes les alertes ont été marquées comme lues")
-                    time.sleep(1)
-                    st.rerun()
                 except Exception as e:
                     st.error(f" Erreur : {e}")
 
 # ==================== TAB 7: À PROPOS ====================
 elif st.session_state.active_page == "A propos":
-    st.markdown("## ℹ️ À Propos")
+    with st.spinner(""):
+        st.markdown("## ℹ️ À Propos")
     
     col1, col2 = st.columns([2, 1])
     
@@ -2009,7 +2001,8 @@ elif st.session_state.active_page == "A propos":
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 # ==================== TAB 6: PRÉDICTIONS ====================
 elif st.session_state.active_page == "Prédictions":
-    st.markdown("## 🔮 Prédictions")
+    with st.spinner(""):
+        st.markdown("## 🔮 Prédictions")
     
     #  SI UN ARTISTE EST SÉLECTIONNÉ, AFFICHER SON ÉVOLUTION
     if 'selected_prediction_artist' in st.session_state and st.session_state.selected_prediction_artist:
@@ -2018,7 +2011,6 @@ elif st.session_state.active_page == "Prédictions":
         # Bouton retour
         if st.button("⬅️ Retour aux prédictions", key="back_to_predictions"):
             st.session_state.selected_prediction_artist = None
-            st.rerun()
         
         st.markdown(f"## 📈 Évolution de {selected_artist}")
         
@@ -2356,7 +2348,6 @@ elif st.session_state.active_page == "Prédictions":
                                     st.session_state.selected_prediction_artist = artist['nom']
                                     st.session_state.go_to_evolution = True
                                     st.session_state.active_tab = 3
-                                    st.rerun()
 
                 #  BOUTON VALIDATION (après la grille)
                 st.markdown("---")
@@ -2370,8 +2361,6 @@ elif st.session_state.active_page == "Prédictions":
                         
                         st.success(f" {len(st.session_state.temp_interesses_artistes)} artiste(s) ajouté(s) !")
                         st.session_state.temp_interesses_artistes = []
-                        time.sleep(1)
-                        st.rerun()
                 
                 # Statistiques
                 st.markdown("---")
@@ -2396,7 +2385,8 @@ elif st.session_state.active_page == "Prédictions":
 
 # ==================== TAB 8: MON PROFIL ====================
 elif st.session_state.active_page == "Mon Profil":
-    st.markdown("## 👤 Mon Profil")
+    with st.spinner("Chargement de votre profil..."):
+        st.markdown("## 👤 Mon Profil")
     
     col_user, col_logout = st.columns([3, 1])
     with col_user:
@@ -2497,7 +2487,6 @@ elif st.session_state.active_page == "Mon Profil":
                         st.session_state.selected_artist_evolution = artiste_nom
                         st.session_state.previous_page = "Mon Profil"
                         st.session_state.go_to_evolution = True
-                        st.rerun()
                     
                     # Bouton Retirer
                     if st.button(
