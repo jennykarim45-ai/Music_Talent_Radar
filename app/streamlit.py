@@ -258,7 +258,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=3600, show_spinner="Chargement des données...")
+@st.cache_data(ttl=300, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:

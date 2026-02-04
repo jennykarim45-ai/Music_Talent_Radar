@@ -220,17 +220,36 @@ for artiste in artistes_uniques:
         alertes_generees += 1
         print(f" TRENDING : {artiste} : +{pourcentage_followers:.1f}% et score {score_apres:.1f}")
 
-# 4. Supprimer anciennes alertes
-cursor.execute("DELETE FROM alertes")
+# 4. Supprimer anciennes alertes (plus de 30 jours)
+from datetime import datetime, timedelta
+date_limite = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+cursor.execute("DELETE FROM alertes WHERE date_alerte < ?", (date_limite,))
 conn.commit()
+print(f" Anciennes alertes (>30j) supprimées")
 
-# 5. Insérer nouvelles alertes
+# 5. Insérer nouvelles alertes (éviter doublons)
 if alertes_a_inserer:
+    # Supprimer alertes du jour pour cet artiste (éviter doublons)
+    aujourd_hui = datetime.now().strftime('%Y-%m-%d')
+    for alerte in alertes_a_inserer:
+        cursor.execute("""
+            DELETE FROM alertes 
+            WHERE nom_artiste = ? 
+            AND date(date_alerte) = ?
+        """, (alerte['nom_artiste'], aujourd_hui))
+    
+    # Insérer nouvelles alertes
     alertes_df = pd.DataFrame(alertes_a_inserer)
     alertes_df.to_sql('alertes', conn, if_exists='append', index=False)
     print(f"\n {len(alertes_a_inserer)} alertes générées et insérées dans la base")
 else:
-    print("\n  Aucune alerte générée (aucune variation significative détectée)")
+    print("\n Aucune alerte générée (aucune variation significative détectée)")
+    print(" Les alertes précédentes sont conservées")
+
+# Afficher nombre total d'alertes
+cursor.execute("SELECT COUNT(*) FROM alertes WHERE vu = 0")
+total_alertes = cursor.fetchone()[0]
+print(f"Total alertes non lues : {total_alertes}")
 
 conn.close()
 
