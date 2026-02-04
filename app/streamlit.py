@@ -1037,15 +1037,33 @@ elif st.session_state.active_page == "Les artistes":
                 artistes_sorted = artistes_sorted.sort_values('score_potentiel', ascending=(ordre == "Croissant"))
             else:
                 artistes_sorted = artistes_sorted.sort_values('followers_total', ascending=(ordre == "Croissant"))
+                
+            # ✅ CORRECTION : Réinitialiser la page si changement de filtres/tri
+            if 'last_search' not in st.session_state:
+                st.session_state.last_search = selected_search
+                st.session_state.last_tri = tri_par
+                st.session_state.last_ordre = ordre
             
+            if (st.session_state.last_search != selected_search or 
+                st.session_state.last_tri != tri_par or 
+                st.session_state.last_ordre != ordre):
+                st.session_state.page_artistes = 1
+                st.session_state.last_search = selected_search
+                st.session_state.last_tri = tri_par
+                st.session_state.last_ordre = ordre
+                
             # PAGINATION
             ITEMS_PER_PAGE = 10
             total_artistes = len(artistes_sorted)
             total_pages = math.ceil(total_artistes / ITEMS_PER_PAGE)
             
+            # S'assurer que page_artistes est valide
+            if st.session_state.page_artistes > total_pages:
+                st.session_state.page_artistes = max(1, total_pages)
+                
             start_idx = (st.session_state.page_artistes - 1) * ITEMS_PER_PAGE
             end_idx = start_idx + ITEMS_PER_PAGE
-            page_artistes = filtered_df.nlargest(ITEMS_PER_PAGE, 'score_potentiel')
+            page_artistes = artistes_sorted.iloc[start_idx:end_idx]
             
             # AFFICHAGE DES ARTISTES
             for i in range(0, len(page_artistes), 5):
