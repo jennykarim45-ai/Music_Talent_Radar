@@ -454,14 +454,14 @@ def get_latest_metrics(metriques_df):
 
 def get_fan_category(fans):
     """Catégorise par nombre de fans"""
-    if fans < 10000:
-        return "Micro (1k-10k)"
+    if fans < 500:
+        return "Micro (2k-5k)"
+    elif fans < 10000:
+        return "Petit (5k-10k)"
     elif fans < 20000:
-        return "Petit (10k-20k)"
-    elif fans < 30000:
-        return "Moyen (20k-30k)"
+        return "Moyen (10k-20k)"
     else:
-        return "Large (30k-40k)"
+        return "Large (20k-35k)"
 
 # ==================== CHARGEMENT DONNÉES ====================
 try:
@@ -605,8 +605,8 @@ with st.sidebar:
     genres = ['Tous'] + sorted(genres_disponibles)
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
-    categories_fans = ['Tous', 'Micro (1k-10k)', 'Petit (10k-20k)', 'Moyen (20k-30k)', 'Large (30k-40k)']
-    max_fans = st.slider("👥 Followers/Fans maximum", 200, 40000, 40000, 1000)
+    categories_fans = ['Tous', 'Micro (2k-5k)', 'Petit (5k-10k)', 'Moyen (10k-20k)', 'Large (20k-35k)']
+    max_fans = st.slider("👥 Followers/Fans maximum", 200, 35000, 35000, 1000)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
@@ -926,30 +926,36 @@ elif st.session_state.active_page == "Les Tops":
             else:
                 top5_evolution = evolution_df.nlargest(5, 'evolution')
             
-            fig = px.bar(
-                top5_evolution.sort_values('evolution'),
-                y='nom_artiste',
+            fig = px.scatter(
+                top5_evolution,
                 x='evolution',
-                orientation='h',
-                text='evolution',
+                y='nom_artiste',
                 color='evolution',
                 color_continuous_scale=['#FFA500', '#FF1B8D', '#21B178'],
                 labels={'evolution': 'Évolution (%)', 'nom_artiste': 'Artiste'}
             )
-            fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
+
+            fig.update_traces(marker=dict(size=14))
+
+            for _, row in top5_evolution.iterrows():
+                fig.add_shape(
+                    type='line',
+                    x0=0, x1=row['evolution'],
+                    y0=row['nom_artiste'], y1=row['nom_artiste'],
+                    line=dict(color='rgba(255,255,255,0.3)', width=2)
+                )
+
             fig.update_layout(
                 plot_bgcolor=COLORS['bg_card'],
                 paper_bgcolor=COLORS['bg_card'],
                 font_color=COLORS['text'],
-                height=400,
-                showlegend=False,
-                yaxis={'categoryorder':'total ascending'}
+                height=350,
+                showlegend=False
             )
+
             st.plotly_chart(fig, use_container_width=True)
-            st.caption("Les 5 artistes ayant connu la plus forte progression de score. Cette croissance indique une dynamique positive et un potentiel de percée prochaine.")
-        else:
-            st.info("Pas assez de données historiques pour calculer les évolutions")
-        
+            st.caption("Le Top 5 des artistes avec la meilleure évolution de score. Ces artistes montrent une croissance rapide et un potentiel prometteur.")
+                    
         st.markdown("---")
         
         st.markdown("### 🌐 Répartition Plateforme (Top 50)")
@@ -982,7 +988,7 @@ elif st.session_state.active_page == "Les Tops":
             nbins=15,
             color='plateforme',
             color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
-            labels={'followers_total': 'Followers/Fans', 'count': 'Nombre d\'artistes'}
+            labels={"count": "Nombre d'artistes", 'followers_total': 'Followers/Fans'}
         )
         fig.update_layout(
             plot_bgcolor=COLORS['bg_card'],
@@ -992,7 +998,7 @@ elif st.session_state.active_page == "Les Tops":
             legend=dict(font=dict(color='white'))
         )
         st.plotly_chart(fig, use_container_width=True)
-        st.caption("Distribution du nombre de followers/fans parmi les 50 meilleurs. La plupart ont entre 10k et 60k followers, zone idéale pour la détection de talents.")
+        st.caption("Distribution du nombre de followers/fans parmi les 50 meilleurs. La plupart ont entre 10k et 30k followers, zone idéale pour la détection de talents.")
     else:
         st.info("Aucun artiste disponible")
 

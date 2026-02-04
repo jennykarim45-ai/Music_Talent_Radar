@@ -67,16 +67,16 @@ BASE_URL_DEEZER = "https://api.deezer.com"
 SEARCH_KEYWORDS_SPOTIFY = {
     'Rap-HipHop-RnB': [
         'rap français', 'rappeur français', 'nouveau rappeur français',
-        'trap français', 'drill français', 'rap underground français',
-        'rap paris', 'rap marseille', 'rap lyon', 'rap lille',
-        'rap 91', 'rap 92', 'rap 93', 'rap 94',
-        'rap indépendant', 'rap soundcloud français', 'urban français', 'rnb français',
+        'trap français', 'drill français', 'rap underground français','hip hop soul français',
+        'rap paris', 'rap marseille', 'rap lyon', 'rap lille','hip hop rnb français',
+        'rap 91', 'rap 92', 'rap 93', 'rap 94','hiphop français','new style français',
+        'rap indépendant', 'rap soundcloud français', 'urban français', 'rnb français','r&b français','hip hop français',
     ],
     'Pop': [
         'pop français', 'chanson française', 'nouvelle scène française',
         'indie pop français', 'chanteur français', 'chanteuse française',
         'pop alternative française', 'electro pop français',
-        'nouveau talent pop français', 'artiste pop émergent',
+        'nouveau talent pop français', 'artiste pop émergent','pop rock français',
     ],
     'Afrobeat-Amapiano': [
         'afrobeat français', 'afrobeat france', 'amapiano',
@@ -85,13 +85,13 @@ SEARCH_KEYWORDS_SPOTIFY = {
     ],
     'Rock-Metal': [
         'rock français', 'indie rock français', 'metal français',
-        'punk français', 'rock alternatif français',
+        'punk français', 'rock alternatif français','rock',
     ],
     'Indie-Alternative': [
         'indie français', 'indie pop français', 'alternative français',
     ],
     'Jazz-Soul': [
-        'jazz français', 'soul français',
+        'jazz français', 'soul français','jazz soul français', 'funk français',
     ],
     'Electro': [
         'french touch', 'électro moderne', 'électro urbaine',
@@ -152,13 +152,13 @@ MOTS_EXCLUS_NOM = [
     # Autres à exclure
     'sound effect', 'sound effects', 'sfx', 'foley',
     'radio edit', 'radio version', 'clean version',
-    'acapella', 'a capella', 'cappella',
+    'acapella', 'a capella', 'cappella','Ebony'
 ]
 
 GENRES_EXCLUS = [
     'classical', 'baroque', 'opera', 'medieval', 'renaissance',
     'romantic', 'contemporary classical', 'modern classical',
-    'jazz manouche', 'gypsy jazz', 'swing', 'bebop', 'hard bop',
+    'swing', 'bebop', 'hard bop', 'orchestre', 'chorale',
     'children', 'kids', 'nursery', 'comptines',
     'edm', 'trance', 'hardstyle', 'drum and bass', 'dubstep',
     'techno', 'minimal', 'ambient', 'downtempo',
@@ -178,13 +178,13 @@ DJ_PATTERNS = [
 
 # Spotify
 SPOTIFY_MIN_FOLLOWERS = 200
-SPOTIFY_MAX_FOLLOWERS = 40000
-SPOTIFY_MAX_POPULARITY = 65
+SPOTIFY_MAX_FOLLOWERS = 35000
+SPOTIFY_MAX_POPULARITY = 60
 ANNEE_MIN_PREMIER_ALBUM = 2018
 
 # Deezer
 DEEZER_MIN_FANS = 200
-DEEZER_MAX_FANS = 40000
+DEEZER_MAX_FANS = 35000
 
 # ============================================================================
 # FONCTIONS DE VALIDATION

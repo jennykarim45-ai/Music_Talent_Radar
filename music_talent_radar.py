@@ -34,13 +34,15 @@ URLS_FILE = 'artist_urls.csv'
 
 # Critères de filtrage
 SPOTIFY_MIN_FOLLOWERS = 200
-SPOTIFY_MAX_FOLLOWERS = 40000
-SPOTIFY_MIN_POPULARITY = 20
-SPOTIFY_MAX_POPULARITY = 65
+SPOTIFY_MAX_FOLLOWERS = 35000
+SPOTIFY_MIN_POPULARITY = 10
+SPOTIFY_MAX_POPULARITY = 60
 
 DEEZER_MIN_FANS = 200
-DEEZER_MAX_FANS = 40000
+DEEZER_MAX_FANS = 35000
 DEEZER_MIN_TITRES = 0 
+
+MAX_NB_ALBUMS = 10
 
 # ============================================================================
 # MAPPING DES GENRES
@@ -433,7 +435,8 @@ def filtrer_emergents():
             (spotify_df['followers'] >= SPOTIFY_MIN_FOLLOWERS) &
             (spotify_df['followers'] <= SPOTIFY_MAX_FOLLOWERS) &
             (spotify_df['popularity'] >= SPOTIFY_MIN_POPULARITY) &
-            (spotify_df['popularity'] <= SPOTIFY_MAX_POPULARITY)
+            (spotify_df['popularity'] <= SPOTIFY_MAX_POPULARITY) &
+            (spotify_df['nb_albums'] <= MAX_NB_ALBUMS)
         ]
         
         spotify_filtered.to_csv('data/spotify_filtered.csv', index=False)
@@ -452,7 +455,8 @@ def filtrer_emergents():
             deezer_filtered = deezer_df[
                 (deezer_df['fans'] >= DEEZER_MIN_FANS) &
                 (deezer_df['fans'] <= DEEZER_MAX_FANS) &
-                (deezer_df['nb_titres'] >= DEEZER_MIN_TITRES)
+                (deezer_df['nb_titres'] >= DEEZER_MIN_TITRES) &
+                (deezer_df['nb_albums'] <= MAX_NB_ALBUMS)
             ]
         else:
             print(f" Colonne nb_titres absente, filtre UNIQUEMENT sur fans")
@@ -511,7 +515,7 @@ def verifier_et_ajouter_colonnes_recurrence(cursor, conn):
 
 def importer_en_base():
     """Importer données filtrées en base"""
-    print("✅ MODULE 4 : IMPORT EN BASE DE DONNÉES")
+    print(" MODULE 4 : IMPORT EN BASE DE DONNÉES")
     
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -587,7 +591,7 @@ def importer_en_base():
             """, (id_unique, row['nom'], 'Spotify', categorie,
                 row.get('image_url', ''), row['url_spotify'], datetime.now().strftime('%Y-%m-%d')))
             count += 1
-        print(f"✅ Spotify: {len(spotify_df)} artistes importés")
+        print(f" Spotify: {len(spotify_df)} artistes importés")
     
     # Importer Deezer dans artistes
     if os.path.exists('data/deezer_filtered.csv'):
@@ -603,15 +607,15 @@ def importer_en_base():
             """, (id_unique, row['nom'], 'Deezer', categorie,
                 row.get('image_url', ''), row['url_deezer'], datetime.now().strftime('%Y-%m-%d')))
             count += 1
-        print(f"✅ Deezer: {len(deezer_df)} artistes importés")
+        print(f" Deezer: {len(deezer_df)} artistes importés")
     
     conn.commit()
-    print(f"\n✅ Total: {count} artistes importés dans table 'artistes'")
+    print(f"\n Total: {count} artistes importés dans table 'artistes'")
     
     # ========================================================================
     # SYNCHRONISATION metriques_historique
     # ========================================================================
-    print("\n📊 Synchronisation de metriques_historique...")
+    print("\n Synchronisation de metriques_historique...")
     
     try:
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
@@ -619,7 +623,7 @@ def importer_en_base():
         
         print(f"   État actuel: {count_avant} lignes")
         
-        # ❌ NE PLUS JAMAIS SUPPRIMER L'HISTORIQUE !
+        #  NE PLUS SUPPRIMER L'HISTORIQUE 
         # cursor.execute("DELETE FROM metriques_historique")
         
         # Date d'aujourd'hui
@@ -667,7 +671,7 @@ def importer_en_base():
                     count_inserted += 1
                     
                 except Exception as e:
-                    print(f"   ⚠️  Spotify - {row['nom']}: {e}")
+                    print(f"    Erreur Spotify - {row['nom']}: {e}")
         
         # ====================================================================
         # INSERTION DEEZER
@@ -710,7 +714,7 @@ def importer_en_base():
                     count_inserted += 1
                     
                 except Exception as e:
-                    print(f"   ⚠️  Deezer - {row['nom']}: {e}")
+                    print(f"    Erreur Deezer - {row['nom']}: {e}")
         
         # ====================================================================
         # COMMIT ET VÉRIFICATION
@@ -720,11 +724,11 @@ def importer_en_base():
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
         count_final = cursor.fetchone()[0]
         
-        print(f"   ✅ {count_inserted} nouvelles lignes insérées")
-        print(f"   📊 Total dans la base: {count_final} métriques")
+        print(f"   {count_inserted} nouvelles lignes insérées")
+        print(f"   Total dans la base: {count_final} métriques")
         
     except Exception as e:
-        print(f"   ❌ Erreur synchronisation: {e}")
+        print(f"    Erreur synchronisation: {e}")
         import traceback
         traceback.print_exc()
     
@@ -775,8 +779,8 @@ def ml_et_alertes():
 
             audience_score = 0
             if fans_followers:
-                fans_norm = min(max(fans_followers, 200), 40000)
-                audience_score = ((fans_norm - 200) / (40000 - 200)) * 40
+                fans_norm = min(max(fans_followers, 200), 35000)
+                audience_score = ((fans_norm - 200) / (35000 - 200)) * 40
             
 
             # CRITÈRE 2 : ENGAGEMENT (30%)
@@ -898,7 +902,7 @@ def ml_et_alertes():
                 ))
                 alertes_count += 1
             
-            if fans and fans > 30000:
+            if fans and fans > 15000:
                 cursor.execute("""
                     INSERT INTO alertes (nom_artiste, type_alerte, message, date_alerte, vu)
                     VALUES (?, ?, ?, ?, ?)
@@ -924,7 +928,7 @@ def ml_et_alertes():
                 ))
                 alertes_count += 1
             
-            if 50 <= score < 70:
+            if 30 <= score < 60:
                 cursor.execute("""
                     INSERT INTO alertes (nom_artiste, type_alerte, message, date_alerte, vu)
                     VALUES (?, ?, ?, ?, ?)
