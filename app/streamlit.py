@@ -55,7 +55,7 @@ if 'selected_artist_evolution' not in st.session_state:
 if 'go_to_evolution' not in st.session_state:
     st.session_state.go_to_evolution = False
 
-# ==================== NAVIGATION - VERSION CORRIGÉE ====================
+# ==================== NAVIGATION ====================
 # Au début du fichier, après les imports
 
 # Initialiser la page active (UNE SEULE FOIS)
@@ -585,29 +585,6 @@ with col_logo2:
         st.image(logo_path, width=150)
 # ==================== SIDEBAR ====================
 with st.sidebar:
-    # Liste des pages
-    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
-    
-    # Protection contre les noms de pages invalides
-    if 'active_page' not in st.session_state or st.session_state.active_page not in pages:
-        st.session_state.active_page = pages[0]
-
-    # Navigation avec radio (pas de rerun manuel)
-    current_index = pages.index(st.session_state.active_page)
-    
-    page = st.radio(
-        "",
-        pages,
-        index=current_index,
-        label_visibility="collapsed",
-        key="nav_radio"
-    )
-    
-    # Mettre à jour directement (pas de rerun, Streamlit le gère automatiquement)
-    st.session_state.active_page = page
-
-    st.markdown("---")
-    
     # Filtres
     plateformes_disponibles = []
     if 'plateforme' in latest_metrics_df.columns and len(latest_metrics_df) > 0:
