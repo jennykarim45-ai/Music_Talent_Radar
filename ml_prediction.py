@@ -219,7 +219,7 @@ def main():
         y = df['a_explose'].copy()
         
         # 3. Équilibrage intelligent
-        print("\n⚖️ Équilibrage des classes...")
+        print("\n Équilibrage des classes...")
         
         df_stars = df[df['a_explose'] == 1]
         df_non_stars = df[df['a_explose'] == 0]
@@ -276,14 +276,14 @@ def main():
         print("   Recherche des meilleurs paramètres (cela peut prendre 1-2 min)...")
         grid_search.fit(X_train_scaled, y_train)
         
-        print(f"   ✅ Meilleurs paramètres trouvés :")
+        print(f"    Meilleurs paramètres trouvés :")
         for param, value in grid_search.best_params_.items():
             print(f"      {param}: {value}")
         
         best_model = grid_search.best_estimator_
         
         # 7. Validation croisée avec meilleur modèle
-        print("\n📈 Validation croisée (5-fold) avec modèle optimisé...")
+        print("\n Validation croisée (5-fold) avec modèle optimisé...")
         cv_scores = cross_val_score(best_model, X_train_scaled, y_train, cv=5, scoring='accuracy')
         
         print(f"   Accuracy CV : {cv_scores.mean():.1%} (+/- {cv_scores.std():.1%})")
@@ -296,21 +296,21 @@ def main():
         print(f"   Accuracy Test : {accuracy_test:.1%}")
         
         # 9. Rapport détaillé
-        print("\n📊 Rapport de classification (Test Set):")
+        print("\n Rapport de classification (Test Set):")
         print(classification_report(y_test, y_pred, target_names=['Non-star', 'Star'], digits=3))
         
-        print("\n🔢 Matrice de confusion:")
+        print("\n Matrice de confusion:")
         cm = confusion_matrix(y_test, y_pred)
         print(f"   TN: {cm[0,0]:3d} | FP: {cm[0,1]:3d}")
         print(f"   FN: {cm[1,0]:3d} | TP: {cm[1,1]:3d}")
         
         # 10. Calibration
-        print("\n🔧 Calibration des probabilités...")
+        print("\n Calibration des probabilités...")
         model_calibre = CalibratedClassifierCV(best_model, cv=3, method='sigmoid')
         model_calibre.fit(X_train_scaled, y_train)
         
         # 11. Prédictions sur toutes les données
-        print("\n🔮 Génération des prédictions finales...")
+        print("\n Génération des prédictions finales...")
         
         X_all = df[feature_cols]
         X_all_scaled = scaler.transform(X_all)
@@ -319,7 +319,7 @@ def main():
         df['proba_star'] = probas
         
         # 12. Feature importance
-        print(f"\n🔍 Importance des features (Top 10):")
+        print(f"\n Importance des features (Top 10):")
         importances = pd.DataFrame({
             'feature': feature_cols,
             'importance': best_model.feature_importances_
@@ -334,17 +334,17 @@ def main():
         predictions = predictions.sort_values('proba_star', ascending=False)
         predictions.to_csv('data/predictions_ml.csv', index=False)
         
-        print(f"\n✅ {len(predictions)} prédictions générées")
+        print(f"\n {len(predictions)} prédictions générées")
         
         # 14. Statistiques finales
-        print(f"\n📊 Statistiques finales:")
+        print(f"\n Statistiques finales:")
         print(f"   Stars prédites (>50%): {(predictions['proba_star'] > 0.5).sum()}")
         print(f"   Haut potentiel (>30%): {(predictions['proba_star'] > 0.3).sum()}")
         print(f"   Probabilité moyenne: {predictions['proba_star'].mean():.1%}")
         print(f"   Min: {predictions['proba_star'].min():.1%}, Max: {predictions['proba_star'].max():.1%}")
-        print(f"\n🎯 PERFORMANCES FINALES:")
-        print(f"   ✅ Accuracy CV (5-fold): {cv_scores.mean():.1%} ± {cv_scores.std():.1%}")
-        print(f"   ✅ Accuracy Test: {accuracy_test:.1%}")
+        print(f"\n PERFORMANCES FINALES:")
+        print(f"    Accuracy CV (5-fold): {cv_scores.mean():.1%} ± {cv_scores.std():.1%}")
+        print(f"    Accuracy Test: {accuracy_test:.1%}")
         
         return True
         
