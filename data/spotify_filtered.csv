@@ -1,7 +1,7 @@
 nom,followers,popularity,genres,categorie,image_url,url_spotify,nb_albums,nb_releases_recentes
 Ryflo,24385,53,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebb948ee3850187ecd8e141ae4,https://open.spotify.com/artist/4acowSAiQXmdhs4DCgUQ0U,10,10
-Tookie2Beriz,1621,35,"sexy drill, french rap",Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebfcafa4f8a62029368b70cf54,https://open.spotify.com/artist/142mBEMjSrFPCuDU0eS20r,8,8
 Mitra,311,21,,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb8cf9a3826bf9c2dbbe3a8d8c,https://open.spotify.com/artist/27XaRSrSeHtKOAJrzMBzQ8,6,1
+Tookie2Beriz,1621,35,"sexy drill, french rap",Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebfcafa4f8a62029368b70cf54,https://open.spotify.com/artist/142mBEMjSrFPCuDU0eS20r,8,8
 Béné,562,16,,Rap-HipHop-RnB,https://i.scdn.co/image/ab67616d0000b2732b29f4ebcd21298c7ab5a898,https://open.spotify.com/artist/0jTfTywFxzHAuuOsEx6iwq,3,0
 OPINEL 21,7190,17,"french rap, drill",Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb10b2bd92061679efe7b77aae,https://open.spotify.com/artist/5x6fEO7JyQd948Wvonm9xt,4,0
 Samat,1273,19,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebc6c4ad039474118f96475e63,https://open.spotify.com/artist/68uK8Nx6KBp8QZQi3YMU6L,1,0
@@ -19,8 +19,8 @@ Gabriel Paris,4271,27,,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb40
 Aymen Parisien,5609,16,raï,Rap-HipHop-RnB,https://i.scdn.co/image/ab67616d0000b2731788d57a0470f1f7a50287f5,https://open.spotify.com/artist/0xOdtdbQkHKot7ODRxumLR,7,3
 Marseille Capitale du Rap,1729,28,,Rap-HipHop-RnB,https://i.scdn.co/image/ab67616d0000b2736b202255331aecaa7b539bf1,https://open.spotify.com/artist/4dcePQod0y9jDp7u9S59BV,5,5
 Lagui,9726,50,,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebd18ed8e3137beb4234c9d65f,https://open.spotify.com/artist/3TP2Ucsow6rW1s24aq9gb4,3,3
-Lillebittebock,1346,12,dansk rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb2b0939f0ac957c63b8045584,https://open.spotify.com/artist/1Bkcm42So5nKYkY5DEHbO2,8,1
 LILLEN,1009,16,,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb7b976517417efcae7baf3586,https://open.spotify.com/artist/04Me6qNw3Z1CIqUWrkmF5B,6,5
+Lillebittebock,1346,12,dansk rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb2b0939f0ac957c63b8045584,https://open.spotify.com/artist/1Bkcm42So5nKYkY5DEHbO2,8,1
 PLK,1215,49,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab67616d0000b273351e4950507132984ca22334,https://open.spotify.com/artist/1HXCsUKToRkJLjkcxS123w,1,0
 DL91 Era,18529,57,"desi hip hop, hindi hip hop",Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebef0b0a24b4754e838f07ee71,https://open.spotify.com/artist/3mWqCmX0xuzBJN648XSBrE,8,8
 91,1172,34,turkish hip hop,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb041a7bc9a9ee02b0b5b51bf1,https://open.spotify.com/artist/227ZhUtAhpZiTj8S80p1y5,1,1
@@ -34,55 +34,53 @@ Savas94,378,18,german hip hop,Rap-HipHop-RnB,https://i.scdn.co/image/ab676161000
 94brizzy,9763,25,trap metal,Rap-HipHop-RnB,https://i.scdn.co/image/ab67616d0000b2735997e5c992ecf0dcb5d8cb9d,https://open.spotify.com/artist/4NOg3L0IrFUnGe6dhO1D2i,4,2
 Grizzly 942,1140,12,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebd34c4d021f7756388b611f43,https://open.spotify.com/artist/4KLjcYXXF6lORi2XOXAmz2,10,0
 FUCSTYLE,335,13,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb9331d57f03d4e19d11070953,https://open.spotify.com/artist/6pNwXQDJt1nMZTlasvWuIj,7,5
-Steel Alive,2870,39,dub,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebb63c7c0b38017907b2249b6f,https://open.spotify.com/artist/6Ue7qVC6YnNOfsPxmBjefu,5,4
-ZZCCMXTP,27662,36,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5eb3c8baa7ffc49a4980ad3691f,https://open.spotify.com/artist/0uNtP1kNnXPqb7lOUfvHBi,5,0
 Jamso,14098,51,french rap,Rap-HipHop-RnB,https://i.scdn.co/image/ab6761610000e5ebe3ddf4dd992fc61ea6753587,https://open.spotify.com/artist/42ATKPvmj81n9JDOunFpqr,7,7
 Molière l'opéra urbain,24519,47,musicals,Rap-HipHop-RnB,https://i.scdn.co/image/ab67616d0000b273d2315c38f968e507a5aaeec0,https://open.spotify.com/artist/7eFL3K5giCsAHXus03F7Cd,9,2
 Esmée,6743,42,"french pop, variété française",Pop,https://i.scdn.co/image/ab6761610000e5eb240b86ab29cf38eebe6adaa4,https://open.spotify.com/artist/4ltaLmNRwdD98CtEsot497,8,5
 RORI,22069,44,french pop,Pop,https://i.scdn.co/image/ab6761610000e5eb08b3807b17e2a5fe5641c23f,https://open.spotify.com/artist/1VGFnvgAwxMlV8D729gs5I,9,5
 Ebony,29166,45,french pop,Pop,https://i.scdn.co/image/ab6761610000e5ebdbf986b8f01bae85e31d70bd,https://open.spotify.com/artist/0NCfVJ4NDxaKUW8yV4lUlQ,4,4
-Sam Sauvage,31860,49,"french pop, french indie pop",Pop,https://i.scdn.co/image/ab6761610000e5ebeb7a76f0f783e2913adcdaa0,https://open.spotify.com/artist/1tlWl5ltF7CudnGGjF96KL,9,7
 Félix Radu,32954,43,"french pop, variété française",Pop,https://i.scdn.co/image/ab6761610000e5eb021fc5bc2d967f8f777f1687,https://open.spotify.com/artist/0a0Pl9QiikzqYozn7qyooX,7,7
 Astral Bakers,4287,22,,Pop,https://i.scdn.co/image/ab6761610000e5eb72311d2ee09baca61137addd,https://open.spotify.com/artist/6VUpGE6ErMWwqZGepBWc0D,8,7
 Mary Bach,10570,10,,Pop,https://i.scdn.co/image/ab6761610000e5eb34af9bdbd98b2064ef28caa7,https://open.spotify.com/artist/7jru0ViqMSSyuFFvC9Aw01,9,5
 Haley James Scott,9697,30,,Pop,,https://open.spotify.com/artist/7y4JSWyptLDbIWn5LOhydr,0,0
 MC Salo,2134,20,,Pop,https://i.scdn.co/image/ab67616d0000b2738d036affbb26f328161dcf37,https://open.spotify.com/artist/1quV4CgipPwybFtikATOBc,1,0
 Jasmïn,1321,16,,Pop,https://i.scdn.co/image/ab6761610000e5eb1ded4d2333cfa2894ec7d795,https://open.spotify.com/artist/1dFiLNmRKzp1sA088KuwCw,5,1
-Eric Elmosnino,438,11,chanson,Pop,,https://open.spotify.com/artist/5t0Dm5xdg8RuMVt3OJ99UV,0,0
 Divaa,560,15,,Pop,https://i.scdn.co/image/ab6761610000e5eb2d07e73e3c2d136015830190,https://open.spotify.com/artist/1IQ8u7rMzxSfpwPsxg4afU,2,2
+Eric Elmosnino,438,11,chanson,Pop,,https://open.spotify.com/artist/5t0Dm5xdg8RuMVt3OJ99UV,0,0
 King Luca,6899,30,bikutsi,Afrobeat-Amapiano,https://i.scdn.co/image/ab67616d0000b2739580f1a036c50f167121e693,https://open.spotify.com/artist/1DEN3iWZL55rYkQCXVwkLz,7,7
 Theomaa,11238,50,"shatta, soca, kompa, zouk",Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb88009607a6e14155822fe664,https://open.spotify.com/artist/49j7GvUPWXDkBZf3uUwMe6,6,4
-Sons de la Nature Projet France,721,50,,Afrobeat-Amapiano,https://i.scdn.co/image/ab67616d0000b273150df33f3bd5ce3e53bdc223,https://open.spotify.com/artist/5YqoF294m2y35sETgqbeQr,8,0
+France Mpundu,2152,18,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb9e4e38c8ec195cb00f296a0c,https://open.spotify.com/artist/3H7eNFfmHDrZoHoTfDJyGE,4,3
 Doosko Niafo,4822,33,ndombolo,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb0946075770a65957e8fe60a1,https://open.spotify.com/artist/3j5vom9KtuBUImiFXCOTP0,10,3
 Dounia Jari,5497,32,,Afrobeat-Amapiano,https://i.scdn.co/image/ab67616d0000b2731cbd766f29f9cc4076a6dda9,https://open.spotify.com/artist/2wGEnSqp6ZXg2LWGZF7mnQ,2,1
-France Mpundu,2152,18,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb9e4e38c8ec195cb00f296a0c,https://open.spotify.com/artist/3H7eNFfmHDrZoHoTfDJyGE,4,3
-Boumidjal X,1915,41,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb39d0820ba70982019c6d3c4c,https://open.spotify.com/artist/3i2AdhSP4YeSYY1m5JoUnK,8,7
+Sons de la Nature Projet France,721,50,,Afrobeat-Amapiano,https://i.scdn.co/image/ab67616d0000b273150df33f3bd5ce3e53bdc223,https://open.spotify.com/artist/5YqoF294m2y35sETgqbeQr,8,0
 Danilo,7963,44,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb6062aca4162e4e77c5729d32,https://open.spotify.com/artist/0nztDFQzc7SwCIGZnvDIJ7,6,5
+Boumidjal X,1915,41,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb39d0820ba70982019c6d3c4c,https://open.spotify.com/artist/3i2AdhSP4YeSYY1m5JoUnK,8,7
 XVI,3643,42,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb11806d96f5bf957b1ae35d5c,https://open.spotify.com/artist/0utiBmutysHdb0zXFCLMT2,2,2
 Shad Hottaboy,5350,41,"shatta, pop urbaine, afrobeat",Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5ebc9d1b597fbd25bb6bf0df5a7,https://open.spotify.com/artist/3LWw4ar9kTrbOgTUvyZQjW,6,4
 Ashvma,12162,59,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb97280ddefcdf4c54c8123ee7,https://open.spotify.com/artist/46fYppQRc2dAeDAMnrVb6R,6,6
-Thisizlondon,9916,54,"latin afrobeats, afrobeats, afrobeat",Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb70fba59b62b3f083fc7468b0,https://open.spotify.com/artist/30SVAanrbFS6o0cIVDZ9ta,7,7
 Zaka Lavista,1589,41,,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5eb9e410773717eab19ded5f490,https://open.spotify.com/artist/3ZrvguSuVvHrFwbu9lFVe6,4,3
 Vanou,1113,45,"shatta, dancehall",Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5ebcea26835aaa5520dbb549630,https://open.spotify.com/artist/5bRjVnu5q4ySUkVYifxtGE,5,5
 Kamelon Officiel,13731,51,shatta,Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5ebd61028ce6a197a39fd8b9dbe,https://open.spotify.com/artist/0k3C7u1fCchhNMHbcBy9xN,10,8
-KGS,1685,44,"shatta, kizomba",Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5ebf208e96a029a7eff537d4ffa,https://open.spotify.com/artist/5Iib8YFyekylXZIqcVT1Qk,9,4
-David Castello-Lopes,16013,27,,Rock-Metal,https://i.scdn.co/image/ab6761610000e5eb85cdbf7cd34b05b8b7de960b,https://open.spotify.com/artist/5wQ1ffwDHKe06PEKCIgLNG,6,2
+KGS,1685,44,"shatta, kizomba",Afrobeat-Amapiano,https://i.scdn.co/image/ab6761610000e5ebf208e96a029a7eff537d4ffa,https://open.spotify.com/artist/5Iib8YFyekylXZIqcVT1Qk,8,4
+David Castello-Lopes,16013,27,,Rock-Metal,https://i.scdn.co/image/ab6761610000e5eb85cdbf7cd34b05b8b7de960b,https://open.spotify.com/artist/5wQ1ffwDHKe06PEKCIgLNG,5,1
 Ana Moreau,4939,32,,Rock-Metal,https://i.scdn.co/image/ab6761610000e5eb0e6ecf987d16586d3834d016,https://open.spotify.com/artist/4vy2w9TDFpA1kcFCZRT5Ls,6,3
 Charles Ludig,1496,32,,Rock-Metal,https://i.scdn.co/image/ab6761610000e5eb220cca7904e91c369ea1aa88,https://open.spotify.com/artist/0hO9TrLGquZn6cxbNqgpGl,6,3
 Nicola Sirkis,2347,43,variété française,Rock-Metal,,https://open.spotify.com/artist/1GPOQdRaRdalF1ct9DKfuJ,0,0
+Sam Sauvage,31860,49,"french pop, french indie pop",Indie-Alternative,https://i.scdn.co/image/ab6761610000e5ebeb7a76f0f783e2913adcdaa0,https://open.spotify.com/artist/1tlWl5ltF7CudnGGjF96KL,9,7
 tn_490,21812,37,dark r&b,Indie-Alternative,https://i.scdn.co/image/ab6761610000e5eb21d739e83c1e367ccbc8a279,https://open.spotify.com/artist/1ULJBOKjmOpRsRRHP1vc2X,10,7
 The Jazzbastards,786,23,"french rap, jazz rap",Jazz-Soul,https://i.scdn.co/image/ab67616d0000b2734dae551aac53d2d9eedd1b08,https://open.spotify.com/artist/37TCEHpf2vse15feYCPKY4,1,0
-Jazzy Jazz,878,27,,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b273b104b5eb3089b838310422b0,https://open.spotify.com/artist/4RnYtxJzF4IX8OyB9PSVj2,1,0
 Little Angel en Français,2338,33,"chanson, lullaby",Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb41b2fe6538953db4e8d2938e,https://open.spotify.com/artist/2IgkzjHmhq0AFQUewxLEiO,5,0
 Hedges,310,27,french r&b,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb5c0e69381252393de6d60dd6,https://open.spotify.com/artist/4wIqXlUU7ManNDpURytYbJ,4,1
 NESSA,521,27,,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b273578e92aa54621ceb3869e042,https://open.spotify.com/artist/61msVwDW98mAmUAEhxTyV3,6,6
-Elisa Kwamé,676,14,french pop,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5ebd217f5567944c5471f82522d,https://open.spotify.com/artist/4ehUDRJ362mPGx5pDfRJr3,4,1
 Cyprien Zeni,413,15,,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b2736ce6b4e8e57a8b349bb052a8,https://open.spotify.com/artist/5HIukQzyJCAux8iVQDRgpQ,3,0
+Elisa Kwamé,676,14,french pop,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5ebd217f5567944c5471f82522d,https://open.spotify.com/artist/4ehUDRJ362mPGx5pDfRJr3,4,1
 Jahzz,261,25,dub,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b273895079fa28d79afa1e0d5782,https://open.spotify.com/artist/35U6jInsJHzE4rWSEKNMXW,1,0
+Jazzy Jazz,878,27,,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b273b104b5eb3089b838310422b0,https://open.spotify.com/artist/4RnYtxJzF4IX8OyB9PSVj2,1,0
 Florian Pellissier,431,15,,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb0a938891d1447e3ad611c16f,https://open.spotify.com/artist/0xiIT6hCcH1oLeoOZjHo0s,6,2
+Haz.r,2980,31,,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb3342bdb76570767c3d5fda8a,https://open.spotify.com/artist/27v9yUSHN9y7rMbX92unra,8,8
+Funklover,582,39,funk,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb3a864326c9993804a3bd14ec,https://open.spotify.com/artist/5Qh3MKB6OIj5TIGyXzqXWU,3,3
 IGO,4053,33,french rap,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5ebec14c4517a63ac2af1230276,https://open.spotify.com/artist/1KPrTnku8wnG6ImeobQYb4,10,5
 LOUIZI,617,33,,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b273985d43a8f165cfab1b9fe5f7,https://open.spotify.com/artist/4TPITKsRC8byP2GRWfqLLB,2,2
-Funklover,582,39,funk,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb3a864326c9993804a3bd14ec,https://open.spotify.com/artist/5Qh3MKB6OIj5TIGyXzqXWU,3,3
 Stella,5803,33,,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5eb9766163e3828747f554c803b,https://open.spotify.com/artist/5w3hiAOQKr9glXE15H4A6e,6,4
 Stan Rittner,1965,10,,Jazz-Soul,https://i.scdn.co/image/ab67616d0000b27351c4d8113c20162fbeb2617d,https://open.spotify.com/artist/7jF05ML7HuuI8B8dwMlz9b,5,3
 Send Me Love Letters,1708,14,,Jazz-Soul,https://i.scdn.co/image/ab6761610000e5ebd1ae394c4552c2d01a51eb0c,https://open.spotify.com/artist/5RiWMf3FdQCkeAbwZXNcVk,9,5
@@ -91,7 +89,9 @@ Mec touché,1488,27,,Electro,https://i.scdn.co/image/ab67616d0000b273253a1a02107
 French Accent,550,24,,Electro,https://i.scdn.co/image/ab67616d0000b27364660096eedadfbe81e00061,https://open.spotify.com/artist/2VJ3zDWRSCtrZFCp5CngkA,1,0
 Jazir,1337,23,,Electro,https://i.scdn.co/image/ab6761610000e5eb9eb7662bf6655960d088211a,https://open.spotify.com/artist/1AyxHP7cwxDjR5HxtxRo1C,8,5
 Maïa,9290,29,,Electro,https://i.scdn.co/image/ab6761610000e5eb9a9077d121b586079c228c5b,https://open.spotify.com/artist/5VkCrXUBHElxXQjJhM2k9t,3,3
-SPORE,5089,22,,Electro,https://i.scdn.co/image/ab6761610000e5ebe631feede4874b801275b90f,https://open.spotify.com/artist/66xA2uEVOChiDTKdZd6hgV,7,5
+Boris & Moris,1520,32,,Electro,https://i.scdn.co/image/ab6761610000e5ebb5696d901d7dcbc67eef44c5,https://open.spotify.com/artist/4o3kvOwkHLKBgwcifYQUdF,4,2
 JLOW,8843,35,,Electro,https://i.scdn.co/image/ab6761610000e5ebbe64e7ba81cbfe311e9aba64,https://open.spotify.com/artist/66rknd4NFEU7U2AK5cesjy,7,2
 P3GASE,3434,33,french pop,Electro,https://i.scdn.co/image/ab6761610000e5eb7b66aa81adae11d0e528b2c9,https://open.spotify.com/artist/5gp2bynafc2IgEWzOBAbIe,8,5
+MANARËM,14885,48,,Electro,https://i.scdn.co/image/ab6761610000e5eb4e144c7403f93336665858f1,https://open.spotify.com/artist/5BQdp2NlYGiwVgnCJB3gyX,10,10
 Leita,225,36,"french pop, french house",Electro,https://i.scdn.co/image/ab6761610000e5eb04193bc128c9fe389aea4e46,https://open.spotify.com/artist/5UTy08ibUbhiqGhuFm1Gzo,2,2
+Steel Alive,2870,39,dub,Electro,https://i.scdn.co/image/ab6761610000e5ebb63c7c0b38017907b2249b6f,https://open.spotify.com/artist/6Ue7qVC6YnNOfsPxmBjefu,5,4
