@@ -104,15 +104,36 @@ SEARCH_KEYWORDS_SPOTIFY = {
 # ============================================================================
 
 PLAYLISTS_DEEZER = {
-    'Pop': [1266970221, 1313621735],
-    'Rap-HipHop-RnB': [1266982681, 2478989424, 1479461285],
-    'Afrobeat-Amapiano': [1479458785, 7791005622],
-    'Rock-Metal': [1282495565, 1479454995],
-    'Indie-Alternative': [1362496635, 5221412382],
-    'Jazz-Soul': [1363127927, 1479461595],
-    'Electro': [1282488055]
+    'Pop': [
+        1266970221, 1313621735, 10474991984, 10413329764, 
+        1479461525, 1703047642, 1282495185, 1363131857
+    ],
+    'Rap-HipHop-RnB': [
+        1266982681, 2478989424, 1479461285, 10847896022,
+        1313621355, 10847895822, 4634295824, 7698415642,
+        1282487835, 1363131497, 1479461695  # Encore plus de rap
+    ],
+    'Afrobeat-Amapiano': [
+        1479458785, 7791005622, 11234750982, 9935841602,
+        1282488235, 1363130937  # Encore plus d'afrobeat
+    ],
+    'Rock-Metal': [
+        1282495565, 1479454995, 1363124897, 1266971561,
+        1313621655, 1479461405
+    ],
+    'Indie-Alternative': [
+        1362496635, 5221412382, 1479461345, 10847896122,
+        1313621455, 1282495425
+    ],
+    'Jazz-Soul': [
+        1363127927, 1479461595, 1266971281, 1313621255,
+        1282495345, 1479461215
+    ],
+    'Electro': [
+        1282488055, 1479461065, 1313621515, 1363130697,
+        1479458985
+    ]
 }
-
 # ============================================================================
 # FILTRES D'EXCLUSION ULTRA-STRICTS
 # ============================================================================
@@ -513,6 +534,92 @@ def rechercher_artistes_deezer():
     
     return artistes_trouves
 
+def rechercher_artistes_deezer_par_mots_cles():
+    """Rechercher artistes Deezer par mots-clés (comme Spotify)"""
+    artistes_trouves = {}
+    stats_rejets = {
+        'DJ': 0, 'Producteur': 0, 'Mot exclus dans nom': 0,
+        'Critères fans': 0
+    }
+    
+    print(" DEEZER - COLLECTE PAR MOTS-CLÉS")
+    print(f"\n Critères:")
+    print(f"   Fans: {DEEZER_MIN_FANS:,} à {DEEZER_MAX_FANS:,}")
+    
+    KEYWORDS_DEEZER = [
+        'rap français', 'rappeur français', 'hip hop français',
+        'pop français', 'chanson française', 'artiste français',
+        'afrobeat français', 'rnb français', 'soul français',
+        'rock français', 'indie français', 'électro français'
+    ]
+    
+    print(f"\n Recherche: {len(KEYWORDS_DEEZER)} mots-clés")
+    
+    for i, keyword in enumerate(KEYWORDS_DEEZER, 1):
+        print(f"    [{i}/{len(KEYWORDS_DEEZER)}] '{keyword}'...", end=' ', flush=True)
+        
+        try:
+            url = f"{BASE_URL_DEEZER}/search/artist"
+            params = {'q': keyword, 'limit': 100}
+            response = requests.get(url, params=params)
+            
+            if response.status_code == 200:
+                data = response.json()
+                artists = data.get('data', [])
+                
+                found_count = 0
+                for artist in artists:
+                    artist_id = artist.get('id')
+                    
+                    if artist_id in artistes_trouves:
+                        continue
+                    
+                    # Critères fans
+                    nb_fan = artist.get('nb_fan', 0)
+                    
+                    if not (150 <= nb_fan <= 50000):  # Critères assouplis
+                        stats_rejets['Critères fans'] += 1
+                        continue
+                    
+                    # Filtres nom
+                    nom = artist.get('name', '')
+                    
+                    if est_probablement_dj(nom):
+                        stats_rejets['DJ'] += 1
+                        continue
+                    
+                    if est_probablement_producteur(nom):
+                        stats_rejets['Producteur'] += 1
+                        continue
+                    
+                    if nom_contient_exclusions(nom):
+                        stats_rejets['Mot exclus dans nom'] += 1
+                        continue
+                    
+                    #  Artiste valide
+                    artistes_trouves[artist_id] = {
+                        'nom': artist.get('name', ''),
+                        'url_spotify': '',
+                        'url_deezer': artist.get('link', ''),
+                        'source': 'Deezer',
+                        'fans': nb_fan,
+                        'categorie': 'Autre'  # Défini plus tard
+                    }
+                    
+                    found_count += 1
+                
+                print(f"→ {found_count} retenus")
+            else:
+                print(f" Erreur {response.status_code}")
+        
+        except Exception as e:
+            print(f" {e}")
+        
+        time.sleep(0.5)
+    
+    print(f"\n Total Deezer (mots-clés): {len(artistes_trouves)} artistes")
+    
+    return artistes_trouves
 # ============================================================================
 # MATCHING INTELLIGENT
 # ============================================================================
@@ -617,13 +724,22 @@ def main():
     try:
         token = get_spotify_token()
     except Exception as e:
-        print(f" Erreur authentification Spotify: {e}")
+        print(f"Erreur authentification Spotify: {e}")
         return False
     
     artistes_spotify = rechercher_artistes_spotify(token)
     
-    # 2. Recherche Deezer
-    artistes_deezer = rechercher_artistes_deezer()
+    # 2. Recherche Deezer (DOUBLE MÉTHODE)
+    artistes_deezer_playlists = rechercher_artistes_deezer()
+    artistes_deezer_keywords = rechercher_artistes_deezer_par_mots_cles()
+    
+    # Fusionner les 2 sources Deezer
+    artistes_deezer = {**artistes_deezer_playlists, **artistes_deezer_keywords}
+    
+    print(f"\n Deezer combiné:")
+    print(f"   Playlists: {len(artistes_deezer_playlists)}")
+    print(f"   Mots-clés: {len(artistes_deezer_keywords)}")
+    print(f"   Total unique: {len(artistes_deezer)}")
     
     # 3. Merger les résultats avec MATCHING INTELLIGENT
     print("\n" + "=" * 70)

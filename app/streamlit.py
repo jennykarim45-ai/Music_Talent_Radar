@@ -455,7 +455,7 @@ def get_latest_metrics(metriques_df):
 def get_fan_category(fans):
     """Catégorise par nombre de fans"""
     if fans < 500:
-        return "Micro (2k-5k)"
+        return "Micro (1k-5k)"
     elif fans < 10000:
         return "Petit (5k-10k)"
     elif fans < 20000:
@@ -605,8 +605,8 @@ with st.sidebar:
     genres = ['Tous'] + sorted(genres_disponibles)
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
-    categories_fans = ['Tous', 'Micro (2k-5k)', 'Petit (5k-10k)', 'Moyen (10k-20k)', 'Large (20k-35k)']
-    max_fans = st.slider("👥 Followers/Fans maximum", 200, 35000, 35000, 1000)
+    categories_fans = ['Tous', 'Micro (1k-5k)', 'Petit (5k-10k)', 'Moyen (10k-20k)', 'Large (20k-35k)']
+    max_fans = st.slider("👥 Followers/Fans maximum", 100, 35000, 35000, 1000)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)

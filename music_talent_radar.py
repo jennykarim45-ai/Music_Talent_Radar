@@ -33,12 +33,12 @@ DB_PATH = 'data/music_talent_radar_v2.db'
 URLS_FILE = 'artist_urls.csv'
 
 # Critères de filtrage
-SPOTIFY_MIN_FOLLOWERS = 200
+SPOTIFY_MIN_FOLLOWERS = 100
 SPOTIFY_MAX_FOLLOWERS = 35000
 SPOTIFY_MIN_POPULARITY = 10
 SPOTIFY_MAX_POPULARITY = 60
 
-DEEZER_MIN_FANS = 200
+DEEZER_MIN_FANS = 100
 DEEZER_MAX_FANS = 35000
 DEEZER_MIN_TITRES = 0 
 
@@ -174,7 +174,13 @@ def collecter_donnees():
     # Collecter Spotify
     spotify_data = []
     if len(spotify_df) > 0:
-        print(f"\nCollecte Spotify...")
+        print(f"Collecte Spotify...")
+        
+        # Compteurs pour stats
+        success_count = 0
+        error_count = 0
+        rate_limit_count = 0
+        
         for idx, row in spotify_df.iterrows():
             nom = row['nom']
             artist_id = extraire_id_spotify(row['url_spotify'])
@@ -182,69 +188,132 @@ def collecter_donnees():
             
             if not artist_id:
                 print(f" {nom}: URL invalide")
+                error_count += 1
                 continue
             
-            try:
-                # 1 Infos artiste
-                response = requests.get(
-                    f'https://api.spotify.com/v1/artists/{artist_id}',
-                    headers={'Authorization': f'Bearer {token}'}
-                )
-                
-                if response.status_code != 200:
-                    print(f" {nom}: Erreur {response.status_code}")
-                    continue
-                
-                data = response.json()
-                
-                #  Albums de l'artiste (pour récurrence)
-                albums_response = requests.get(
-                    f'https://api.spotify.com/v1/artists/{artist_id}/albums',
-                    headers={'Authorization': f'Bearer {token}'},
-                    params={'limit': 50, 'include_groups': 'album,single'}
-                )
-                
-                nb_albums = 0
-                nb_releases_recentes = 0
-                
-                if albums_response.status_code == 200:
-                    albums_data = albums_response.json()
-                    nb_albums = albums_data['total']
+            #  RETRY LOGIC AVEC BACKOFF EXPONENTIEL
+            max_retries = 5
+            retry_count = 0
+            success = False
+            
+            while retry_count < max_retries and not success:
+                try:
+                    # 1️ Infos artiste
+                    response = requests.get(
+                        f'https://api.spotify.com/v1/artists/{artist_id}',
+                        headers={'Authorization': f'Bearer {token}'},
+                        timeout=10
+                    )
                     
-                    # Compter releases des 2 dernières années
-                    from datetime import datetime, timedelta
-                    date_limite = datetime.now() - timedelta(days=730)
+                    #  GESTION 429 RATE LIMIT
+                    if response.status_code == 429:
+                        retry_after = int(response.headers.get('Retry-After', 10))
+                        wait_time = max(retry_after, 10 + (retry_count * 5))  # Backoff exponentiel
+                        
+                        if retry_count == 0:
+                            rate_limit_count += 1
+                            print(f"⏳ {nom}: Rate limit! Attente {wait_time}s... (tentative {retry_count + 1}/{max_retries})")
+                        
+                        time.sleep(wait_time)
+                        retry_count += 1
+                        continue
                     
-                    for album in albums_data['items']:
-                        try:
-                            release_date = datetime.strptime(album['release_date'], '%Y-%m-%d')
-                            if release_date >= date_limite:
-                                nb_releases_recentes += 1
-                        except:
+                    # Autres erreurs HTTP
+                    if response.status_code == 404:
+                        print(f" {nom}: Artiste introuvable")
+                        error_count += 1
+                        break
+                    
+                    if response.status_code != 200:
+                        print(f" {nom}: Erreur {response.status_code}")
+                        error_count += 1
+                        break
+                    
+                    #  Succès - récupération des données
+                    data = response.json()
+                    
+                    #  Albums de l'artiste (pour récurrence)
+                    time.sleep(0.3)  # Petit délai avant deuxième requête
+                    
+                    albums_response = requests.get(
+                        f'https://api.spotify.com/v1/artists/{artist_id}/albums',
+                        headers={'Authorization': f'Bearer {token}'},
+                        params={'limit': 50, 'include_groups': 'album,single'},
+                        timeout=10
+                    )
+                    
+                    nb_albums = 0
+                    nb_releases_recentes = 0
+                    
+                    if albums_response.status_code == 200:
+                        albums_data = albums_response.json()
+                        nb_albums = albums_data['total']
+                        
+                        # Compter releases des 2 dernières années
+                        from datetime import datetime, timedelta
+                        date_limite = datetime.now() - timedelta(days=730)
+                        
+                        for album in albums_data['items']:
                             try:
-                                release_date = datetime.strptime(album['release_date'], '%Y')
-                                if release_date.year >= date_limite.year:
+                                release_date = datetime.strptime(album['release_date'], '%Y-%m-%d')
+                                if release_date >= date_limite:
                                     nb_releases_recentes += 1
                             except:
-                                pass
-                
-                spotify_data.append({
-                    'nom': nom,
-                    'followers': data['followers']['total'],
-                    'popularity': data['popularity'],
-                    'genres': ', '.join(data.get('genres', [])),
-                    'categorie': categorie,
-                    'image_url': data['images'][0]['url'] if data.get('images') else '',
-                    'url_spotify': row['url_spotify'],
-                    'nb_albums': nb_albums,
-                    'nb_releases_recentes': nb_releases_recentes
-                })
-                print(f" {nom:30} → {data['followers']['total']:>8,} followers | {nb_releases_recentes} releases récentes")
-                
-            except Exception as e:
-                print(f" {nom}: {e}")
+                                try:
+                                    release_date = datetime.strptime(album['release_date'], '%Y')
+                                    if release_date.year >= date_limite.year:
+                                        nb_releases_recentes += 1
+                                except:
+                                    pass
+                    
+                    # Ajouter aux résultats
+                    spotify_data.append({
+                        'nom': nom,
+                        'followers': data['followers']['total'],
+                        'popularity': data['popularity'],
+                        'genres': ', '.join(data.get('genres', [])),
+                        'categorie': categorie,
+                        'image_url': data['images'][0]['url'] if data.get('images') else '',
+                        'url_spotify': row['url_spotify'],
+                        'nb_albums': nb_albums,
+                        'nb_releases_recentes': nb_releases_recentes
+                    })
+                    
+                    print(f" {nom:30} → {data['followers']['total']:>8,} followers | {nb_releases_recentes} releases récentes")
+                    success = True
+                    success_count += 1
+                    
+                except requests.exceptions.Timeout:
+                    print(f" {nom}: Timeout")
+                    error_count += 1
+                    break
+                except requests.exceptions.ConnectionError:
+                    print(f" {nom}: Erreur réseau")
+                    error_count += 1
+                    break
+                except Exception as e:
+                    print(f" {nom}: {e}")
+                    error_count += 1
+                    break
             
-            time.sleep(0.2) 
+            # Si échec après tous les retries
+            if not success and retry_count >= max_retries:
+                print(f" {nom}: Échec après {max_retries} tentatives (rate limit persistant)")
+                error_count += 1
+            
+            #  DÉLAI ADAPTATIF ENTRE ARTISTES
+            if rate_limit_count > 5:
+                time.sleep(1.0)  # Si beaucoup de rate limits → ralentir
+            else:
+                time.sleep(0.5)  # Sinon délai normal
+        
+        #  STATS FINALES
+        print(f" RÉSULTATS COLLECTE SPOTIFY")
+        print(f" Succès: {success_count}")
+        print(f" Erreurs: {error_count}")
+        print(f" Rate limits rencontrés: {rate_limit_count}")
+        print(f" Taux de succès: {success_count/(success_count+error_count)*100:.1f}%")
+
     
     # Collecter Deezer
     deezer_data = []
@@ -779,8 +848,8 @@ def ml_et_alertes():
 
             audience_score = 0
             if fans_followers:
-                fans_norm = min(max(fans_followers, 200), 35000)
-                audience_score = ((fans_norm - 200) / (35000 - 200)) * 40
+                fans_norm = min(max(fans_followers, 100), 35000)
+                audience_score = ((fans_norm - 100) / (35000 - 100)) * 40
             
 
             # CRITÈRE 2 : ENGAGEMENT (30%)
