@@ -67,6 +67,15 @@ if st.session_state.get('go_to_evolution', False):
     st.session_state.active_page = "Évolution"
     st.session_state.go_to_evolution = False
 
+
+
+# ============= AUTHENTIFICATION =============
+if not auth.require_authentication(): # type: ignore
+    if st.session_state.get('show_login', False):
+        auth.login_form() # type: ignore
+    else:
+        auth.public_page_about() # type: ignore
+    st.stop()
 # ============= SIDEBAR =============
 with st.sidebar:
     # Liste des pages
@@ -91,15 +100,6 @@ with st.sidebar:
     if selected_page != st.session_state.active_page:
         st.session_state.active_page = selected_page
         st.rerun()  
-
-# ============= AUTHENTIFICATION =============
-if not auth.require_authentication(): # type: ignore
-    if st.session_state.get('show_login', False):
-        auth.login_form() # type: ignore
-    else:
-        auth.public_page_about() # type: ignore
-    st.stop()
-
 # ============================================
 
 COLORS = {

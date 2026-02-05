@@ -31,7 +31,7 @@
 - **Filtres de recherche** :
   - 🌐 **Source** : Spotify, Deezer ou Tous
   - 🎵 **Genre Musical** : Pop, Rap, Jazz, Rock, Afrobeat, etc.
-  - 👥 **Nombre de fans** : Micro, Petit, Moyen, Large
+  - 👥 **Nombre de fans** : Micro, Petit, Moyen, Large (de 1k à 35K)
   - ⭐ **Score minimum** : Curseur de 0 à 100
 
 ### Onglets Principaux
@@ -44,7 +44,7 @@ L'application comporte **8 onglets** :
 4. **📈 ÉVOLUTION** - Suivi temporel détaillé
 5. **🔔 ALERTES** - Notifications importantes
 6. **🔮 PRÉDICTIONS** - Modèle d'Intelligence Artificielle
-7. **ℹ️ À PROPOS DE JEK2** - Présentation du label
+7. **ℹ️ À PROPOS** - Présentation du label, de l'application et de sa créatrice
 8. **👤 MON PROFIL** - Gestion de vos artistes favoris
 
 ---
