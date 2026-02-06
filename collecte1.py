@@ -14,6 +14,7 @@ import time
 import re
 import unicodedata
 import sys
+import json
 # Chargement optionnel du fichier .env (local uniquement)
 try:
     from dotenv import load_dotenv
@@ -71,69 +72,140 @@ SEARCH_KEYWORDS_SPOTIFY = {
         'rap paris', 'rap marseille', 'rap lyon', 'rap lille','hip hop rnb français',
         'rap 91', 'rap 92', 'rap 93', 'rap 94','hiphop français','new style français',
         'rap indépendant', 'rap soundcloud français', 'urban français', 'rnb français','r&b français','hip hop français',
+        'rap alternatif français', 'rap émergent français', 'rap indépendant français',
+        'rap underground français', 'rap conscient français', 'rap politique français',
+        'rap social français', 'rap engagé français', 'rap de rue français', 'rap hardcore français',
     ],
     'Pop': [
         'pop français', 'chanson française', 'nouvelle scène française',
         'indie pop français', 'chanteur français', 'chanteuse française',
         'pop alternative française', 'electro pop français',
         'nouveau talent pop français', 'artiste pop émergent','pop rock français',
+        'pop paris', 'pop marseille', 'pop lyon', 'pop lille',
+        'pop 91', 'pop 92', 'pop 93', 'pop 94',
     ],
     'Afrobeat-Amapiano': [
         'afrobeat français', 'afrobeat france', 'amapiano',
         'afrobeats', 'afro trap français', 'afro drill',
-        'dancehall français',
+        'dancehall français', 'afro pop française',
+        'afro paris', 'afro marseille', 'afro lyon', 'afro lille',
+        'afro 91', 'afro 92', 'afro 93', 'afro 94','afro hip hop français',
+        'afro rnb français', 'afro soul français', 'afro underground français',
+        'afro house français', 'afro techno français', 'afro électro français',
     ],
     'Rock-Metal': [
         'rock français', 'indie rock français', 'metal français',
-        'punk français', 'rock alternatif français','rock',
+        'punk français', 'rock alternatif français','rock','post rock français',
+        'rock paris', 'rock marseille', 'rock lyon', 'rock lille',
+        'rock 91', 'rock 92', 'rock 93', 'rock 94','metal alternatif français',
+        'rock indépendant français', 'rock underground français', 'rock garage français',
     ],
     'Indie-Alternative': [
         'indie français', 'indie pop français', 'alternative français',
+        'bedroom pop français', 'folk français', 'indie rock français',
+        'nouvelle scène française', 'artiste émergent français', 'indie paris', 'indie marseille',
     ],
     'Jazz-Soul': [
         'jazz français', 'soul français','jazz soul français', 'funk français',
+        'jazz moderne français', 'neo soul français', 'nu jazz français','gospel français',
+        'soul neo français', 'soul neo-soul français', 'new jazz français',
+        'soul paris', 'soul marseille', 'soul lyon', 'soul lille',
+        'soul 91', 'soul 92', 'soul 93', 'soul 94',
+        'jazz paris', 'jazz marseille', 'jazz lyon', 'jazz lille',
+        'jazz 91', 'jazz 92', 'jazz 93', 'jazz 94',
+        'funk paris', 'funk marseille', 'funk lyon', 'funk lille',
+        'funk 91', 'funk 92', 'funk 93', 'funk 94',
+        'gospel paris', 'gospel marseille', 'gospel lyon', 'gospel lille',
+        'gospel 91', 'gospel 92', 'gospel 93', 'gospel 94',
     ],
     'Electro': [
         'french touch', 'électro moderne', 'électro urbaine',
         'artiste électro français', 'nouveau talent électro',
+        'électro paris', 'électro marseille', 'électro lyon', 'électro lille',
+        'électro 91', 'électro 92', 'électro 93', 'électro 94','electro house français',
+        'electro techno français', 'electro indie français', 'electro pop français',
+        'electro underground français', 'electro dance français', 'electro expérimentale français',
+        'electro hip hop français', 'electro rnb français', 'electro soul français',
+        'electro funk français', 'electro jazz français', 'electro gospel français',
+        'electro trap français', 'electro drill français', 'electro afro français',
     ]
 }
+
+
+# ============================================================================
+# MAPPING GENRES DEEZER
+# ============================================================================
+DEEZER_GENRES = {
+    'Pop': 132,
+    'Rap-HipHop-RnB': 116,
+    'Afrobeat-Amapiano': 113,
+    'Rock-Metal': 152,
+    'Indie-Alternative': 85,
+    'Jazz-Soul': 129,
+    'Electro': 106
+}
+
+def generer_playlists_deezer(limit=20):
+    playlists = {genre: [] for genre in DEEZER_GENRES}
+
+    # Editorial FR
+    url = f"{BASE_URL_DEEZER}/editorial/1/selection"
+    res = requests.get(url).json()
+
+    for item in res.get("data", []):
+        if item.get("type") != "playlist":
+            continue
+
+        playlist_id = item.get("id")
+        title = item.get("title", "").lower()
+
+        for genre in playlists.keys():
+            genre_key = genre.lower().split('-')[0]  # ex: rap, pop, jazz
+            if genre_key in title and len(playlists[genre]) < limit:
+                playlists[genre].append(playlist_id)
+
+    return playlists
+
 
 # ============================================================================
 # PLAYLISTS DEEZER (PAR GENRE)
 # ============================================================================
 
-PLAYLISTS_DEEZER = {
-    'Pop': [
-        1266970221, 1313621735, 10474991984, 10413329764, 
-        1479461525, 1703047642, 1282495185, 1363131857
-    ],
-    'Rap-HipHop-RnB': [
-        1266982681, 2478989424, 1479461285, 10847896022,
-        1313621355, 10847895822, 4634295824, 7698415642,
-        1282487835, 1363131497, 1479461695  # Encore plus de rap
-    ],
-    'Afrobeat-Amapiano': [
-        1479458785, 7791005622, 11234750982, 9935841602,
-        1282488235, 1363130937  # Encore plus d'afrobeat
-    ],
-    'Rock-Metal': [
-        1282495565, 1479454995, 1363124897, 1266971561,
-        1313621655, 1479461405
-    ],
-    'Indie-Alternative': [
-        1362496635, 5221412382, 1479461345, 10847896122,
-        1313621455, 1282495425
-    ],
-    'Jazz-Soul': [
-        1363127927, 1479461595, 1266971281, 1313621255,
-        1282495345, 1479461215
-    ],
-    'Electro': [
-        1282488055, 1479461065, 1313621515, 1363130697,
-        1479458985
-    ]
-}
+
+
+def obtenir_playlists_deezer(limit=15, cache_file='playlists_deezer_cache.json'):
+    """Récupère playlists Deezer avec cache"""
+    
+    # Essayer de charger depuis le cache
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r') as f:
+                cached = json.load(f)
+                print(f" Playlists chargées depuis cache ({cache_file})")
+                return cached
+        except:
+            pass
+    
+    # Sinon, récupérer via API
+    print(" Récupération des playlists Deezer éditoriales via API...")
+    playlists = generer_playlists_deezer(limit=limit)
+    
+    # Sauvegarder dans le cache
+    with open(cache_file, 'w') as f:
+        json.dump(playlists, f, indent=2)
+    
+    print(f"Playlists sauvegardées dans {cache_file}")
+    
+    # Afficher le résultat
+    total = sum(len(p) for p in playlists.values())
+    print(f" {total} playlists récupérées au total")
+    for genre, ids in playlists.items():
+        print(f"   {genre}: {len(ids)} playlists")
+    
+    return playlists
+
+# Utiliser la fonction
+PLAYLISTS_DEEZER = obtenir_playlists_deezer(limit=15)
 # ============================================================================
 # FILTRES D'EXCLUSION ULTRA-STRICTS
 # ============================================================================
@@ -155,11 +227,12 @@ MOTS_EXCLUS_NOM = [
     
     # Enfants et comptines
     'titounis', 'enfant', 'comptine', 'bébé', 'baby', 'kids', 'children',
-    'nursery', 'berceuse',
+    'nursery', 'berceuse','chanson enfantine', 'musique pour enfants', 'kids music',
+    'chansons','comptines pour enfants','musique enfantine','chansons pour enfants',
     
     # Compilations et collections
     'playlist', 'compilation', 'various', 'various artists', 'collectif',
-    'tribute', 'hommage', 'best of', 'greatest hits',
+    'tribute', 'hommage', 'best of', 'greatest hits', 'hit','hits','mix','mixtape',
     
     # Karaoke et covers
     'karaoke', 'backing track', 'cover', 'tribute band',
@@ -198,14 +271,14 @@ DJ_PATTERNS = [
 # ============================================================================
 
 # Spotify
-SPOTIFY_MIN_FOLLOWERS = 200
-SPOTIFY_MAX_FOLLOWERS = 35000
+SPOTIFY_MIN_FOLLOWERS = 100
+SPOTIFY_MAX_FOLLOWERS = 40000
 SPOTIFY_MAX_POPULARITY = 60
 ANNEE_MIN_PREMIER_ALBUM = 2018
 
 # Deezer
-DEEZER_MIN_FANS = 200
-DEEZER_MAX_FANS = 35000
+DEEZER_MIN_FANS = 100
+DEEZER_MAX_FANS = 40000
 
 # ============================================================================
 # FONCTIONS DE VALIDATION
@@ -547,11 +620,43 @@ def rechercher_artistes_deezer_par_mots_cles():
     print(f"   Fans: {DEEZER_MIN_FANS:,} à {DEEZER_MAX_FANS:,}")
     
     KEYWORDS_DEEZER = [
+        # Général FR
+        'musique française', 'artiste français', 'nouvelle scène française',
+        'artiste émergent français', 'musique actuelle française',
+
+        # Rap / Hip-Hop / RnB
         'rap français', 'rappeur français', 'hip hop français',
-        'pop français', 'chanson française', 'artiste français',
-        'afrobeat français', 'rnb français', 'soul français',
-        'rock français', 'indie français', 'électro français'
+        'trap français', 'drill français', 'rap underground français',
+        'rap indépendant français', 'rnb français', 'r&b français',
+        'neo rnb français',
+
+        # Pop / Chanson
+        'pop français', 'chanson française', 'pop alternative française',
+        'pop urbaine française', 'indie pop français',
+        'chanteur français', 'chanteuse française',
+
+        # Rock / Metal
+        'rock français', 'rock alternatif français', 'indie rock français',
+        'punk français', 'metal français', 'post rock français',
+
+        # Indie / Alternative
+        'indie français', 'musique alternative française',
+        'bedroom pop français', 'folk français',
+
+        # Jazz / Soul / Funk
+        'jazz français', 'soul français', 'neo soul français',
+        'jazz moderne français', 'funk français',
+
+        # Electro
+        'electro français', 'électro pop française',
+        'électro indé française', 'techno française',
+        'house française', 'french touch',
+
+        # Afro / influences
+        'afrobeat français', 'afro pop française',
+        'afro trap français', 'amapiano français'
     ]
+
     
     print(f"\n Recherche: {len(KEYWORDS_DEEZER)} mots-clés")
     

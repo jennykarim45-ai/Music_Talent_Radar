@@ -22,6 +22,7 @@ import numpy as np
 from datetime import datetime
 import time
 import argparse
+import unicodedata  
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -29,17 +30,34 @@ load_dotenv()
 # CONFIGURATION
 # ============================================================================
 
+# Liste noire artistes (normalisée)
+BLACKLIST_ARTISTS = [
+    "ryan gosling", "Missan", "La Plaie", "Jungle Jack", "Bleu Soleil",
+    "emma stone", "Nour", "Oasis de musique jazz", "elyasbitum93200", "John Weezy B",
+    "Ebony"," ZZ", "Lauren Spencer-Smith", "Keshi","SG Lewis",
+    "Limsa d'aulnay", "Justin Hurwitz","A Flock of Seagulls","Prefab Sprout","Gary Numan",
+    "RDN","Ultravox", "Ryflo", "Nakk Mendosa", "La Clinique", "Rich Chigga",
+    "OPINEL 21", "ATK", "Tookie2Beriz","93PUNX","Adrian von Ziegler","Aztec Camera",
+    "Grandmaster Flash & The Furious Five", "Gorillaz", "Gary Numan", "Tubeway Army",
+    "Philip Oakey", "Rich Brian", "Nicola Sirkis", "PLK","Kheops", "Janet Jackson",
+    "Luther Vandross", "Eric Elmosnino","Sons de la Nature Projet France",
+    "FUNK DEMON", "Ashvma","Lully Hill","DL91 Era","Jeez Suave", "Thisizlondon",
+    "The Soul Jazz Era","Jamso", "Lenaïg", "Theomaa","19s Soulers","FRENCHGRL",
+    "Pescado Rabioso", "Jean-Luc Lahaye", "Starley", "K-Pop","Meilleur Rappeur Français",
+]
+
+
 DB_PATH = 'data/music_talent_radar_v2.db'
 URLS_FILE = 'artist_urls.csv'
 
 # Critères de filtrage
 SPOTIFY_MIN_FOLLOWERS = 100
-SPOTIFY_MAX_FOLLOWERS = 35000
+SPOTIFY_MAX_FOLLOWERS = 40000
 SPOTIFY_MIN_POPULARITY = 10
 SPOTIFY_MAX_POPULARITY = 60
 
 DEEZER_MIN_FANS = 100
-DEEZER_MAX_FANS = 35000
+DEEZER_MAX_FANS = 40000
 DEEZER_MIN_TITRES = 0 
 
 MAX_NB_ALBUMS = 10
@@ -76,7 +94,7 @@ def mapper_genre(genre_str):
         return "Indie-Alternative"
     
     # Jazz-Soul
-    if any(x in genre_lower for x in ['jazz', 'soul', 'funk', 'blues', 'gospel', 'neo soul', 'neo-soul', 'nu jazz']):
+    if any(x in genre_lower for x in ['jazz', 'soul', 'funk', 'blues', 'gospel', 'neo soul', 'neo-soul', 'nu jazz','new jazz']):
         return "Jazz-Soul"
     
     # Electro
@@ -92,7 +110,25 @@ def mapper_genre(genre_str):
 # ============================================================================
 # UTILITAIRES - EXTRACTION IDS
 # ============================================================================
+def normaliser_nom(nom):
+    if not nom:
+        return ""
+    nom = nom.lower().strip()
+    nom = unicodedata.normalize("NFD", nom)
+    nom = "".join(c for c in nom if unicodedata.category(c) != "Mn")
+    nom = re.sub(r"[^a-z0-9\s]", "", nom)
+    nom = re.sub(r"\s+", " ", nom)
+    return nom
 
+def est_en_blacklist(nom):
+    """Vérifie si un artiste est dans la blacklist"""
+    nom_normalise = normaliser_nom(nom)
+    
+    for blacklisted in BLACKLIST_ARTISTS:
+        if normaliser_nom(blacklisted) == nom_normalise:
+            return True
+    
+    return False
 def extraire_id_spotify(url):
     """Extraire ID Spotify depuis URL"""
     if not url or pd.isna(url):
@@ -314,6 +350,17 @@ def collecter_donnees():
         print(f" Rate limits rencontrés: {rate_limit_count}")
         print(f" Taux de succès: {success_count/(success_count+error_count)*100:.1f}%")
 
+# Succès - récupération des données
+data = response.json()
+
+# VÉRIFIER BLACKLIST
+if est_en_blacklist(nom):
+    print(f" {nom}: En blacklist (ignoré)")
+    error_count += 1
+    break
+
+# Albums de l'artiste (pour récurrence)
+time.sleep(0.3)
     
     # Collecter Deezer
     deezer_data = []
@@ -378,7 +425,22 @@ def collecter_donnees():
                 print(f"{nom}: {e}")
             
             time.sleep(0.2)
-    
+            
+data = response.json()
+if 'error' in data:
+    print(f" {nom}: {data['error']}")
+    continue
+
+        #  VÉRIFIER BLACKLIST
+if est_en_blacklist(nom):
+    print(f" {nom}: En blacklist (ignoré)")
+    continue
+
+# Albums de l'artiste
+albums_response = requests.get(f'https://api.deezer.com/artist/{artist_id}/albums')
+nb_albums = 0
+nb_releases_recentes = 0
+
     # Sauvegarder
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     
@@ -848,8 +910,8 @@ def ml_et_alertes():
 
             audience_score = 0
             if fans_followers:
-                fans_norm = min(max(fans_followers, 100), 35000)
-                audience_score = ((fans_norm - 100) / (35000 - 100)) * 40
+                fans_norm = min(max(fans_followers, 100), 40000)
+                audience_score = ((fans_norm - 100) / (40000 - 100)) * 40
             
 
             # CRITÈRE 2 : ENGAGEMENT (30%)

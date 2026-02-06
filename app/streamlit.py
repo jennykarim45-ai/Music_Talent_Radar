@@ -461,7 +461,7 @@ def get_fan_category(fans):
     elif fans < 20000:
         return "Moyen (10k-20k)"
     else:
-        return "Large (20k-35k)"
+        return "Large (20k-40k)"
 
 # ==================== CHARGEMENT DONNÉES ====================
 try:
@@ -605,8 +605,8 @@ with st.sidebar:
     genres = ['Tous'] + sorted(genres_disponibles)
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
-    categories_fans = ['Tous', 'Micro (1k-5k)', 'Petit (5k-10k)', 'Moyen (10k-20k)', 'Large (20k-35k)']
-    max_fans = st.slider("👥 Followers/Fans maximum", 100, 35000, 35000, 1000)
+    categories_fans = ['Tous', 'Micro (1k-5k)', 'Petit (5k-10k)', 'Moyen (10k-20k)', 'Large (20k-40k)']
+    max_fans = st.slider("👥 Followers/Fans maximum", 100, 40000, 40000, 1000)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
     
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
@@ -749,8 +749,7 @@ if st.session_state.active_page == "Vue d'ensemble":
         if len(filtered_df) > 0:
             fig = px.histogram(
                 filtered_df, 
-                x='score_potentiel', 
-                nbins=20, 
+                x='score_potentiel',  
                 color='plateforme',
                 color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
                 labels={'count': "Nombre d'artistes", 'score_potentiel': 'Score'}
@@ -1942,7 +1941,7 @@ elif st.session_state.active_page == "A propos":
     </p>
     """, unsafe_allow_html=True)
     
-    audio_path = os.path.join(BASE_DIR, "assets", "Licorne.m4a")
+    audio_path = os.path.join(BASE_DIR, "assets", "Licorne.wav")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
