@@ -45,9 +45,29 @@ def calculer_croissance_et_features():
     conn.close()
     
     if len(df) == 0:
+        print(" Aucune donnée dans metriques_historique")
         return None
     
+    print(f" {len(df)} métriques au total")
+    
     df['date_collecte'] = pd.to_datetime(df['date_collecte'])
+    
+    # Compter artistes uniques
+    artistes_uniques = df['id_unique'].nunique()
+    print(f" {artistes_uniques} artistes uniques")
+    
+    # Compter combien ont 2+ collectes
+    collectes_par_artiste = df.groupby('id_unique').size()
+    artistes_avec_historique = (collectes_par_artiste >= 2).sum()
+    print(f" {artistes_avec_historique} artistes avec 2+ collectes")
+    
+    #  SI AUCUN ARTISTE AVEC HISTORIQUE, RETOURNER NONE IMMÉDIATEMENT
+    if artistes_avec_historique == 0:
+        print("\n PAS ASSEZ D'ARTISTES AVEC HISTORIQUE !")
+        print(f"   Besoin : 2+ artistes avec au moins 2 collectes")
+        print(f"   Actuellement : {artistes_avec_historique} artistes")
+        print(f"   Solution : Relancer music_talent_radar.py pour une nouvelle collecte")
+        return None
     
     croissances = []
     
@@ -147,6 +167,12 @@ def calculer_croissance_et_features():
             'croissance_90j': croissance_90j,
             'a_explose': a_explose
         })
+    
+    #  VÉRIFIER SI ON A DES CROISSANCES CALCULÉES
+    if not croissances:
+        print("\n Aucune croissance calculée !")
+        print(f"   Aucun artiste n'a 2+ collectes avec dates différentes")
+        return None
     
     df_croissance = pd.DataFrame(croissances)
     

@@ -1,4 +1,3 @@
-
 """
 Script pour générer automatiquement des alertes
 Détecte les artistes avec croissance > 5% et crée des alertes
@@ -14,35 +13,37 @@ SEUIL_CROISSANCE = 5.0  # 5% minimum pour déclencher une alerte
 
 print(" GÉNÉRATION DES ALERTES AUTOMATIQUES v2.0")
 
-
 # Connexion à la base
 conn = sqlite3.connect(DB_PATH)
 cursor = conn.cursor()
 
-# 1. Vérifier si table alertes existe
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='alertes'")
-if not cursor.fetchone():
-    print(" Création de la table alertes...")
-    cursor.execute("""
-        CREATE TABLE alertes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nom_artiste TEXT,
-            type_alerte TEXT,
-            message TEXT,
-            date_alerte TEXT,
-            followers_avant INTEGER,
-            followers_apres INTEGER,
-            pourcentage_followers REAL,
-            score_avant REAL,
-            score_apres REAL,
-            pourcentage_score REAL,
-            date_formatted TEXT,
-            mois_annee TEXT,
-            vu BOOLEAN DEFAULT 0
-        )
-    """)
-    conn.commit()
-    print(" Table créée")
+# 1.  SUPPRIMER ET RECRÉER LA TABLE ALERTES AVEC LES BONNES COLONNES
+print(" Vérification de la table alertes...")
+
+cursor.execute("DROP TABLE IF EXISTS alertes")
+conn.commit()
+
+print(" Création de la table alertes avec toutes les colonnes...")
+cursor.execute("""
+    CREATE TABLE alertes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom_artiste TEXT,
+        type_alerte TEXT,
+        message TEXT,
+        date_alerte TEXT,
+        followers_avant INTEGER,
+        followers_apres INTEGER,
+        pourcentage_followers REAL,
+        score_avant REAL,
+        score_apres REAL,
+        pourcentage_score REAL,
+        date_formatted TEXT,
+        mois_annee TEXT,
+        vu INTEGER DEFAULT 0
+    )
+""")
+conn.commit()
+print(" Table alertes créée")
 
 # 2. Charger toutes les métriques historiques
 # CORRECTION : Utiliser DISTINCT pour éviter les doublons de colonnes

@@ -1,91 +1,223 @@
-name: Update Music Data Daily
+name: Music Talent Radar - Collecte Automatique
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Tous les jours à 2h du matin (UTC)
-  workflow_dispatch:  # Permet de lancer manuellement depuis GitHub
+    - cron: '0 2 * * *'  # Tous les jours à 2h du matin UTC
+  workflow_dispatch:  # Permet déclenchement manuel
 
 jobs:
   collect-and-update:
     runs-on: ubuntu-latest
+    timeout-minutes: 90  # ⬆️ Timeout de 90 minutes
     
     permissions:
       contents: write  # Pour pouvoir pousser des commits
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Récupérer tout l'historique
       
-      - name: Set up Python 3.11
+      - name: 🐍 Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
       
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: |
+          echo "📦 Installation des dépendances..."
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          echo "✅ Dépendances installées"
       
-      - name: Create data directory
+      - name: 📁 Create data directory
         run: |
           mkdir -p data
+          echo "✅ Dossier data créé"
       
-      - name: Step 1 - Collect data from Spotify & Deezer
+      - name: 🔍 Vérifier secrets Spotify
+        run: |
+          echo "🔑 Vérification des secrets..."
+          if [ -z "${{ secrets.SPOTIFY_CLIENT_ID }}" ]; then
+            echo "❌ SPOTIFY_CLIENT_ID manquant !"
+            exit 1
+          else
+            echo "✅ SPOTIFY_CLIENT_ID présent"
+          fi
+          
+          if [ -z "${{ secrets.SPOTIFY_CLIENT_SECRET }}" ]; then
+            echo "❌ SPOTIFY_CLIENT_SECRET manquant !"
+            exit 1
+          else
+            echo "✅ SPOTIFY_CLIENT_SECRET présent"
+          fi
+          echo "✅ Secrets OK"
+      
+      - name: 🎵 Collecte et traitement complet
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
         run: |
-          echo " Collecting artists from Spotify and Deezer..."
-          python collecte1.py
-        continue-on-error: false
+          echo "🚀 Début du workflow complet..."
+          echo "📅 Date: $(date +'%Y-%m-%d %H:%M:%S')"
+          echo ""
+          
+          # Workflow complet : collecte + filtrage + import + scoring
+          python music_talent_radar.py --all || {
+            echo "❌ Erreur lors du workflow principal"
+            exit 1
+          }
+          
+          echo "✅ Workflow principal terminé"
       
-      - name: Step 2 - Import data and calculate scores
-        env:
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+      - name: 🧹 Nettoyage des doublons
         run: |
-          echo " Importing data into database and calculating scores..."
-          python music_talent_radar.py --all
-        continue-on-error: false
-
-      - name: Step 2.5 - Supprimer doublon date
-        run: |
-          echo " Suppression doublons date..."
-          python utils/clean_doublon.py
-        continue-on-error: false
+          echo "🧹 Suppression des doublons de date..."
+          if [ -f "utils/clean_doublon.py" ]; then
+            python utils/clean_doublon.py || {
+              echo "⚠️ Erreur lors du nettoyage (non bloquant)"
+            }
+            echo "✅ Nettoyage terminé"
+          else
+            echo "⚠️ Script clean_doublon.py non trouvé (ignoré)"
+          fi
       
-      - name: Step 3 - Generate ML predictions
+      - name: 🤖 Génération prédictions ML
         run: |
-          echo " Generating ML predictions..."
-          python ml_prediction.py
+          echo "🤖 Génération des prédictions ML..."
+          if [ -f "ml_prediction.py" ]; then
+            python ml_prediction.py || {
+              echo "⚠️ Erreur lors des prédictions ML (non bloquant)"
+            }
+            echo "✅ Prédictions générées"
+          else
+            echo "⚠️ Script ml_prediction.py non trouvé (ignoré)"
+          fi
         continue-on-error: true
       
-      - name: Step 4 - Generate alerts
+      - name: 🔔 Génération alertes dynamiques
         run: |
-          echo " Generating alerts..."
-          python generer_alertes.py
+          echo "🔔 Génération des alertes..."
+          if [ -f "generer_alertes.py" ]; then
+            python generer_alertes.py || {
+              echo "⚠️ Erreur lors de la génération d'alertes (non bloquant)"
+            }
+            echo "✅ Alertes générées"
+          else
+            echo "⚠️ Script generer_alertes.py non trouvé (ignoré)"
+          fi
         continue-on-error: true
       
-      - name: Check for changes
+      - name: 📊 Vérifier les changements
         id: check_changes
         run: |
-          git diff --exit-code data/ || echo "has_changes=true" >> $GITHUB_OUTPUT
+          if git diff --quiet data/; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Aucun changement détecté"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "✅ Changements détectés"
+            echo ""
+            echo "📁 Fichiers modifiés :"
+            git diff --name-only data/
+          fi
       
-      - name: Commit and push changes
+      - name: 💾 Commit & Push
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
+          echo "💾 Commit des changements..."
+          
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "GitHub Actions Bot"
-          git add data/
-          git add artist_urls.csv
-          git commit -m " Auto-update: Music data $(date +'%Y-%m-%d %H:%M')" || exit 0
-          git push
+          git config --local user.name "github-actions[bot]"
+          
+          # Ajouter tous les fichiers data
+          git add data/*.csv data/*.db 2>/dev/null || true
+          git add data/ 2>/dev/null || true
+          
+          # Commit
+          COMMIT_DATE=$(date +'%Y-%m-%d %H:%M UTC')
+          git commit -m "🤖 Collecte automatique ${COMMIT_DATE}" -m "- Mise à jour des données Spotify/Deezer
+- Recalcul des scores
+- Génération alertes et prédictions ML" || {
+            echo "⚠️ Rien à committer (déjà à jour)"
+            exit 0
+          }
+          
+          # Push avec retry
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if git push; then
+              echo "✅ Push réussi !"
+              break
+            else
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                echo "⚠️ Push échoué, retry ${RETRY_COUNT}/${MAX_RETRIES}..."
+                sleep 5
+              else
+                echo "❌ Push échoué après ${MAX_RETRIES} tentatives"
+                exit 1
+              fi
+            fi
+          done
       
-      - name: Summary
+      - name: 📊 Résumé final
         if: always()
         run: |
-          echo " Workflow completed!"
-          echo "Date: $(date)"
-          echo "Files updated:"
-          ls -lh data/
+          echo ""
+          echo "=========================================="
+          echo "📊 RÉSUMÉ DE LA COLLECTE"
+          echo "=========================================="
+          echo "📅 Date : $(date +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "🐍 Python : $(python --version)"
+          echo ""
+          echo "📁 Fichiers dans data/ :"
+          ls -lh data/ 2>/dev/null || echo "⚠️ Dossier data/ vide"
+          echo ""
+          
+          if [ -f "data/music_talent_radar_v2.db" ]; then
+            echo "💾 Base de données :"
+            ls -lh data/music_talent_radar_v2.db
+            
+            # Compter artistes dans la base
+            ARTIST_COUNT=$(python -c "import sqlite3; conn = sqlite3.connect('data/music_talent_radar_v2.db'); cursor = conn.cursor(); cursor.execute('SELECT COUNT(*) FROM artistes'); print(cursor.fetchone()[0]); conn.close()" 2>/dev/null || echo "?")
+            echo "🎤 Artistes en base : ${ARTIST_COUNT}"
+          fi
+          
+          echo ""
+          echo "✅ Workflow terminé"
+          echo "=========================================="
+      
+      - name: 📧 Notification d'échec
+        if: failure()
+        run: |
+          echo ""
+          echo "❌ =========================================="
+          echo "❌ ÉCHEC DE LA COLLECTE AUTOMATIQUE"
+          echo "❌ =========================================="
+          echo ""
+          echo "🔍 Points de vérification :"
+          echo ""
+          echo "  1️⃣ Secrets GitHub Actions :"
+          echo "     • SPOTIFY_CLIENT_ID"
+          echo "     • SPOTIFY_CLIENT_SECRET"
+          echo ""
+          echo "  2️⃣ Credentials Spotify :"
+          echo "     • Vérifiez sur https://developer.spotify.com/dashboard"
+          echo "     • Client ID et Secret corrects ?"
+          echo ""
+          echo "  3️⃣ Fichiers requis :"
+          echo "     • music_talent_radar.py"
+          echo "     • artist_urls.csv"
+          echo "     • requirements.txt"
+          echo ""
+          echo "  4️⃣ Logs détaillés :"
+          echo "     • Consultez les logs ci-dessus"
+          echo "     • Cherchez les erreurs 401 (auth) ou 429 (rate limit)"
+          echo ""
+          echo "📧 Consultez l'onglet Actions sur GitHub pour plus de détails"
+          echo "=========================================="

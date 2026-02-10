@@ -82,14 +82,12 @@ SEARCH_KEYWORDS_SPOTIFY = {
         'pop alternative française', 'electro pop français',
         'nouveau talent pop français', 'artiste pop émergent','pop rock français',
         'pop paris', 'pop marseille', 'pop lyon', 'pop lille',
-        'pop 91', 'pop 92', 'pop 93', 'pop 94',
     ],
     'Afrobeat-Amapiano': [
         'afrobeat français', 'afrobeat france', 'amapiano',
         'afrobeats', 'afro trap français', 'afro drill',
         'dancehall français', 'afro pop française',
-        'afro paris', 'afro marseille', 'afro lyon', 'afro lille',
-        'afro 91', 'afro 92', 'afro 93', 'afro 94','afro hip hop français',
+        'afro paris', 'afro marseille', 'afro lyon', 'afro hip hop français',
         'afro rnb français', 'afro soul français', 'afro underground français',
         'afro house français', 'afro techno français', 'afro électro français',
     ],
@@ -110,19 +108,13 @@ SEARCH_KEYWORDS_SPOTIFY = {
         'jazz moderne français', 'neo soul français', 'nu jazz français','gospel français',
         'soul neo français', 'soul neo-soul français', 'new jazz français',
         'soul paris', 'soul marseille', 'soul lyon', 'soul lille',
-        'soul 91', 'soul 92', 'soul 93', 'soul 94',
-        'jazz paris', 'jazz marseille', 'jazz lyon', 'jazz lille',
-        'jazz 91', 'jazz 92', 'jazz 93', 'jazz 94',
-        'funk paris', 'funk marseille', 'funk lyon', 'funk lille',
-        'funk 91', 'funk 92', 'funk 93', 'funk 94',
         'gospel paris', 'gospel marseille', 'gospel lyon', 'gospel lille',
-        'gospel 91', 'gospel 92', 'gospel 93', 'gospel 94',
+
     ],
     'Electro': [
         'french touch', 'électro moderne', 'électro urbaine',
         'artiste électro français', 'nouveau talent électro',
         'électro paris', 'électro marseille', 'électro lyon', 'électro lille',
-        'électro 91', 'électro 92', 'électro 93', 'électro 94','electro house français',
         'electro techno français', 'electro indie français', 'electro pop français',
         'electro underground français', 'electro dance français', 'electro expérimentale français',
         'electro hip hop français', 'electro rnb français', 'electro soul français',
@@ -232,7 +224,9 @@ MOTS_EXCLUS_NOM = [
     
     # Compilations et collections
     'playlist', 'compilation', 'various', 'various artists', 'collectif',
-    'tribute', 'hommage', 'best of', 'greatest hits', 'hit','hits','mix','mixtape',
+    'tribute', 'hommage', 'best of', 'greatest hits', 'hit','hits','mix','mixtape','chanson française','chansons françaises',
+    'meilleur','meilleure','meilleurs','meilleures','classique','classiques','incontournable','incontournables',
+    'variétés','variété française','variétés françaises',
     
     # Karaoke et covers
     'karaoke', 'backing track', 'cover', 'tribute band',
@@ -274,7 +268,7 @@ DJ_PATTERNS = [
 SPOTIFY_MIN_FOLLOWERS = 100
 SPOTIFY_MAX_FOLLOWERS = 40000
 SPOTIFY_MAX_POPULARITY = 60
-ANNEE_MIN_PREMIER_ALBUM = 2018
+ANNEE_MIN_PREMIER_ALBUM = 2020
 
 # Deezer
 DEEZER_MIN_FANS = 100
@@ -625,15 +619,21 @@ def rechercher_artistes_deezer_par_mots_cles():
         'artiste émergent français', 'musique actuelle française',
 
         # Rap / Hip-Hop / RnB
-        'rap français', 'rappeur français', 'hip hop français',
-        'trap français', 'drill français', 'rap underground français',
-        'rap indépendant français', 'rnb français', 'r&b français',
-        'neo rnb français',
+        'rap français', 'rappeur français', 'nouveau rappeur français',
+        'trap français', 'drill français', 'rap underground français','hip hop soul français',
+        'rap paris', 'rap marseille', 'rap lyon', 'rap lille','hip hop rnb français',
+        'rap 91', 'rap 92', 'rap 93', 'rap 94','hiphop français','new style français',
+        'rap indépendant', 'rap soundcloud français', 'urban français', 'rnb français','r&b français','hip hop français',
+        'rap alternatif français', 'rap émergent français', 'rap indépendant français',
+        'rap underground français', 'rap conscient français', 'rap politique français',
+        'rap social français', 'rap engagé français', 'rap de rue français', 'rap hardcore français',
 
         # Pop / Chanson
-        'pop français', 'chanson française', 'pop alternative française',
-        'pop urbaine française', 'indie pop français',
-        'chanteur français', 'chanteuse française',
+        'pop français', 'chanson française', 'nouvelle scène française',
+        'indie pop français', 'chanteur français', 'chanteuse française',
+        'pop alternative française', 'electro pop français',
+        'nouveau talent pop français', 'artiste pop émergent','pop rock français',
+        'pop paris', 'pop marseille', 'pop lyon', 'pop lille',
 
         # Rock / Metal
         'rock français', 'rock alternatif français', 'indie rock français',
@@ -644,8 +644,11 @@ def rechercher_artistes_deezer_par_mots_cles():
         'bedroom pop français', 'folk français',
 
         # Jazz / Soul / Funk
-        'jazz français', 'soul français', 'neo soul français',
-        'jazz moderne français', 'funk français',
+        'jazz français', 'soul français','jazz soul français', 'funk français',
+        'jazz moderne français', 'neo soul français', 'nu jazz français','gospel français',
+        'soul neo français', 'soul neo-soul français', 'new jazz français',
+        'soul paris', 'soul marseille', 'soul lyon', 'soul lille',
+        'gospel paris', 'gospel marseille', 'gospel lyon', 'gospel lille',
 
         # Electro
         'electro français', 'électro pop française',
