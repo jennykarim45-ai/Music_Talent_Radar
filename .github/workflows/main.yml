@@ -136,11 +136,9 @@ jobs:
           git add data/*.csv data/*.db 2>/dev/null || true
           git add data/ 2>/dev/null || true
           
-          # Commit
+          # Commit avec message sur une ligne
           COMMIT_DATE=$(date +'%Y-%m-%d %H:%M UTC')
-          git commit -m "🤖 Collecte automatique ${COMMIT_DATE}" -m "- Mise à jour des données Spotify/Deezer
-- Recalcul des scores
-- Génération alertes et prédictions ML" || {
+          git commit -m "🤖 Collecte automatique ${COMMIT_DATE} - Mise à jour données + scores + alertes ML" || {
             echo "⚠️ Rien à committer (déjà à jour)"
             exit 0
           }
