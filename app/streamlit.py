@@ -93,10 +93,10 @@ with st.sidebar:
         "",
         pages,
         index=current_index,
-        label_visibility="collapsed"
+        label_visibility="collapsed",  
+        key="nav_radio"
     )
-    
-    #  Mettre à jour UNIQUEMENT si différent
+
     if selected_page != st.session_state.active_page:
         st.session_state.active_page = selected_page
         st.rerun()  
@@ -423,10 +423,14 @@ def create_bar_chart(data, x, y, color, title):
     )
     return fig
 
-def get_latest_metrics(metriques_df):
-    """Récupère les dernières métriques par artiste/plateforme"""
+@st.cache_data(ttl=600)  
+def get_latest_metrics(metriques_df_json):
+    """Récupère les dernières métriques par artiste/plateforme - CACHED"""
+    # Convertir JSON → DataFrame
+    metriques_df = pd.read_json(metriques_df_json, orient='split')
+    
     if metriques_df.empty:
-        return pd.DataFrame().reset_index(drop=True)
+        return pd.DataFrame()
     
     try:
         # Convertir date_collecte en datetime
@@ -489,62 +493,41 @@ try:
         st.info(" Importez vos données avec le script approprié")
         st.stop()
     
-    latest_metrics_df = get_latest_metrics(metriques_df)
-    latest_metrics_df = latest_metrics_df.reset_index(drop=True)
+    # Convertir en JSON pour le cache
+    latest_metrics_df = get_latest_metrics(metriques_df.to_json(orient='split'))
     
-    #  CRÉER LA COLONNE URL SI ELLE N'EXISTE PAS
-    if 'url' not in latest_metrics_df.columns:
-        print(" Colonne 'url' manquante, création...")
+@st.cache_data(ttl=600)
+def add_urls_to_metrics(metrics_json, artistes_json):
+    """Ajoute les URLs aux métriques - CACHED"""
+    metrics_df = pd.read_json(metrics_json, orient='split')
+    artistes_df = pd.read_json(artistes_json, orient='split')
+    
+    if 'url' not in metrics_df.columns:
+        metrics_df['url'] = ''
         
-        # Créer colonne url vide
-        latest_metrics_df['url'] = ''
-        
-        # Remplir depuis artistes_df
-        if 'id_unique' in latest_metrics_df.columns and 'id_unique' in artistes_df.columns:
-            for idx, row in latest_metrics_df.iterrows():
-                id_unique = row.get('id_unique')
-                plateforme = row.get('plateforme', row.get('source', ''))
+        if 'id_unique' in metrics_df.columns and 'id_unique' in artistes_df.columns:
+            # Créer un mapping id_unique → url
+            url_mapping = {}
+            
+            for _, artist_row in artistes_df.iterrows():
+                id_unique = artist_row.get('id_unique')
+                url_spotify = artist_row.get('url_spotify', '')
+                url_deezer = artist_row.get('url_deezer', '')
                 
-                matching = artistes_df[artistes_df['id_unique'] == id_unique]
-                
-                if len(matching) > 0:
-                    if plateforme == 'Spotify' and 'url_spotify' in artistes_df.columns:
-                        url = matching.iloc[0].get('url_spotify', '')
-                    elif plateforme == 'Deezer' and 'url_deezer' in artistes_df.columns:
-                        url = matching.iloc[0].get('url_deezer', '')
-                    else:
-                        # Essayer les deux
-                        url = matching.iloc[0].get('url_spotify', matching.iloc[0].get('url_deezer', ''))
-                    
-                    if url and pd.notna(url):
-                        latest_metrics_df.at[idx, 'url'] = url # type: ignore
-        
-        print(f" {latest_metrics_df['url'].notna().sum()} URLs ajoutées")
+                url = url_spotify if url_spotify and pd.notna(url_spotify) else url_deezer
+                if url and pd.notna(url):
+                    url_mapping[id_unique] = url
+            
+            # Appliquer le mapping
+            metrics_df['url'] = metrics_df['id_unique'].map(url_mapping).fillna('')
+    
+    return metrics_df
 
-    # Pareil pour metriques_df
-    if 'url' not in metriques_df.columns:
-        print(" Colonne 'url' manquante dans metriques_df, création...")
-        metriques_df['url'] = ''
-        
-        if 'id_unique' in metriques_df.columns and 'id_unique' in artistes_df.columns:
-            for idx, row in metriques_df.iterrows():
-                id_unique = row.get('id_unique')
-                plateforme = row.get('plateforme', row.get('source', ''))
-                
-                matching = artistes_df[artistes_df['id_unique'] == id_unique]
-                
-                if len(matching) > 0:
-                    if plateforme == 'Spotify' and 'url_spotify' in artistes_df.columns:
-                        url = matching.iloc[0].get('url_spotify', '')
-                    elif plateforme == 'Deezer' and 'url_deezer' in artistes_df.columns:
-                        url = matching.iloc[0].get('url_deezer', '')
-                    else:
-                        url = matching.iloc[0].get('url_spotify', matching.iloc[0].get('url_deezer', ''))
-                    
-                    if url and pd.notna(url):
-                        metriques_df.at[idx, 'url'] = url # type: ignore
-        
-        print(f" {metriques_df['url'].notna().sum()} URLs ajoutées à metriques_df")
+# Utiliser la fonction cachée
+latest_metrics_df = add_urls_to_metrics(
+    latest_metrics_df.to_json(orient='split'),
+    artistes_df.to_json(orient='split')
+)
     
     # Conversion scores
     if 'score' in latest_metrics_df.columns and 'score_potentiel' not in latest_metrics_df.columns:
@@ -1202,7 +1185,7 @@ elif st.session_state.active_page == "Les artistes":
         with col_prev:
             if st.button("⬅️ Précédent", disabled=(st.session_state.page_artistes <= 1), key="prev_bottom"):
                 st.session_state.page_artistes -= 1
-                st.rerun()
+                
         
         with col_pages:
             pages_to_show = []
@@ -1231,12 +1214,12 @@ elif st.session_state.active_page == "Les artistes":
                             use_container_width=True
                         ):
                             st.session_state.page_artistes = page_num
-                            st.rerun()
+                            
         
         with col_next:
             if st.button("Suivant ➡️", disabled=(st.session_state.page_artistes >= total_pages), key="next_bottom"):
                 st.session_state.page_artistes += 1
-                st.rerun()
+                
     else:
         st.info("Aucun artiste disponible")
 
@@ -1252,7 +1235,7 @@ elif st.session_state.active_page == "Évolution":
             if st.button("⬅️ Retour", use_container_width=True):
                 st.session_state.active_page = st.session_state.previous_page
                 st.session_state.previous_page = None
-                st.rerun()
+                
         with col_title:
             st.markdown("")
     else:
@@ -2547,7 +2530,7 @@ elif st.session_state.active_page == "Mon Profil":
                         use_container_width=True
                     ):
                         st.session_state.artistes_interesses.remove(artiste_nom)
-                        st.rerun()
+                        
                 
                 st.markdown("---")
             else:
@@ -2558,7 +2541,7 @@ elif st.session_state.active_page == "Mon Profil":
                 with col2:
                     if st.button("🗑️ Retirer", key=f"profil_del_missing_{unique_id}", use_container_width=True):
                         st.session_state.artistes_interesses.remove(artiste_nom)
-                        st.rerun()
+                        
                 st.markdown("---")
                 
 
