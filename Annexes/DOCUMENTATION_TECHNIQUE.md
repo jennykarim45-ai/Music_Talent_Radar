@@ -142,7 +142,7 @@ J'ai choisi **Spotify** et **Deezer** car :
 
 **Deezer :**
 -  **Pas d'endpoint de recherche par mots-clés** pour artistes
--  Collecte limitée à **l'exploration de playlists** (13 playlists + recherche manuelle)
+-  Collecte limitée à **l'exploration de playlists** (15 playlists)
 -  Moins d'artistes ultra-émergents dans les playlists officielles
 
 **2. Limitations Techniques de l'API Deezer**
@@ -232,10 +232,10 @@ Au début, j'en avais seulement 10 et je trouvais toujours les mêmes artistes. 
 **Le défi :** éviter les artistes déjà connus ET les faux positifs (DJs, producteurs) !
 ```python
 # Filtres quantitatifs
-SPOTIFY_MIN_FOLLOWERS = 100      # Abaissé de 200 à 100
+SPOTIFY_MIN_FOLLOWERS = 100      
 SPOTIFY_MAX_FOLLOWERS = 40000
 SPOTIFY_MAX_POPULARITY = 60
-ANNEE_MIN_PREMIER_ALBUM = 2018
+ANNEE_MIN_PREMIER_ALBUM = 2020
 
 # Filtres qualitatifs (BLACKLIST)
 BLACKLIST_ARTISTS = [
@@ -675,7 +675,7 @@ SCORE TOTAL: 74.2 / 100
 
 ### Préparation des Données
 
-**Fichier : `ml_prediction.py` (v3.0 - Rewrite complet)**
+**Fichier : `ml_prediction.py`**
 
 #### **Étape 1 : Calculer la Croissance réelle**
 
@@ -954,12 +954,7 @@ with st.sidebar:
     selected_genre = st.selectbox("🎵 Genre", genres)
     min_score = st.slider("⭐ Score minimum", 0, 100, 0)
 
-# 5. Navigation directe (sans flags intermédiaires)
-if selected_page != st.session_state.active_page:
-    st.session_state.active_page = selected_page
-    st.rerun()  # Un seul rerun, pas trois !
-
-# 6. Pages
+# 5. Pages
 if st.session_state.active_page == "Vue d'ensemble":
     # Code de la page Vue d'ensemble
     
