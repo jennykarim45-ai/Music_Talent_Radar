@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import io
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
@@ -9,8 +12,9 @@ import os
 from PIL import Image
 import math
 import base64
-
 import auth  
+plt.style.use('seaborn-v0_8-darkgrid')
+sns.set_palette("husl")
 
 # Détection de l'environnement
 try:
@@ -836,6 +840,163 @@ if 'artiste_selectionne' not in st.session_state:
     st.session_state['artiste_selectionne'] = None
 
 # ==================== TAB 1: VUE D'ENSEMBLE ====================
+
+@st.cache_data(ttl=3600)  # Cache pendant 1 heure
+def generer_camembert_streamlit():
+    """Génère le camembert Spotify vs Deezer pour Streamlit"""
+    
+    conn = sqlite3.connect(DB_PATH)
+    
+    query = """
+        SELECT plateforme, COUNT(DISTINCT nom_artiste) as nb_artistes
+        FROM metriques_historique
+        GROUP BY plateforme
+    """
+    
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    
+    if df.empty:
+        return None
+    
+    # Créer le graphique
+    fig, ax = plt.subplots(figsize=(8, 6))
+    
+    couleurs = ['#1DB954', '#FF6B35']
+    
+    wedges, texts, autotexts = ax.pie(
+        df['nb_artistes'],
+        labels=df['plateforme'],
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=couleurs,
+        explode=(0.05, 0.05),
+        shadow=True,
+        textprops={'fontsize': 11, 'weight': 'bold'}
+    )
+    
+    for autotext in autotexts:
+        autotext.set_color('white')
+        autotext.set_fontsize(13)
+        autotext.set_weight('bold')
+    
+    total = df['nb_artistes'].sum()
+    plt.title(
+        f'Répartition par Plateforme\n{total} artistes',
+        fontsize=14,
+        weight='bold',
+        pad=15
+    )
+    
+    plt.tight_layout()
+    
+    return fig
+
+
+@st.cache_data(ttl=3600)
+def generer_barres_genres_streamlit():
+    """Génère les barres comparatives par genre pour Streamlit"""
+    
+    conn = sqlite3.connect(DB_PATH)
+    
+    query = """
+        SELECT genre, plateforme, COUNT(DISTINCT nom_artiste) as nb_artistes
+        FROM metriques_historique
+        WHERE genre IS NOT NULL AND genre != ''
+        GROUP BY genre, plateforme
+    """
+    
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    
+    if df.empty:
+        return None
+    
+    # Pivoter
+    df_pivot = df.pivot(index='genre', columns='plateforme', values='nb_artistes').fillna(0)
+    
+    if 'Spotify' not in df_pivot.columns:
+        df_pivot['Spotify'] = 0
+    if 'Deezer' not in df_pivot.columns:
+        df_pivot['Deezer'] = 0
+    
+    df_pivot = df_pivot[['Spotify', 'Deezer']].reset_index()
+    df_pivot = df_pivot.sort_values('Spotify', ascending=False).head(7)  # Top 7 genres
+    
+    # Créer le graphique
+    fig, ax = plt.subplots(figsize=(10, 5))
+    
+    x = range(len(df_pivot))
+    width = 0.35
+    
+    bars1 = ax.bar(
+        [i - width/2 for i in x],
+        df_pivot['Spotify'],
+        width,
+        label='Spotify',
+        color='#1DB954',
+        alpha=0.85
+    )
+    
+    bars2 = ax.bar(
+        [i + width/2 for i in x],
+        df_pivot['Deezer'],
+        width,
+        label='Deezer',
+        color='#FF6B35',
+        alpha=0.85
+    )
+    
+    # Labels au-dessus des barres
+    for bars in [bars1, bars2]:
+        for bar in bars:
+            height = bar.get_height()
+            if height > 0:
+                ax.text(
+                    bar.get_x() + bar.get_width()/2.,
+                    height,
+                    f'{int(height)}',
+                    ha='center',
+                    va='bottom',
+                    fontsize=9,
+                    weight='bold'
+                )
+    
+    ax.set_xlabel('Genres Musicaux', fontsize=11, weight='bold')
+    ax.set_ylabel('Nombre d\'Artistes', fontsize=11, weight='bold')
+    ax.set_title('Distribution par Genre', fontsize=13, weight='bold', pad=15)
+    ax.set_xticks(x)
+    ax.set_xticklabels(df_pivot['genre'], rotation=45, ha='right', fontsize=10)
+    ax.legend(fontsize=10, loc='upper right')
+    ax.grid(True, alpha=0.3, axis='y', linestyle='--')
+    
+    plt.tight_layout()
+    
+    return fig
+
+
+@st.cache_data(ttl=3600)
+def get_stats_plateformes():
+    """Récupère les stats pour l'affichage sous les graphiques"""
+    
+    conn = sqlite3.connect(DB_PATH)
+    
+    query = """
+        SELECT 
+            plateforme,
+            COUNT(DISTINCT nom_artiste) as nb_artistes,
+            ROUND(AVG(fans_followers), 0) as avg_followers,
+            MAX(fans_followers) as max_followers,
+            ROUND(AVG(score_potentiel), 1) as avg_score
+        FROM metriques_historique
+        GROUP BY plateforme
+    """
+    
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    
+    return df
+
 if st.session_state.active_page == "Vue d'ensemble":
     with st.spinner(""):
         st.markdown("## 🏠 Vue d'ensemble")
@@ -882,7 +1043,7 @@ if st.session_state.active_page == "Vue d'ensemble":
                 margin=dict(l=40, r=20, t=20, b=40)  #réduire marges
             )
             st.plotly_chart(fig, use_container_width=True)
-            st.caption("Ce graphique montre la répartition des scores de potentiel. La plupart des artistes se situent entre 40 et 70 points, avec quelques talents exceptionnels au-delà de 80.")
+            st.caption("Ce graphique montre la répartition des scores de potentiel. Le score des artistes se situent entre 0 et 90 points")
         else:
             st.info("Aucune donnée avec ces filtres")
 
@@ -926,65 +1087,60 @@ if st.session_state.active_page == "Vue d'ensemble":
             st.caption("Répartition des artistes par genre musical. Cela permet d'identifier les genres les plus représentés dans notre base de talents émergents.")
         else:
             st.info("Aucune donnée de genre disponible")
+            
+    st.markdown("---")
+
+    st.subheader("📊 Analyse par Plateforme et Genre")
+
+    # Layout : 2 colonnes
+    col_gauche, col_droite = st.columns(2)
+
+    # COLONNE GAUCHE : CAMEMBERT
+    with col_gauche:
+        st.markdown("#### 🥧 Répartition des Plateformes")
+        
+        try:
+            fig_camembert = generer_camembert_streamlit()
+            
+            if fig_camembert:
+                st.pyplot(fig_camembert)
+                plt.close(fig_camembert)
+                
+                # Stats détaillées sous le graphique
+                stats_plat = get_stats_plateformes()
+                
+                st.markdown("**📌 Détails :**")
+                for _, row in stats_plat.iterrows():
+                    st.markdown(
+                        f"**{row['plateforme']}** : {int(row['nb_artistes'])} artistes "
+                        f"(avg: {int(row['avg_followers']):,} fans, score: {row['avg_score']}/100)"
+                    )
+            else:
+                st.info("ℹ️ Aucune donnée disponible pour le camembert")
+        
+        except Exception as e:
+            st.error(f"❌ Erreur génération camembert : {e}")
+
+    # COLONNE DROITE : BARRES COMPARATIVES
+    with col_droite:
+        st.markdown("#### 📊 Distribution par Genre")
+        
+        try:
+            fig_barres = generer_barres_genres_streamlit()
+            
+            if fig_barres:
+                st.pyplot(fig_barres)
+                plt.close(fig_barres)
+                
+                # Note explicative
+                st.caption("Top 7 genres les plus représentés sur Spotify")
+            else:
+                st.info("ℹ️ Aucune donnée genre disponible")
+        
+        except Exception as e:
+            st.error(f"❌ Erreur génération barres : {e}")
 
     st.markdown("---")
-    col_top1, col_top2 = st.columns(2)
-    
-    with col_top1:
-        st.markdown("### 🔵 Top 5 Deezer")
-        if len(filtered_df) > 0:
-            deezer_df = filtered_df[filtered_df['plateforme'] == 'Deezer']
-            if len(deezer_df) > 0:
-                top5_deezer = deezer_df.nlargest(min(5, len(deezer_df)), 'score_potentiel')
-                fig = px.bar(
-                    top5_deezer, 
-                    x='score_potentiel', 
-                    y='nom_artiste', 
-                    orientation='h', 
-                    text='score_potentiel',
-                    color_discrete_sequence=[COLORS['secondary']]
-                )
-                fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
-                fig.update_layout(
-                    plot_bgcolor=COLORS['bg_card'], 
-                    paper_bgcolor=COLORS['bg_card'], 
-                    font_color=COLORS['text'], 
-                    yaxis={'categoryorder':'total ascending'}, 
-                    height=280,
-                    showlegend=False
-                )
-                st.plotly_chart(fig, use_container_width=True)
-                st.caption("Les 5 artistes Deezer avec les meilleurs scores de potentiel. Ces talents se démarquent par leur combinaison unique de fans, engagement et récence.")
-            else:
-                st.info("Aucun artiste Deezer avec ces filtres")
-
-    with col_top2:
-        st.markdown("### 🟢 Top 5 Spotify")
-        if len(filtered_df) > 0:
-            spotify_df = filtered_df[filtered_df['plateforme'] == 'Spotify']
-            if len(spotify_df) > 0:
-                top5_spotify = spotify_df.nlargest(min(5, len(spotify_df)), 'score_potentiel')
-                fig = px.bar(
-                    top5_spotify, 
-                    x='score_potentiel', 
-                    y='nom_artiste', 
-                    orientation='h', 
-                    text='score_potentiel',
-                    color_discrete_sequence=[COLORS['accent3']]
-                )
-                fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
-                fig.update_layout(
-                    plot_bgcolor=COLORS['bg_card'], 
-                    paper_bgcolor=COLORS['bg_card'], 
-                    font_color=COLORS['text'], 
-                    yaxis={'categoryorder':'total ascending'}, 
-                    height=280,
-                    showlegend=False
-                )
-                st.plotly_chart(fig, use_container_width=True)
-                st.caption("Les 5 artistes Spotify avec les meilleurs scores de potentiel. Ces artistes montrent une croissance prometteuse et un engagement fort de leur communauté.")
-            else:
-                st.info("Aucun artiste Spotify avec ces filtres")
 
 # ==================== TAB 2: LES TOP ====================
 elif st.session_state.active_page == "Les Tops":
@@ -1078,49 +1234,64 @@ elif st.session_state.active_page == "Les Tops":
                     
         st.markdown("---")
         
-        st.markdown("### 🌐 Répartition Plateforme (Top 50)")
-        top50 = top_df.head(50)
-        platform_counts = top50['plateforme'].value_counts()
-        
-        fig = px.pie(
-            values=platform_counts.values,
-            names=platform_counts.index,
-            color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
-            hole=0.4
-        )
-        fig.update_layout(
-            plot_bgcolor=COLORS['bg_card'],
-            paper_bgcolor=COLORS['bg_card'],
-            font_color=COLORS['text'],
-            legend=dict(font=dict(color='white'))
-        )
-        fig.update_traces(textfont_color='white', textfont_size=16)
-        st.plotly_chart(fig, use_container_width=True)
-        st.caption("Répartition Spotify vs Deezer parmi les 50 meilleurs. Cela montre quelle plateforme domine dans le Top.")
-        
-        st.markdown("---")
-        
-        st.markdown("### 👥 Distribution Followers (Top 50)")
-        
-        fig = px.histogram(
-            top50,
-            x='followers_total',
-            nbins=15,
-            color='plateforme',
-            color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
-            labels={"count": "Nombre d'artistes", 'followers_total': 'Followers/Fans'}
-        )
-        fig.update_layout(
-            plot_bgcolor=COLORS['bg_card'],
-            paper_bgcolor=COLORS['bg_card'],
-            font_color=COLORS['text'],
-            height=280,
-            legend=dict(font=dict(color='white'))
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        st.caption("Distribution du nombre de followers/fans parmi les 50 meilleurs. La plupart ont entre 10k et 30k followers, zone idéale pour la détection de talents.")
-    else:
-        st.info("Aucun artiste disponible")
+    st.markdown("---")
+    col_top1, col_top2 = st.columns(2)
+    
+    with col_top1:
+        st.markdown("### 🔵 Top 5 Deezer")
+        if len(filtered_df) > 0:
+            deezer_df = filtered_df[filtered_df['plateforme'] == 'Deezer']
+            if len(deezer_df) > 0:
+                top5_deezer = deezer_df.nlargest(min(5, len(deezer_df)), 'score_potentiel')
+                fig = px.bar(
+                    top5_deezer, 
+                    x='score_potentiel', 
+                    y='nom_artiste', 
+                    orientation='h', 
+                    text='score_potentiel',
+                    color_discrete_sequence=[COLORS['secondary']]
+                )
+                fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
+                fig.update_layout(
+                    plot_bgcolor=COLORS['bg_card'], 
+                    paper_bgcolor=COLORS['bg_card'], 
+                    font_color=COLORS['text'], 
+                    yaxis={'categoryorder':'total ascending'}, 
+                    height=280,
+                    showlegend=False
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                st.caption("Les 5 artistes Deezer avec les meilleurs scores de potentiel. Ces talents se démarquent par leur combinaison unique de fans, engagement et récence.")
+            else:
+                st.info("Aucun artiste Deezer avec ces filtres")
+
+    with col_top2:
+        st.markdown("### 🟢 Top 5 Spotify")
+        if len(filtered_df) > 0:
+            spotify_df = filtered_df[filtered_df['plateforme'] == 'Spotify']
+            if len(spotify_df) > 0:
+                top5_spotify = spotify_df.nlargest(min(5, len(spotify_df)), 'score_potentiel')
+                fig = px.bar(
+                    top5_spotify, 
+                    x='score_potentiel', 
+                    y='nom_artiste', 
+                    orientation='h', 
+                    text='score_potentiel',
+                    color_discrete_sequence=[COLORS['accent3']]
+                )
+                fig.update_traces(texttemplate='%{text:.1f}', textposition='outside')
+                fig.update_layout(
+                    plot_bgcolor=COLORS['bg_card'], 
+                    paper_bgcolor=COLORS['bg_card'], 
+                    font_color=COLORS['text'], 
+                    yaxis={'categoryorder':'total ascending'}, 
+                    height=280,
+                    showlegend=False
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                st.caption("Les 5 artistes Spotify avec les meilleurs scores de potentiel. Ces artistes montrent une croissance prometteuse et un engagement fort de leur communauté.")
+            else:
+                st.info("Aucun artiste Spotify avec ces filtres")        
 
 # ==================== TAB 3: LES ARTISTES ====================
 elif st.session_state.active_page == "Les artistes":
