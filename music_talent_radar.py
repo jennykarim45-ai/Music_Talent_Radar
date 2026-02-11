@@ -32,21 +32,22 @@ load_dotenv()
 
 # Liste noire artistes (normalisée)
 BLACKLIST_ARTISTS = [
-    "ryan gosling", "Missan", "La Plaie", "Jungle Jack", "Bleu Soleil",
-    "emma stone", "Nour", "Oasis de musique jazz", "elyasbitum93200", "John Weezy B",
-    "Ebony"," ZZ", "Lauren Spencer-Smith", "Keshi","SG Lewis","Francis Lalanne",
+    "ryan gosling", "Missan", "La Plaie", "Jungle Jack", "Bleu Soleil","Soul Blues Icons "
+    "emma stone", "Nour", "Oasis de musique jazz", "elyasbitum93200", "John Weezy B","Jazz de bonne humeur ",
+    "Ebony"," ZZ", "Lauren Spencer-Smith", "Keshi","SG Lewis","Francis Lalanne","Église Momentum", 
     "Limsa d'aulnay", "Justin Hurwitz","A Flock of Seagulls","Prefab Sprout","Gary Numan",
-    "RDN","Ultravox", "Ryflo", "Nakk Mendosa", "La Clinique", "Rich Chigga",
+    "RDN","Ultravox", "Ryflo", "Nakk Mendosa", "La Clinique", "Rich Chigga","Momentum Musique"
     "OPINEL 21", "ATK", "Tookie2Beriz","93PUNX","Adrian von Ziegler","Aztec Camera",
     "Grandmaster Flash & The Furious Five", "Gorillaz", "Gary Numan", "Tubeway Army",
     "Philip Oakey", "Rich Brian", "Nicola Sirkis", "PLK","Kheops", "Janet Jackson",
-    "Luther Vandross", "Eric Elmosnino","Sons de la Nature Projet France",
+    "Luther Vandross", "Eric Elmosnino","Sons de la Nature Projet France"," Marseille Capitale du Rap "
     "FUNK DEMON", "Ashvma","Lully Hill","DL91 Era","Jeez Suave", "Thisizlondon",
-    "The Soul Jazz Era","Jamso", "Lenaïg", "Theomaa","19s Soulers","FRENCHGRL",
+    "The Soul Jazz Era","Jamso", "Lenaïg", "Theomaa","19s Soulers","FRENCHGRL","Les Folies Françoises ",
     "Pescado Rabioso", "Jean-Luc Lahaye", "Starley", "Ici c'est Paris", "PARIS.","Walk in Paris",
     'Nicola Sirkis', 'Alain Chamfort', 'Francis Lalanne', 'David Castello-Lopes', 'ATK', 'F.F.F.',
     'Frànçois & The Atlas Mountains', 'Francis And The Lights', 'Francis Mercier', 'Charles Pasi', 'Ryan Paris', 'Stardust', 'Pop Will Eat Itself', 'Soulive',
-    'Victoire Musique', 'Peppa Pig (Français)', 'Pinkfong en Français', 'Hazbin Hotel'
+    'Victoire Musique', 'Peppa Pig (Français)', 'Pinkfong en Français', 'Hazbin Hotel',"Jazz douce musique d'ambiance",
+    "Oasis de musique jazz relaxant","The Paris Match ","Baroque Jazz Trio ","Jeremstar","K-Pop Demon Hunter","K-Pop",
 ]
     
 
