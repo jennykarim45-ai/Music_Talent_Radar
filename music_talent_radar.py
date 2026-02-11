@@ -966,8 +966,8 @@ def importer_en_base():
 # ============================================================================
 
 def ml_et_alertes():
-    """Module ML : Calcul des scores + Génération d'alertes"""
-    print("🤖 MODULE 5 : CALCUL SCORES + ALERTES")
+    """Module ML : Calcul des scores CORRIGÉ + Génération d'alertes"""
+    print("🤖 MODULE 5 : CALCUL SCORES CORRIGÉ + ALERTES")
     
     try:
         conn = sqlite3.connect(DB_PATH)
@@ -983,88 +983,138 @@ def ml_et_alertes():
         
         print(f"📊 {count} artistes dans la base")
         
-        # CALCUL DES SCORES
-        print("\n🔢 Calcul des scores...")
+        # CALCUL DES SCORES CORRIGÉ
+        print("\n🔢 Calcul des scores (version corrigée)...")
         
         cursor.execute("""
-            SELECT id, fans_followers, popularity, plateforme, nom_artiste, id_unique
+            SELECT 
+                id, 
+                fans_followers, 
+                popularity, 
+                plateforme, 
+                nom_artiste, 
+                id_unique,
+                nb_albums,
+                nb_releases_recentes
             FROM metriques_historique
         """)
         
         rows = cursor.fetchall()
         scores_updated = 0
         
+        debug_scores = []  # Pour debug
+        
         for row in rows:
-            metric_id, fans_followers, popularity, plateforme, nom_artiste, id_unique = row
+            (metric_id, fans_followers, popularity, plateforme, 
+            nom_artiste, id_unique, nb_albums, nb_releases_recentes) = row
             
-            # CRITÈRE 1 : AUDIENCE (40%)
+            # Debug : collecter infos
+            debug_info = {
+                'nom': nom_artiste,
+                'plateforme': plateforme,
+                'fans': fans_followers or 0,
+                'popularity': popularity or 0,
+                'albums': nb_albums or 0,
+                'releases': nb_releases_recentes or 0
+            }
+            
+
+            # CRITÈRE 1 : AUDIENCE (35%) - ZONE 100-20,000
+
             audience_score = 0
-            if fans_followers:
-                fans_norm = min(max(fans_followers, 100), 40000)
-                audience_score = ((fans_norm - 100) / (40000 - 100)) * 40
             
+            if fans_followers:
+                # Normaliser entre 100 et 20,000 (zone émergente)
+                fans_norm = min(max(fans_followers, 100), 20000)
+                
+                # Formule progressive avec boost 5k-15k
+                if fans_followers <= 5000:
+                    # 100-5000 : 0 à 12 pts
+                    audience_score = ((fans_norm - 100) / (5000 - 100)) * 12
+                
+                elif fans_followers <= 15000:
+                    # 5000-15000 : 12 à 30 pts (BOOST)
+                    audience_score = 12 + ((fans_norm - 5000) / (15000 - 5000)) * 18
+                
+                else:
+                    # 15000-20000 : 30 à 35 pts
+                    audience_score = 30 + ((fans_norm - 15000) / (20000 - 15000)) * 5
+            
+            debug_info['audience_score'] = round(audience_score, 1)
+            
+
             # CRITÈRE 2 : ENGAGEMENT (30%)
+
             engagement_score = 0
             
             if plateforme == 'Spotify':
-                if popularity:
-                    pop_norm = min(max(popularity, 20), 65)
-                    engagement_score = ((pop_norm - 20) / (65 - 20)) * 30
+                # CORRECTION : Popularity 0-50 (au lieu de 20-65)
+                if popularity is not None:
+                    pop_norm = min(max(popularity or 0, 0), 50)
+                    engagement_score = (pop_norm / 50) * 30
             
             elif plateforme == 'Deezer':
-                cursor.execute("SELECT nb_albums FROM metriques_historique WHERE id = ?", (metric_id,))
-                result = cursor.fetchone()
-                nb_albums = result[0] if result and result[0] else 1
-                
-                if nb_albums > 0 and fans_followers:
+                # Ratio fans/albums
+                if nb_albums and nb_albums > 0 and fans_followers:
                     ratio = fans_followers / nb_albums
-                    ratio_norm = min(max(ratio, 100), 10000)
-                    engagement_score = ((ratio_norm - 100) / (10000 - 100)) * 30
+                    # Normaliser : 50-5000 fans/album
+                    ratio_norm = min(max(ratio, 50), 5000)
+                    engagement_score = ((ratio_norm - 50) / (5000 - 50)) * 30
             
-            # CRITÈRE 3 : RÉCURRENCE (20%)
-            recurrence_score = 0
+            debug_info['engagement_score'] = round(engagement_score, 1)
             
-            if plateforme == 'Spotify' and os.path.exists('data/spotify_filtered.csv'):
-                spotify_df = pd.read_csv('data/spotify_filtered.csv')
-                artist_row = spotify_df[spotify_df['nom'] == nom_artiste]
-                
-                if not artist_row.empty and 'nb_releases_recentes' in artist_row.columns:
-                    nb_releases = artist_row.iloc[0]['nb_releases_recentes']
-                    recurrence_score = min(nb_releases / 10, 1) * 20
+
+            # CRITÈRE 3 : PRODUCTIVITÉ (25%) - UTILISE DIRECTEMENT LA BDD
+
+            productivite_score = 0
             
-            elif plateforme == 'Deezer' and os.path.exists('data/deezer_filtered.csv'):
-                deezer_df = pd.read_csv('data/deezer_filtered.csv')
-                artist_row = deezer_df[deezer_df['nom'] == nom_artiste]
-                
-                if not artist_row.empty and 'nb_releases_recentes' in artist_row.columns:
-                    nb_releases = artist_row.iloc[0]['nb_releases_recentes']
-                    recurrence_score = min(nb_releases / 10, 1) * 20
+            # Sous-critère A : Releases récentes (15 pts)
+            # CORRECTION : Utiliser directement nb_releases_recentes de la BDD
+            if nb_releases_recentes is not None and nb_releases_recentes > 0:
+                # Normaliser : 1-5 releases
+                releases_norm = min(nb_releases_recentes, 5)
+                productivite_score += (releases_norm / 5) * 15
             
-            # CRITÈRE 4 : INFLUENCE MULTI-PLATEFORME (10%)
+            # Sous-critère B : Catalogue total (10 pts)
+            if nb_albums is not None and nb_albums > 0:
+                # Normaliser : 1-3 albums
+                albums_norm = min(nb_albums, 3)
+                productivite_score += (albums_norm / 3) * 10
+            
+            debug_info['productivite_score'] = round(productivite_score, 1)
+            
+
+            # CRITÈRE 4 : INFLUENCE (10%)
+
             influence_score = 0
             
-            if plateforme == 'Spotify':
-                cursor.execute("""
-                    SELECT COUNT(*) FROM metriques_historique
-                    WHERE nom_artiste = ? AND plateforme = 'Deezer'
-                """, (nom_artiste,))
-                
-                if cursor.fetchone()[0] > 0:
-                    influence_score = 10
+            # Sous-critère A : Multi-plateforme (5 pts)
+            cursor.execute("""
+                SELECT COUNT(DISTINCT plateforme) 
+                FROM metriques_historique
+                WHERE nom_artiste = ?
+            """, (nom_artiste,))
             
-            elif plateforme == 'Deezer':
-                cursor.execute("""
-                    SELECT COUNT(*) FROM metriques_historique
-                    WHERE nom_artiste = ? AND plateforme = 'Spotify'
-                """, (nom_artiste,))
-                
-                if cursor.fetchone()[0] > 0:
-                    influence_score = 10
+            nb_plateformes = cursor.fetchone()[0]
+            if nb_plateformes >= 2:
+                influence_score += 5
             
+            # Sous-critère B : Activité récente (5 pts)
+            if nb_releases_recentes and nb_releases_recentes >= 2:
+                influence_score += 5
+            
+            debug_info['influence_score'] = round(influence_score, 1)
+            
+
             # SCORE FINAL
-            score_final = audience_score + engagement_score + recurrence_score + influence_score
+
+            score_final = audience_score + engagement_score + productivite_score + influence_score
             score_final = round(score_final, 1)
             
+            debug_info['score_final'] = score_final
+            debug_scores.append(debug_info)
+            
+            # Mise à jour BDD
             cursor.execute("""
                 UPDATE metriques_historique
                 SET score_potentiel = ?, score = ?
