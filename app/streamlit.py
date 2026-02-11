@@ -852,11 +852,10 @@ if st.session_state.active_page == "Vue d'ensemble":
     with col4:
         st.metric("🔔 ALERTES", len(alertes_df))
     
-    st.markdown("---")
-    col1, col2 = st.columns(2)
+
     
-st.markdown("---")
-col1, col2 = st.columns(2, gap="small")  # ← AJOUTER gap="small"
+    st.markdown("---")
+    col1, col2 = st.columns(2, gap="small") 
 
     with col1:
         st.markdown("### 📊 Distribution des scores")
