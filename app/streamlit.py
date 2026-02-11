@@ -493,41 +493,50 @@ try:
         st.info(" Importez vos données avec le script approprié")
         st.stop()
     
-    # Convertir en JSON pour le cache
+    # ==================== TRAITEMENT DES MÉTRIQUES ====================
+    
+    # Fonction cachée pour ajouter les URLs
+    @st.cache_data(ttl=600)
+    def add_urls_to_metrics(metrics_json, artistes_json):
+        """Ajoute les URLs aux métriques - CACHED"""
+        metrics_df = pd.read_json(metrics_json, orient='split')
+        artistes_df = pd.read_json(artistes_json, orient='split')
+        
+        if 'url' not in metrics_df.columns:
+            metrics_df['url'] = ''
+            
+            if 'id_unique' in metrics_df.columns and 'id_unique' in artistes_df.columns:
+                # Créer un mapping id_unique → url
+                url_mapping = {}
+                
+                for _, artist_row in artistes_df.iterrows():
+                    id_unique = artist_row.get('id_unique')
+                    url_spotify = artist_row.get('url_spotify', '')
+                    url_deezer = artist_row.get('url_deezer', '')
+                    
+                    url = url_spotify if url_spotify and pd.notna(url_spotify) else url_deezer
+                    if url and pd.notna(url):
+                        url_mapping[id_unique] = url
+                
+                # Appliquer le mapping
+                metrics_df['url'] = metrics_df['id_unique'].map(url_mapping).fillna('')
+        
+        return metrics_df
+    
+    # Récupérer les dernières métriques (avec cache)
     latest_metrics_df = get_latest_metrics(metriques_df.to_json(orient='split'))
     
-@st.cache_data(ttl=600)
-def add_urls_to_metrics(metrics_json, artistes_json):
-    """Ajoute les URLs aux métriques - CACHED"""
-    metrics_df = pd.read_json(metrics_json, orient='split')
-    artistes_df = pd.read_json(artistes_json, orient='split')
+    # Ajouter les URLs (CACHED)
+    latest_metrics_df = add_urls_to_metrics(
+        latest_metrics_df.to_json(orient='split'),
+        artistes_df.to_json(orient='split')
+    )
     
-    if 'url' not in metrics_df.columns:
-        metrics_df['url'] = ''
-        
-        if 'id_unique' in metrics_df.columns and 'id_unique' in artistes_df.columns:
-            # Créer un mapping id_unique → url
-            url_mapping = {}
-            
-            for _, artist_row in artistes_df.iterrows():
-                id_unique = artist_row.get('id_unique')
-                url_spotify = artist_row.get('url_spotify', '')
-                url_deezer = artist_row.get('url_deezer', '')
-                
-                url = url_spotify if url_spotify and pd.notna(url_spotify) else url_deezer
-                if url and pd.notna(url):
-                    url_mapping[id_unique] = url
-            
-            # Appliquer le mapping
-            metrics_df['url'] = metrics_df['id_unique'].map(url_mapping).fillna('')
-    
-    return metrics_df
-
-# Utiliser la fonction cachée
-latest_metrics_df = add_urls_to_metrics(
-    latest_metrics_df.to_json(orient='split'),
-    artistes_df.to_json(orient='split')
-)
+    # Pareil pour metriques_df complet
+    metriques_df = add_urls_to_metrics(
+        metriques_df.to_json(orient='split'),
+        artistes_df.to_json(orient='split')
+    )
     
     # Conversion scores
     if 'score' in latest_metrics_df.columns and 'score_potentiel' not in latest_metrics_df.columns:
@@ -541,7 +550,7 @@ latest_metrics_df = add_urls_to_metrics(
     if 'fans_followers' in latest_metrics_df.columns:
         latest_metrics_df['followers_total'] = latest_metrics_df['fans_followers'].fillna(0)
     else:
-        latest_metrics_df['followers_total'] = latest_metrics_df.get('followers', 0).fillna(0) + latest_metrics_df.get('fans', 0).fillna(0) # type: ignore
+        latest_metrics_df['followers_total'] = latest_metrics_df.get('followers', 0).fillna(0) + latest_metrics_df.get('fans', 0).fillna(0)
     
     # Catégorie fans
     latest_metrics_df['categorie_fans'] = latest_metrics_df['followers_total'].apply(get_fan_category)
@@ -549,7 +558,7 @@ latest_metrics_df = add_urls_to_metrics(
 except Exception as e:
     st.error(f" Erreur critique: {e}")
     st.stop()
-
+    
 # ==================== HEADER ====================
 col_logo, col_title, col_logo2 = st.columns([1, 4, 1])
 
