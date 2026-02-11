@@ -204,6 +204,7 @@ st.markdown(f"""
         border-radius: 25px;
         padding: 0.5rem 2rem;
         font-weight: bold !important;
+        font-size: 0.8rem;
     }}
     
     /* Titres des pages en GRAS et plus GRANDS */
@@ -752,7 +753,8 @@ if st.session_state.active_page == "Vue d'ensemble":
                 font_color=COLORS['text'],
                 yaxis_title="Nombre d'artistes",
                 xaxis_title="Score",
-                legend=dict(font=dict(color='white'))
+                legend=dict(font=dict(color='white')),
+                barmode='group'
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption("Ce graphique montre la répartition des scores de potentiel. La plupart des artistes se situent entre 40 et 70 points, avec quelques talents exceptionnels au-delà de 80.")
@@ -1177,7 +1179,7 @@ elif st.session_state.active_page == "Les artistes":
         
         col_left, col_center, col_right = st.columns([2, 1, 2])
         with col_center:
-            if st.button("VALIDER MES SELECTIONS", key="valider_artistes", use_container_width=True):
+            if st.button("VALIDER", key="valider_artistes", use_container_width=True):
                 for artiste in st.session_state.temp_interesses_artistes:
                     if artiste not in st.session_state.artistes_interesses:
                         st.session_state.artistes_interesses.append(artiste)
@@ -1194,6 +1196,7 @@ elif st.session_state.active_page == "Les artistes":
         with col_prev:
             if st.button("⬅️ Précédent", disabled=(st.session_state.page_artistes <= 1), key="prev_bottom"):
                 st.session_state.page_artistes -= 1
+                st.rerun()
                 
         
         with col_pages:
@@ -1223,11 +1226,13 @@ elif st.session_state.active_page == "Les artistes":
                             use_container_width=True
                         ):
                             st.session_state.page_artistes = page_num
+                            st.rerun()
                             
         
         with col_next:
             if st.button("Suivant ➡️", disabled=(st.session_state.page_artistes >= total_pages), key="next_bottom"):
                 st.session_state.page_artistes += 1
+                st.rerun()
                 
     else:
         st.info("Aucun artiste disponible")
@@ -1536,7 +1541,7 @@ elif st.session_state.active_page == "Évolution":
                                 
                                 col_left_sim, col_center_sim, col_right_sim = st.columns([2, 1, 2])
                                 with col_center_sim:
-                                    if st.button("VALIDER ARTISTES SIMILAIRES", key="valider_similaires", use_container_width=True):
+                                    if st.button("VALIDER", key="valider_similaires", use_container_width=True):
                                         for artiste in st.session_state.temp_interesses_artistes:
                                             if artiste not in st.session_state.artistes_interesses:
                                                 st.session_state.artistes_interesses.append(artiste)
@@ -1591,7 +1596,7 @@ elif st.session_state.active_page == "Évolution":
                             st.markdown("---")
                             col_left_sim, col_center_sim, col_right_sim = st.columns([2, 1, 2])
                             with col_center_sim:
-                                if st.button("VALIDER ARTISTES SIMILAIRES", key="valider_similaires_fb", use_container_width=True):
+                                if st.button("VALIDER", key="valider_similaires_fb", use_container_width=True):
                                     for artiste in st.session_state.temp_interesses_artistes:
                                         if artiste not in st.session_state.artistes_interesses:
                                             st.session_state.artistes_interesses.append(artiste)
@@ -2398,7 +2403,7 @@ elif st.session_state.active_page == "Prédictions":
 
                 col_left, col_center, col_right = st.columns([2, 1, 2])
                 with col_center:
-                    if st.button("VALIDER MES SELECTIONS", key="valider_predictions", use_container_width=True):
+                    if st.button("VALIDER", key="valider_predictions", use_container_width=True):
                         for artiste in st.session_state.temp_interesses_artistes:
                             if artiste not in st.session_state.artistes_interesses:
                                 st.session_state.artistes_interesses.append(artiste)
