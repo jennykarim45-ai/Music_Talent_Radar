@@ -144,9 +144,10 @@ st.markdown(f"""
     /* Fond principal avec image */
     .stApp {{
         {bg_style}
+        font-size: 0.85rem !important;
     }}
     
-    /* Overlay semi-transparent pour lisibilité */
+    /* Overlay semi-transparent */
     .stApp::before {{
         content: "";
         position: fixed;
@@ -159,158 +160,246 @@ st.markdown(f"""
         pointer-events: none;
     }}
     
-    /* Assurer que le contenu est au-dessus de l'overlay */
+    /* Contenu au-dessus de l'overlay */
     .main > div {{
         position: relative;
         z-index: 1;
     }}
     
-    /* RÉDUCTION GLOBALE DES TAILLES */
+    /* RÉDUCTION GLOBALE DRASTIQUE */
     .main {{
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        max-width: 1400px !important;
     }}
     
-    /* Header principal - RÉDUIT */
+    /* Header principal - TRÈS RÉDUIT */
     .main-header {{
-        font-size: 2rem !important;  /* 3rem → 2rem */
+        font-size: 1.5rem !important;
         font-weight: 900;
         background: linear-gradient(90deg, {COLORS['primary']}, {COLORS['secondary']}, {COLORS['accent1']});
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;
-        margin: 0.5rem 0 !important;  /* 1rem → 0.5rem */
+        margin: 0.3rem 0 !important;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
     }}
     
     .subtitle {{
         color: {COLORS['accent3']};
         text-align: center;
-        font-size: 1rem !important;  /* 1.2rem → 1rem */
-        margin-bottom: 1rem !important;  /* 2rem → 1rem */
+        font-size: 0.8rem !important;
+        margin-bottom: 0.5rem !important;
     }}
     
-    /* Sidebar sans espace en haut */
+    /* Sidebar ULTRA COMPACT */
     [data-testid="stSidebar"] {{
         background: linear-gradient(180deg, {COLORS['bg_card']} 0%, #1a0a2e 100%);
         padding-top: 0 !important;
+        min-width: 200px !important;
+        max-width: 240px !important;
     }}
     
     [data-testid="stSidebar"] > div:first-child {{
-        padding-top: 0 !important;
+        padding-top: 0.5rem !important;
         margin-top: 0 !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
     }}
     
-    /* Boutons - RÉDUITS */
+    /* Labels sidebar */
+    [data-testid="stSidebar"] label {{
+        font-size: 0.75rem !important;
+        margin-bottom: 0.2rem !important;
+    }}
+    
+    /* Selectbox sidebar */
+    [data-testid="stSidebar"] .stSelectbox {{
+        margin-bottom: 0.5rem !important;
+    }}
+    
+    /* Slider sidebar */
+    [data-testid="stSidebar"] .stSlider {{
+        margin-bottom: 0.5rem !important;
+    }}
+    
+    /* Radio buttons sidebar */
+    [data-testid="stSidebar"] .stRadio {{
+        font-size: 0.8rem !important;
+    }}
+    
+    [data-testid="stSidebar"] .stRadio > label {{
+        font-size: 0.8rem !important;
+        padding: 0.3rem 0 !important;
+    }}
+    
+    /* Logo sidebar */
+    [data-testid="stSidebar"] img {{
+        max-width: 120px !important;
+        margin: 0.5rem auto !important;
+    }}
+    
+    /* Boutons - TRÈS RÉDUITS */
     .stButton button {{
         background: linear-gradient(90deg, {COLORS['primary']}, {COLORS['accent2']});
         color: white;
         border: none;
-        border-radius: 20px !important;  /* 25px → 20px */
-        padding: 0.4rem 1.5rem !important;  /* 0.5rem 2rem → 0.4rem 1.5rem */
+        border-radius: 15px !important;
+        padding: 0.3rem 1rem !important;
         font-weight: bold !important;
-        font-size: 0.9rem !important;  /* AJOUTÉ */
+        font-size: 0.75rem !important;
+        min-height: 30px !important;
     }}
     
-    /* Titres des pages - RÉDUITS */
-    .stTabs [data-baseweb="tab-list"] button {{
-        font-size: 1rem !important;  /* 1.1rem → 1rem */
-        font-weight: bold !important;
+    /* Link buttons */
+    .stLinkButton a {{
+        padding: 0.3rem 1rem !important;
+        font-size: 0.75rem !important;
+        min-height: 30px !important;
     }}
     
-    /* Titres h1, h2, h3 - RÉDUITS */
+    /* Titres h1, h2, h3 - TRÈS RÉDUITS */
     h1, h2, h3 {{
         color: {COLORS['accent3']} !important;
         font-weight: 900 !important;
-        font-size: 1.4rem !important;  /* 1.8rem → 1.4rem */
-        margin-top: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 1.1rem !important;
+        margin-top: 0.3rem !important;
+        margin-bottom: 0.3rem !important;
+        line-height: 1.3 !important;
     }}
     
     h2 {{
-        font-size: 1.3rem !important;  /* 1.6rem → 1.3rem */
+        font-size: 1rem !important;
     }}
     
     h3 {{
-        font-size: 1.2rem !important;  /* 1.4rem → 1.2rem */
+        font-size: 0.95rem !important;
     }}
     
-    /* Métriques - RÉDUITES */
+    /* Markdown headers */
+    .stMarkdown h1 {{
+        font-size: 1.1rem !important;
+    }}
+    
+    .stMarkdown h2 {{
+        font-size: 1rem !important;
+    }}
+    
+    .stMarkdown h3 {{
+        font-size: 0.95rem !important;
+    }}
+    
+    /* Métriques - TRÈS RÉDUITES */
     [data-testid="stMetricValue"] {{
         color: white !important;
-        font-size: 1.5rem !important;  /* 2rem → 1.5rem */
+        font-size: 1.2rem !important;
         font-weight: bold !important;
     }}
     
     [data-testid="stMetricLabel"] {{
         color: {COLORS['text']} !important;
         font-weight: 600 !important;
-        font-size: 0.85rem !important;  /* AJOUTÉ */
+        font-size: 0.7rem !important;
     }}
     
-    /* Conteneur de métriques - ESPACEMENT RÉDUIT */
     [data-testid="stMetric"] {{
-        padding: 0.5rem !important;
+        padding: 0.3rem !important;
+        background: rgba(0,0,0,0.3) !important;
+        border-radius: 8px !important;
     }}
     
-    /* RESPONSIVE MOBILE */
-    @media (max-width: 768px) {{
-        .main-header {{
-            font-size: 1.5rem !important;
-            letter-spacing: 1px !important;
-        }}
-        
-        .subtitle {{
-            font-size: 0.85rem !important;
-        }}
-        
-        .metric-card {{
-            padding: 0.8rem !important;
-            margin: 0.4rem 0 !important;
-        }}
-        
-        [data-testid="stSidebar"] {{
-            width: 80% !important;
-        }}
-    }}
-    
-    /* Cartes métriques - RÉDUITES */
+    /* Cartes métriques - TRÈS RÉDUITES */
     .metric-card {{
         background: linear-gradient(135deg, {COLORS['bg_card']} 0%, #2a1a3e 100%);
-        padding: 1.2rem !important;  /* 2rem → 1.2rem */
-        border-radius: 12px !important;  /* 15px → 12px */
-        border-left: 3px solid {COLORS['primary']} !important;  /* 4px → 3px */
-        box-shadow: 0 6px 12px rgba(255, 27, 141, 0.2) !important;  /* 0 8px 16px → 0 6px 12px */
-        margin: 0.8rem 0 !important;  /* 1rem → 0.8rem */
+        padding: 0.8rem !important;
+        border-radius: 8px !important;
+        border-left: 2px solid {COLORS['primary']} !important;
+        box-shadow: 0 4px 8px rgba(255, 27, 141, 0.2) !important;
+        margin: 0.5rem 0 !important;
     }}
     
+    .metric-card h3 {{
+        font-size: 0.95rem !important;
+        margin-bottom: 0.5rem !important;
+    }}
+    
+    .metric-card p {{
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
+        margin-bottom: 0.3rem !important;
+    }}
+    
+    /* Textes */
     .stMarkdown, p, li {{
         color: {COLORS['text']} !important;
-        font-size: 0.95rem !important;  /* AJOUTÉ */
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
     }}
     
     .info-box {{
         background: linear-gradient(135deg, #1a0a2e 0%, #2a1a3e 100%);
-        padding: 1rem !important;  /* 1.5rem → 1rem */
-        border-radius: 8px !important;  /* 10px → 8px */
-        border-left: 3px solid {COLORS['accent1']} !important;  /* 4px → 3px */
-        margin: 0.8rem 0 !important;  /* 1rem → 0.8rem */
+        padding: 0.8rem !important;
+        border-radius: 8px !important;
+        border-left: 2px solid {COLORS['accent1']} !important;
+        margin: 0.5rem 0 !important;
     }}
     
-    /* Captions - RÉDUITES */
+    .info-box h4 {{
+        font-size: 0.9rem !important;
+        margin-bottom: 0.4rem !important;
+    }}
+    
+    .info-box p {{
+        font-size: 0.75rem !important;
+    }}
+    
+    /* Captions */
     .stCaption {{
-        font-size: 0.8rem !important;  /* AJOUTÉ */
+        font-size: 0.7rem !important;
+        line-height: 1.3 !important;
     }}
     
-    /* Espacement des colonnes - RÉDUIT */
+    /* Espacement des colonnes - TRÈS RÉDUIT */
     [data-testid="column"] {{
-        padding: 0.5rem !important;
+        padding: 0.3rem !important;
     }}
     
-    /* Dividers - RÉDUITS */
+    /* Dividers */
     hr {{
-        margin: 1rem 0 !important;  /* 2rem → 1rem */
+        margin: 0.8rem 0 !important;
+        border-color: rgba(255,255,255,0.1) !important;
+    }}
+    
+    /* Checkbox */
+    .stCheckbox {{
+        font-size: 0.75rem !important;
+    }}
+    
+    /* Images artistes */
+    [data-testid="stImage"] {{
+        margin-bottom: 0.3rem !important;
+    }}
+    
+    /* Graphiques Plotly - RÉDUIRE MARGES */
+    .js-plotly-plot {{
+        margin-bottom: 0.5rem !important;
+    }}
+    
+    /* Espacement entre sections */
+    .element-container {{
+        margin-bottom: 0.5rem !important;
+    }}
+    
+    /* RESPONSIVE */
+    @media (max-width: 768px) {{
+        .main-header {{
+            font-size: 1.2rem !important;
+        }}
+        
+        .subtitle {{
+            font-size: 0.7rem !important;
+        }}
     }}
     </style>
 """, unsafe_allow_html=True)
@@ -766,6 +855,9 @@ if st.session_state.active_page == "Vue d'ensemble":
     st.markdown("---")
     col1, col2 = st.columns(2)
     
+st.markdown("---")
+col1, col2 = st.columns(2, gap="small")  # ← AJOUTER gap="small"
+
     with col1:
         st.markdown("### 📊 Distribution des scores")
         if len(filtered_df) > 0:
@@ -775,8 +867,8 @@ if st.session_state.active_page == "Vue d'ensemble":
                 color='plateforme',
                 color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
                 labels={'count': "Nombre d'artistes", 'score_potentiel': 'Score'},
-                barmode='group',  
-                nbins=20  
+                barmode='group',
+                nbins=20
             )
             fig.update_layout(
                 plot_bgcolor=COLORS['bg_card'], 
@@ -784,10 +876,11 @@ if st.session_state.active_page == "Vue d'ensemble":
                 font_color=COLORS['text'],
                 yaxis_title="Nombre d'artistes",
                 xaxis_title="Score",
-                legend=dict(font=dict(color='white')),
-                bargap=0.1,  # AJOUTER : espace entre groupes
-                bargroupgap=0.05,  #  AJOUTER : espace dans groupe
-                height=350  #  RÉDUIRE LA HAUTEUR
+                legend=dict(font=dict(color='white', size=10)),
+                bargap=0.1,
+                bargroupgap=0.05,
+                height=280,  
+                margin=dict(l=40, r=20, t=20, b=40)  #réduire marges
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption("Ce graphique montre la répartition des scores de potentiel. La plupart des artistes se situent entre 40 et 70 points, avec quelques talents exceptionnels au-delà de 80.")
@@ -817,11 +910,13 @@ if st.session_state.active_page == "Vue d'ensemble":
                 plot_bgcolor=COLORS['bg_card'], 
                 paper_bgcolor=COLORS['bg_card'], 
                 font_color=COLORS['text'],
-                legend=dict(font=dict(color='white'))
+                legend=dict(font=dict(color='white', size=10)),
+                height=280,  
+                margin=dict(l=20, r=20, t=20, b=20)  # réduire marges
             )
             fig.update_traces(
                 textfont_color='white',
-                textfont_size=14,
+                textfont_size=11,  
                 textposition='inside',
                 texttemplate='%{percent:.1%}',
                 textinfo='percent',
@@ -856,7 +951,7 @@ if st.session_state.active_page == "Vue d'ensemble":
                     paper_bgcolor=COLORS['bg_card'], 
                     font_color=COLORS['text'], 
                     yaxis={'categoryorder':'total ascending'}, 
-                    height=350,
+                    height=280,
                     showlegend=False
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -884,7 +979,7 @@ if st.session_state.active_page == "Vue d'ensemble":
                     paper_bgcolor=COLORS['bg_card'], 
                     font_color=COLORS['text'], 
                     yaxis={'categoryorder':'total ascending'}, 
-                    height=350,
+                    height=280,
                     showlegend=False
                 )
                 st.plotly_chart(fig, use_container_width=True)
@@ -916,7 +1011,7 @@ elif st.session_state.active_page == "Les Tops":
             plot_bgcolor=COLORS['bg_card'],
             paper_bgcolor=COLORS['bg_card'],
             font_color=COLORS['text'],
-            height=700,
+            height=600,
             showlegend=False,
             yaxis={'categoryorder':'total ascending'}
         )
@@ -975,7 +1070,7 @@ elif st.session_state.active_page == "Les Tops":
                 plot_bgcolor=COLORS['bg_card'],
                 paper_bgcolor=COLORS['bg_card'],
                 font_color=COLORS['text'],
-                height=350,
+                height=280,
                 showlegend=False
             )
 
@@ -1020,7 +1115,7 @@ elif st.session_state.active_page == "Les Tops":
             plot_bgcolor=COLORS['bg_card'],
             paper_bgcolor=COLORS['bg_card'],
             font_color=COLORS['text'],
-            height=350,
+            height=280,
             legend=dict(font=dict(color='white'))
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -1439,7 +1534,7 @@ elif st.session_state.active_page == "Évolution":
                                     font_color=COLORS['text'],
                                     xaxis_title="Date",
                                     yaxis_title="Followers/Fans",
-                                    height=350
+                                    height=280
                                 )
                                 fig.update_xaxes(tickformat="%d/%m/%Y")
 
@@ -1468,7 +1563,7 @@ elif st.session_state.active_page == "Évolution":
                                 font_color=COLORS['text'],
                                 xaxis_title="Date",
                                 yaxis_title="Score de Potentiel",
-                                height=350
+                                height=280
                             )
                             fig.update_xaxes(
                             tickformat="%d/%m/%Y"  # Format 19/01/2026
@@ -2185,7 +2280,7 @@ elif st.session_state.active_page == "Prédictions":
                                 font_color=COLORS['text'],
                                 xaxis_title="Date",
                                 yaxis_title="Followers/Fans",
-                                height=350
+                                height=280
                             )
                             fig.update_xaxes(
                             tickformat="%d/%m/%Y"  
@@ -2212,10 +2307,10 @@ elif st.session_state.active_page == "Prédictions":
                             font_color=COLORS['text'],
                             xaxis_title="Date",
                             yaxis_title="Score de Potentiel",
-                            height=350
+                            height=280
                         )
                         fig.update_xaxes(
-                            tickformat="%d/%m/%Y"  # Format 19/01/2026
+                            tickformat="%d/%m/%Y"  
                         )
                         
                         st.plotly_chart(fig, use_container_width=True)
