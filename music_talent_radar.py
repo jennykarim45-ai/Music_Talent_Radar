@@ -48,6 +48,8 @@ BLACKLIST_ARTISTS = [
     'Frànçois & The Atlas Mountains', 'Francis And The Lights', 'Francis Mercier', 'Charles Pasi', 'Ryan Paris', 'Stardust', 'Pop Will Eat Itself', 'Soulive',
     'Victoire Musique', 'Peppa Pig (Français)', 'Pinkfong en Français', 'Hazbin Hotel',"Jazz douce musique d'ambiance",
     "Oasis de musique jazz relaxant","The Paris Match ","Baroque Jazz Trio ","Jeremstar","K-Pop Demon Hunter","K-Pop",
+    "Algéric","Elyon","Francis M","Félix Radu","KLN 93","Kham Meslien","Killemv","Lila-May","Marius Psalmiste","Mirella","Molière l'opéra urbain",
+    "Pinpin OSP","RORI","Rock Bones","SKUNK","Sam Sauvage","Tommy Lyon","ZZCCMXTP","jean"
 ]
     
 
