@@ -17,6 +17,11 @@ plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
 import streamlit as st
 
+st.set_page_config(
+    page_title="JEK2 Records - Music Talent Radar",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 st.markdown("""
     <style>
     header {visibility: hidden;}
