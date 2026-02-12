@@ -733,7 +733,7 @@ logo_base64 = get_base64_image(os.path.join(BASE_DIR, "assets", "logo.png"))
 if logo_base64:
     st.markdown(f"""
         <div class="fixed-header">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 150px; max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 250px; max-width: 1400px; margin: 0 auto;">
                 <div style="flex-shrink: 0;">
                     <img src="data:image/png;base64,{logo_base64}" style="width: 150px; height: auto;">
                 </div>
@@ -750,7 +750,7 @@ if logo_base64:
 else:
     st.markdown(f"""
         <div class="fixed-header">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 150px; max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 250px; max-width: 1400px; margin: 0 auto;">
                 <div style="flex-shrink: 0;">
                     <div style="width: 100px; height: 100px; background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['accent2']}); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 0 4px 12px rgba(255, 27, 141, 0.4);">🎵</div>
                 </div>
