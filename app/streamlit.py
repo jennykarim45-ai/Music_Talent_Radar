@@ -177,7 +177,7 @@ st.markdown(f"""
     }}
 
     /* MODIFIER CETTE LIGNE EXISTANTE (cherche ".main > div") */
-    .main > div {{}
+    .main > div {{
         padding-top: 180px !important;  /* Au lieu de 1rem */
         position: relative;
         z-index: 1;
