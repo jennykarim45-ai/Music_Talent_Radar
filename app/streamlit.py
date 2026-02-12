@@ -734,14 +734,14 @@ if logo_base64:
     st.markdown(f"""
         <div class="fixed-header">
             <div style="display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto;">
-                <div style="flex: 1; text-align: left;">
+                <div style="flex: 2; text-align: left;">
                     <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto;">
                 </div>
                 <div style="flex: 4; text-align: center;">
                     <div class="main-header">JEK2 RECORDS</div>
                     <div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>
                 </div>
-                <div style="flex: 1; text-align: right;">
+                <div style="flex: 2; text-align: right;">
                     <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto;">
                 </div>
             </div>
