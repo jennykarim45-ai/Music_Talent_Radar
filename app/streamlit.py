@@ -15,18 +15,6 @@ import base64
 import auth  
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
-import streamlit as st
-
-st.set_page_config(
-    page_title="JEK2 Records - Music Talent Radar",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-st.markdown("""
-    <style>
-    header {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
 
 # Détection de l'environnement
 try:
@@ -157,6 +145,50 @@ else:
 
 st.markdown(f"""
     <style>
+    
+    /* MASQUER BARRE STREAMLIT */
+    [data-testid="stHeader"] { display: none !important; }
+    #MainMenu { visibility: hidden !important; }
+    footer { visibility: hidden !important; }
+    [data-testid="stToolbar"] { display: none !important; }
+
+    /* HEADER FIXE */
+    .fixed-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: linear-gradient(135deg, #070707 0%, #1a0a2e 100%);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        border-bottom: 2px solid #FF1B8D;
+    }
+
+    .fixed-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(7, 7, 7, 0.85);
+        z-index: -1;
+    }
+
+    /* MODIFIER CETTE LIGNE EXISTANTE (cherche ".main > div") */
+    .main > div {
+        padding-top: 180px !important;  /* Au lieu de 1rem */
+        position: relative;
+        z-index: 1;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .fixed-header { padding: 0.5rem 1rem; }
+        .main > div { padding-top: 140px !important; }
+        .fixed-header img { width: 80px !important; }
+    }
     /* Fond principal avec image */
     .stApp {{
         {bg_style}
@@ -184,7 +216,7 @@ st.markdown(f"""
     
     /* RÉDUCTION GLOBALE DRASTIQUE */
     .main {{
-        padding-top: 1rem !important;
+        padding-top: 180px !important;
         padding-bottom: 1rem !important;
         max-width: 1400px !important;
     }}
@@ -695,26 +727,67 @@ except Exception as e:
     st.stop()
     
 # ==================== HEADER ====================
-st.markdown("""
-<div class="sticky-header">
-""", unsafe_allow_html=True)
+# ==================== REMPLACER TON HEADER (LIGNE ~836) ====================
 
+# SUPPRIME ÇA :
+"""
+# ==================== HEADER ====================
 col_logo, col_title, col_logo2 = st.columns([1, 4, 1])
 
 with col_logo:
-    st.image("assets/logo.png", width=150)
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if os.path.isfile(logo_path):
+        st.image(logo_path, width=150)
 
 with col_title:
     st.markdown('<div class="main-header">JEK2 RECORDS</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>', unsafe_allow_html=True)
 
 with col_logo2:
-    st.image("assets/logo.png", width=150)
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if os.path.isfile(logo_path):
+        st.image(logo_path, width=150)
+"""
 
-st.markdown("""
-</div>
-""", unsafe_allow_html=True)
+# REMPLACE PAR ÇA :
 
+# ==================== HEADER FIXE ====================
+logo_base64 = get_base64_image(os.path.join(BASE_DIR, "assets", "logo.png"))
+
+if logo_base64:
+    st.markdown(f"""
+        <div class="fixed-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto;">
+                <div style="flex: 1; text-align: left;">
+                    <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto;">
+                </div>
+                <div style="flex: 4; text-align: center;">
+                    <div class="main-header">JEK2 RECORDS</div>
+                    <div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>
+                </div>
+                <div style="flex: 1; text-align: right;">
+                    <img src="data:image/png;base64,{logo_base64}" style="width: 120px; height: auto;">
+                </div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown(f"""
+        <div class="fixed-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto;">
+                <div style="flex: 1; text-align: left;">
+                    <div style="width: 120px; height: 120px; background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['accent2']}); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 4px 12px rgba(255, 27, 141, 0.4);">🎵</div>
+                </div>
+                <div style="flex: 4; text-align: center;">
+                    <div class="main-header">JEK2 RECORDS</div>
+                    <div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>
+                </div>
+                <div style="flex: 1; text-align: right;">
+                    <div style="width: 120px; height: 120px; background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['accent2']}); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 4px 12px rgba(255, 27, 141, 0.4);">🎵</div>
+                </div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 # ==================== SIDEBAR ====================
 with st.sidebar:
     # Filtres
