@@ -726,30 +726,6 @@ except Exception as e:
     st.error(f" Erreur critique: {e}")
     st.stop()
     
-# ==================== HEADER ====================
-# ==================== REMPLACER TON HEADER (LIGNE ~836) ====================
-
-# SUPPRIME ÇA :
-"""
-# ==================== HEADER ====================
-col_logo, col_title, col_logo2 = st.columns([1, 4, 1])
-
-with col_logo:
-    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
-    if os.path.isfile(logo_path):
-        st.image(logo_path, width=150)
-
-with col_title:
-    st.markdown('<div class="main-header">JEK2 RECORDS</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>', unsafe_allow_html=True)
-
-with col_logo2:
-    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
-    if os.path.isfile(logo_path):
-        st.image(logo_path, width=150)
-"""
-
-# REMPLACE PAR ÇA :
 
 # ==================== HEADER FIXE ====================
 logo_base64 = get_base64_image(os.path.join(BASE_DIR, "assets", "logo.png"))
