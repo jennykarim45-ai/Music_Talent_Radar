@@ -148,7 +148,7 @@ st.markdown(f"""
     /* Fond principal avec image */
     .stApp {{
         {bg_style}
-        font-size: 0.85rem !important;
+        font-size: 0.99rem !important;
     }}
     
     /* Overlay semi-transparent */
@@ -193,7 +193,7 @@ st.markdown(f"""
     .subtitle {{
         color: {COLORS['accent3']};
         text-align: center;
-        font-size: 0.8rem !important;
+        font-size: 0.99rem !important;
         margin-bottom: 0.5rem !important;
     }}
     
@@ -214,7 +214,7 @@ st.markdown(f"""
     
     /* Labels sidebar */
     [data-testid="stSidebar"] label {{
-        font-size: 0.75rem !important;
+        font-size: 0.99rem !important;
         margin-bottom: 0.2rem !important;
     }}
     
@@ -230,11 +230,11 @@ st.markdown(f"""
     
     /* Radio buttons sidebar */
     [data-testid="stSidebar"] .stRadio {{
-        font-size: 0.8rem !important;
+        font-size: 0.99rem !important;
     }}
     
     [data-testid="stSidebar"] .stRadio > label {{
-        font-size: 0.8rem !important;
+        font-size: 0.99rem !important;
         padding: 0.3rem 0 !important;
     }}
     
@@ -252,14 +252,14 @@ st.markdown(f"""
         border-radius: 15px !important;
         padding: 0.3rem 1rem !important;
         font-weight: bold !important;
-        font-size: 0.75rem !important;
+        font-size: 0.99rem !important;
         min-height: 30px !important;
     }}
     
     /* Link buttons */
     .stLinkButton a {{
         padding: 0.3rem 1rem !important;
-        font-size: 0.75rem !important;
+        font-size: 0.99rem !important;
         min-height: 30px !important;
     }}
     
@@ -267,44 +267,44 @@ st.markdown(f"""
     h1, h2, h3 {{
         color: {COLORS['accent3']} !important;
         font-weight: 900 !important;
-        font-size: 1.1rem !important;
+        font-size: 1.5rem !important;
         margin-top: 0.3rem !important;
         margin-bottom: 0.3rem !important;
         line-height: 1.3 !important;
     }}
     
     h2 {{
-        font-size: 1rem !important;
+        font-size: 1.5rem !important;
     }}
     
     h3 {{
-        font-size: 0.95rem !important;
+        font-size: 1.1rem !important;
     }}
     
     /* Markdown headers */
     .stMarkdown h1 {{
-        font-size: 1.1rem !important;
+        font-size: 1.5rem !important;
     }}
     
     .stMarkdown h2 {{
-        font-size: 1rem !important;
+        font-size: 1.5rem !important;
     }}
     
     .stMarkdown h3 {{
-        font-size: 0.95rem !important;
+        font-size: 1.1rem !important;
     }}
     
     /* Métriques - TRÈS RÉDUITES */
     [data-testid="stMetricValue"] {{
         color: white !important;
-        font-size: 1.2rem !important;
+        font-size: 1.5rem !important;
         font-weight: bold !important;
     }}
     
     [data-testid="stMetricLabel"] {{
         color: {COLORS['text']} !important;
         font-weight: 600 !important;
-        font-size: 0.7rem !important;
+        font-size: 0.99rem !important;
     }}
     
     [data-testid="stMetric"] {{
@@ -324,12 +324,12 @@ st.markdown(f"""
     }}
     
     .metric-card h3 {{
-        font-size: 0.95rem !important;
+        font-size: 1.1rem !important;
         margin-bottom: 0.5rem !important;
     }}
     
     .metric-card p {{
-        font-size: 0.8rem !important;
+        font-size: 0.99rem !important;
         line-height: 1.4 !important;
         margin-bottom: 0.3rem !important;
     }}
@@ -337,7 +337,7 @@ st.markdown(f"""
     /* Textes */
     .stMarkdown, p, li {{
         color: {COLORS['text']} !important;
-        font-size: 0.8rem !important;
+        font-size: 0.99rem !important;
         line-height: 1.4 !important;
     }}
     
@@ -350,17 +350,17 @@ st.markdown(f"""
     }}
     
     .info-box h4 {{
-        font-size: 0.9rem !important;
+        font-size: 1.5rem !important;
         margin-bottom: 0.4rem !important;
     }}
     
     .info-box p {{
-        font-size: 0.75rem !important;
+        font-size: 0.99rem !important;
     }}
     
     /* Captions */
     .stCaption {{
-        font-size: 0.7rem !important;
+        font-size: 0.99rem !important;
         line-height: 1.3 !important;
     }}
     
@@ -377,7 +377,7 @@ st.markdown(f"""
     
     /* Checkbox */
     .stCheckbox {{
-        font-size: 0.75rem !important;
+        font-size: 0.99rem !important;
     }}
     
     /* Images artistes */
@@ -398,11 +398,11 @@ st.markdown(f"""
     /* RESPONSIVE */
     @media (max-width: 768px) {{
         .main-header {{
-            font-size: 1.2rem !important;
+            font-size: 1.5rem !important;
         }}
         
         .subtitle {{
-            font-size: 0.7rem !important;
+            font-size: 0.99rem !important;
         }}
     }}
     </style>
@@ -721,9 +721,8 @@ with st.sidebar:
     selected_genre = st.selectbox("🎵 Genre Musical", genres)
     
     categories_fans = ['Tous', 'Micro (1k-5k)', 'Petit (5k-10k)', 'Moyen (10k-20k)', 'Large (20k-40k)']
-    max_fans = st.slider("👥 Followers/Fans maximum", 100, 40000, 40000, 1000)
     selected_fans = st.selectbox("👥 Nombre de fans", categories_fans)
-    
+    max_fans = st.slider("👥 Followers/Fans maximum", 100, 40000, 40000, 1000)    
     min_score = st.slider("⭐ Score minimum", 0, 100, 0, 5)
 
     # Logo sans espace
@@ -840,12 +839,14 @@ if 'artiste_selectionne' not in st.session_state:
     st.session_state['artiste_selectionne'] = None
 
 # ==================== TAB 1: VUE D'ENSEMBLE ====================
-
-@st.cache_data(ttl=3600)  # Cache pendant 1 heure
+@st.cache_data(ttl=3600)
 def generer_camembert_streamlit():
-    """Génère le camembert Spotify vs Deezer pour Streamlit"""
+    """Génère le camembert Spotify vs Deezer - PLOTLY (style uniforme)"""
     
-    conn = sqlite3.connect(DB_PATH)
+    if USE_POSTGRES:
+        conn = psycopg2.connect(DB_URL)
+    else:
+        conn = sqlite3.connect(DB_NAME)
     
     query = """
         SELECT plateforme, COUNT(DISTINCT nom_artiste) as nb_artistes
@@ -859,51 +860,69 @@ def generer_camembert_streamlit():
     if df.empty:
         return None
     
-    # Créer le graphique
-    fig, ax = plt.subplots(figsize=(8, 6))
-    
-    couleurs = ['#1DB954', '#FF6B35']
-    
-    wedges, texts, autotexts = ax.pie(
-        df['nb_artistes'],
-        labels=df['plateforme'],
-        autopct='%1.1f%%',
-        startangle=90,
-        colors=couleurs,
-        explode=(0.05, 0.05),
-        shadow=True,
-        textprops={'fontsize': 11, 'weight': 'bold'}
+    #  PLOTLY PIE CHART
+    fig = px.pie(
+        df,
+        values='nb_artistes',
+        names='plateforme',
+        color='plateforme',
+        color_discrete_map={
+            'Spotify': '#1DB954',  # Vert Spotify
+            'Deezer': '#4169E1'    # Bleu Deezer
+        },
+        hole=0  # 
+    )
+    #  STYLE IDENTIQUE 
+    fig.update_layout(
+        plot_bgcolor=COLORS['bg_card'],     # Fond noir
+        paper_bgcolor=COLORS['bg_card'],    # Fond noir
+        font_color=COLORS['text'],          # Texte doré
+        height=350,                         # Hauteur réduite
+        margin=dict(l=25, r=25, t=25, b=25),
+        showlegend=True,
+        legend=dict(
+            font=dict(color='white', size=12),
+            orientation='v',
+            yanchor='middle',
+            y=0.5,
+            xanchor='left',
+            x=1.02
+        )
     )
     
-    for autotext in autotexts:
-        autotext.set_color('white')
-        autotext.set_fontsize(13)
-        autotext.set_weight('bold')
-    
-    total = df['nb_artistes'].sum()
-    plt.title(
-        f'Répartition par Plateforme\n{total} artistes',
-        fontsize=14,
-        weight='bold',
-        pad=15
+    # Texte blanc et pourcentages visibles
+    fig.update_traces(
+        textfont_color='white',
+        textfont_size=14,
+        textposition='inside',
+        texttemplate='%{percent:.1%}',
+        textinfo='percent+label'
     )
-    
-    plt.tight_layout()
     
     return fig
 
 
 @st.cache_data(ttl=3600)
-def generer_barres_genres_streamlit():
-    """Génère les barres comparatives par genre pour Streamlit"""
+def generer_nuage_points_streamlit():
+    """Génère un nuage de points Score vs Followers - PLOTLY (style uniforme)"""
     
-    conn = sqlite3.connect(DB_PATH)
+    if USE_POSTGRES:
+        conn = psycopg2.connect(DB_URL)
+    else:
+        conn = sqlite3.connect(DB_NAME)
     
     query = """
-        SELECT genre, plateforme, COUNT(DISTINCT nom_artiste) as nb_artistes
+        SELECT 
+            nom_artiste,
+            plateforme,
+            score_potentiel,
+            fans_followers,
+            genre
         FROM metriques_historique
-        WHERE genre IS NOT NULL AND genre != ''
-        GROUP BY genre, plateforme
+        WHERE score_potentiel > 0 
+        AND fans_followers > 0
+        ORDER BY score_potentiel DESC
+        LIMIT 200
     """
     
     df = pd.read_sql_query(query, conn)
@@ -912,65 +931,61 @@ def generer_barres_genres_streamlit():
     if df.empty:
         return None
     
-    # Pivoter
-    df_pivot = df.pivot(index='genre', columns='plateforme', values='nb_artistes').fillna(0)
-    
-    if 'Spotify' not in df_pivot.columns:
-        df_pivot['Spotify'] = 0
-    if 'Deezer' not in df_pivot.columns:
-        df_pivot['Deezer'] = 0
-    
-    df_pivot = df_pivot[['Spotify', 'Deezer']].reset_index()
-    df_pivot = df_pivot.sort_values('Spotify', ascending=False).head(7)  # Top 7 genres
-    
-    # Créer le graphique
-    fig, ax = plt.subplots(figsize=(10, 5))
-    
-    x = range(len(df_pivot))
-    width = 0.35
-    
-    bars1 = ax.bar(
-        [i - width/2 for i in x],
-        df_pivot['Spotify'],
-        width,
-        label='Spotify',
-        color='#1DB954',
-        alpha=0.85
+    #  PLOTLY SCATTER 
+    fig = px.scatter(
+        df,
+        x='score_potentiel',
+        y='fans_followers',
+        color='plateforme',
+        color_discrete_map={
+            'Spotify': '#1DB954',  # Vert Spotify
+            'Deezer': '#4169E1'    # Bleu Deezer
+        },
+        labels={
+            'score_potentiel': 'Score de Potentiel',
+            'fans_followers': 'Nombre de Followers/Fans',
+            'plateforme': 'Plateforme'
+        },
+        hover_data={
+            'nom_artiste': True,
+            'genre': True,
+            'score_potentiel': ':.1f',
+            'fans_followers': ':,',
+            'plateforme': False
+        }
     )
     
-    bars2 = ax.bar(
-        [i + width/2 for i in x],
-        df_pivot['Deezer'],
-        width,
-        label='Deezer',
-        color='#FF6B35',
-        alpha=0.85
+    #  STYLE IDENTIQUE 
+    fig.update_layout(
+        plot_bgcolor=COLORS['bg_card'],     # Fond noir
+        paper_bgcolor=COLORS['bg_card'],    # Fond noir
+        font_color=COLORS['text'],          # Texte doré
+        height=350,                         # Hauteur réduite
+        margin=dict(l=25, r=25, t=25, b=25),
+        showlegend=True,
+        legend=dict(
+            font=dict(color='white', size=12)
+        ),
+        xaxis=dict(
+            title='Score de Potentiel',
+            gridcolor='rgba(255,255,255,0.1)',
+            color='white'
+        ),
+        yaxis=dict(
+            title='Nombre de Followers/Fans',
+            gridcolor='rgba(255,255,255,0.1)',
+            color='white'
+        )
     )
     
-    # Labels au-dessus des barres
-    for bars in [bars1, bars2]:
-        for bar in bars:
-            height = bar.get_height()
-            if height > 0:
-                ax.text(
-                    bar.get_x() + bar.get_width()/2.,
-                    height,
-                    f'{int(height)}',
-                    ha='center',
-                    va='bottom',
-                    fontsize=9,
-                    weight='bold'
-                )
-    
-    ax.set_xlabel('Genres Musicaux', fontsize=11, weight='bold')
-    ax.set_ylabel('Nombre d\'Artistes', fontsize=11, weight='bold')
-    ax.set_title('Distribution par Genre', fontsize=13, weight='bold', pad=15)
-    ax.set_xticks(x)
-    ax.set_xticklabels(df_pivot['genre'], rotation=45, ha='right', fontsize=10)
-    ax.legend(fontsize=10, loc='upper right')
-    ax.grid(True, alpha=0.3, axis='y', linestyle='--')
-    
-    plt.tight_layout()
+    # Points plus visibles
+    fig.update_traces(
+        marker=dict(
+            size=8,
+            opacity=0.7,
+            line=dict(width=0.5, color='white')
+        )
+    )
     
     return fig
 
@@ -979,7 +994,10 @@ def generer_barres_genres_streamlit():
 def get_stats_plateformes():
     """Récupère les stats pour l'affichage sous les graphiques"""
     
-    conn = sqlite3.connect(DB_PATH)
+    if USE_POSTGRES:
+        conn = psycopg2.connect(DB_URL)
+    else:
+        conn = sqlite3.connect(DB_NAME)
     
     query = """
         SELECT 
@@ -996,6 +1014,9 @@ def get_stats_plateformes():
     conn.close()
     
     return df
+
+
+
 
 if st.session_state.active_page == "Vue d'ensemble":
     with st.spinner(""):
@@ -1036,14 +1057,14 @@ if st.session_state.active_page == "Vue d'ensemble":
                 font_color=COLORS['text'],
                 yaxis_title="Nombre d'artistes",
                 xaxis_title="Score",
-                legend=dict(font=dict(color='white', size=10)),
+                legend=dict(font=dict(color='white', size=12)),
                 bargap=0.1,
                 bargroupgap=0.05,
-                height=280,  
-                margin=dict(l=40, r=20, t=20, b=40)  #réduire marges
+                height=350,
+                margin=dict(l=40, r=20, t=20, b=40)  
             )
             st.plotly_chart(fig, use_container_width=True)
-            st.caption("Ce graphique montre la répartition des scores de potentiel. Le score des artistes se situent entre 0 et 90 points")
+            st.caption("Ce graphique montre la répartition des scores de potentiel.Il permet d'identifier la concentration des artistes autour de certains niveaux de score, et de comparer les distributions entre Spotify et Deezer.")
         else:
             st.info("Aucune donnée avec ces filtres")
 
@@ -1055,7 +1076,7 @@ if st.session_state.active_page == "Vue d'ensemble":
             fig = px.pie(
                 values=genre_counts.values,
                 names=genre_counts.index,
-                hole=0.4,
+                hole=0.5,
                 color_discrete_map={
                     'Country-Folk': '#FFA500',
                     'Pop': COLORS['primary'],
@@ -1070,13 +1091,13 @@ if st.session_state.active_page == "Vue d'ensemble":
                 plot_bgcolor=COLORS['bg_card'], 
                 paper_bgcolor=COLORS['bg_card'], 
                 font_color=COLORS['text'],
-                legend=dict(font=dict(color='white', size=10)),
-                height=280,  
-                margin=dict(l=20, r=20, t=20, b=20)  # réduire marges
+                legend=dict(font=dict(color='white', size=12)),
+                height=350,  
+                margin=dict(l=25, r=25, t=25, b=25)  # réduire marges
             )
             fig.update_traces(
                 textfont_color='white',
-                textfont_size=11,  
+                textfont_size=14,  
                 textposition='inside',
                 texttemplate='%{percent:.1%}',
                 textinfo='percent',
@@ -1090,58 +1111,46 @@ if st.session_state.active_page == "Vue d'ensemble":
             
     st.markdown("---")
 
-    st.subheader("📊 Analyse par Plateforme et Genre")
-
     # Layout : 2 colonnes
-    col_gauche, col_droite = st.columns(2)
+    col_gauche, col_droite = st.columns(2)  
 
-    # COLONNE GAUCHE : CAMEMBERT
+    # COLONNE GAUCHE : CAMEMBERT PLOTLY
     with col_gauche:
-        st.markdown("#### 🥧 Répartition des Plateformes")
+        st.markdown("### 🥧 Répartition des Plateformes")
         
         try:
-            fig_camembert = generer_camembert_streamlit()
+            fig_cam = generer_camembert_streamlit()
             
-            if fig_camembert:
-                st.pyplot(fig_camembert)
-                plt.close(fig_camembert)
-                
-                # Stats détaillées sous le graphique
+            if fig_cam:
+                st.plotly_chart(fig_cam, use_container_width=True)  
+                # Stats détaillées
                 stats_plat = get_stats_plateformes()
                 
-                st.markdown("**📌 Détails :**")
-                for _, row in stats_plat.iterrows():
-                    st.markdown(
-                        f"**{row['plateforme']}** : {int(row['nb_artistes'])} artistes "
-                        f"(avg: {int(row['avg_followers']):,} fans, score: {row['avg_score']}/100)"
-                    )
+                st.caption("Ce graphique montre la répartition des artistes par plateforme")
             else:
-                st.info("ℹ️ Aucune donnée disponible pour le camembert")
+                st.info(" Aucune donnée disponible")
         
         except Exception as e:
-            st.error(f"❌ Erreur génération camembert : {e}")
+            st.error(f" Erreur : {e}")
 
-    # COLONNE DROITE : BARRES COMPARATIVES
+    # COLONNE DROITE : NUAGE DE POINTS PLOTLY
     with col_droite:
-        st.markdown("#### 📊 Distribution par Genre")
+        st.markdown("### 📍 Score vs Followers")
         
         try:
-            fig_barres = generer_barres_genres_streamlit()
+            fig_nuage = generer_nuage_points_streamlit()
             
-            if fig_barres:
-                st.pyplot(fig_barres)
-                plt.close(fig_barres)
+            if fig_nuage:
+                st.plotly_chart(fig_nuage, use_container_width=True)  # ✅ plotly_chart
                 
-                # Note explicative
-                st.caption("Top 7 genres les plus représentés sur Spotify")
+                st.caption("Ce graphique montre la relation entre score et audience par plateforme")
             else:
-                st.info("ℹ️ Aucune donnée genre disponible")
+                st.info(" Aucune donnée disponible")
         
         except Exception as e:
-            st.error(f"❌ Erreur génération barres : {e}")
+            st.error(f" Erreur : {e}")
 
     st.markdown("---")
-
 # ==================== TAB 2: LES TOP ====================
 elif st.session_state.active_page == "Les Tops":
     with st.spinner(""):
