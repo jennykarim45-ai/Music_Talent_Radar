@@ -147,13 +147,13 @@ st.markdown(f"""
     <style>
     
     /* MASQUER BARRE STREAMLIT */
-    [data-testid="stHeader"] { display: none !important; }
-    #MainMenu { visibility: hidden !important; }
-    footer { visibility: hidden !important; }
-    [data-testid="stToolbar"] { display: none !important; }
+    [data-testid="stHeader"] {{ display: none !important; }}
+    #MainMenu {{ visibility: hidden !important; }}
+    footer {{ visibility: hidden !important; }}
+    [data-testid="stToolbar"] {{ display: none !important; }}
 
     /* HEADER FIXE */
-    .fixed-header {
+    .fixed-header {{
         position: fixed;
         top: 0;
         left: 0;
@@ -163,9 +163,9 @@ st.markdown(f"""
         padding: 1rem 2rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         border-bottom: 2px solid #FF1B8D;
-    }
+    }}
 
-    .fixed-header::before {
+    .fixed-header::before {{
         content: "";
         position: absolute;
         top: 0;
@@ -174,21 +174,21 @@ st.markdown(f"""
         height: 100%;
         background: rgba(7, 7, 7, 0.85);
         z-index: -1;
-    }
+    }}
 
     /* MODIFIER CETTE LIGNE EXISTANTE (cherche ".main > div") */
-    .main > div {
+    .main > div {{}
         padding-top: 180px !important;  /* Au lieu de 1rem */
         position: relative;
         z-index: 1;
-    }
+    }}
 
     /* RESPONSIVE */
-    @media (max-width: 768px) {
-        .fixed-header { padding: 0.5rem 1rem; }
-        .main > div { padding-top: 140px !important; }
-        .fixed-header img { width: 80px !important; }
-    }
+    @media (max-width: 768px) {{
+        .fixed-header {{ padding: 0.5rem 1rem; }}
+        .main > div {{ padding-top: 140px !important; }}
+        .fixed-header img {{ width: 80px !important; }}
+    }}
     /* Fond principal avec image */
     .stApp {{
         {bg_style}
@@ -881,12 +881,12 @@ else:
 st.markdown("""
     <style>
     /* Style des onglets (tabs) */
-    .stTabs [data-baseweb="tab-list"] {
+    .stTabs [data-baseweb="tab-list"] {{
         gap: 8px;
         background-color: #0E0E0E;  /* Fond noir */
         padding: 10px;
         border-radius: 10px;
-    }
+    }}
     
     .stTabs [data-baseweb="tab"] {
         height: 60px;  /* Hauteur augmentée */
