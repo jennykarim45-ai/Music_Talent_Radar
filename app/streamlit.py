@@ -735,14 +735,14 @@ if logo_base64:
         <div class="fixed-header">
             <div style="display: flex; align-items: center; justify-content: center; gap: 150px; max-width: 1400px; margin: 0 auto;">
                 <div style="flex-shrink: 0;">
-                    <img src="data:image/png;base64,{logo_base64}" style="width: 200px; height: auto;">
+                    <img src="data:image/png;base64,{logo_base64}" style="width: 150px; height: auto;">
                 </div>
                 <div style="text-align: center;">
                     <div class="main-header">JEK2 RECORDS</div>
                     <div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>
                 </div>
                 <div style="flex-shrink: 0;">
-                    <img src="data:image/png;base64,{logo_base64}" style="width: 200px; height: auto;">
+                    <img src="data:image/png;base64,{logo_base64}" style="width: 150px; height: auto;">
                 </div>
             </div>
         </div>
