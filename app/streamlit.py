@@ -15,6 +15,13 @@ import base64
 import auth  
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
+import streamlit as st
+
+st.markdown("""
+    <style>
+    header {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
 
 # Détection de l'environnement
 try:
@@ -683,21 +690,26 @@ except Exception as e:
     st.stop()
     
 # ==================== HEADER ====================
+st.markdown("""
+<div class="sticky-header">
+""", unsafe_allow_html=True)
+
 col_logo, col_title, col_logo2 = st.columns([1, 4, 1])
 
 with col_logo:
-    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
-    if os.path.isfile(logo_path):
-        st.image(logo_path, width=150)
+    st.image("assets/logo.png", width=150)
 
 with col_title:
     st.markdown('<div class="main-header">JEK2 RECORDS</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">⭐ MUSIC TALENT RADAR ⭐</div>', unsafe_allow_html=True)
 
 with col_logo2:
-    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
-    if os.path.isfile(logo_path):
-        st.image(logo_path, width=150)
+    st.image("assets/logo.png", width=150)
+
+st.markdown("""
+</div>
+""", unsafe_allow_html=True)
+
 # ==================== SIDEBAR ====================
 with st.sidebar:
     # Filtres
