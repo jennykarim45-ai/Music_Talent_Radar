@@ -2245,7 +2245,7 @@ elif st.session_state.active_page == "A propos":
     </p>
     """, unsafe_allow_html=True)
     
-    audio_path = os.path.join(BASE_DIR, "assets", "Licorne.wav")
+    audio_path = os.path.join(BASE_DIR, "assets", "Licorne.mp3")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
@@ -2311,7 +2311,7 @@ elif st.session_state.active_page == "A propos":
         st.info(f" Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 
-    audio_path = os.path.join(BASE_DIR, "assets", "Personne_ne_voit.wav")
+    audio_path = os.path.join(BASE_DIR, "assets", "Personne_ne_voit.mp3")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
