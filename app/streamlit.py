@@ -83,7 +83,7 @@ if not auth.require_authentication(): # type: ignore
 # ============= SIDEBAR =============
 with st.sidebar:
     # Liste des pages
-    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil","Admin"]
+    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
     
     # Trouver l'index de la page active
     try:
@@ -452,7 +452,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=5, show_spinner="Chargement des données...")
+@st.cache_data(ttl=600, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:
@@ -2963,77 +2963,6 @@ elif st.session_state.active_page == "Mon Profil":
                         
                 st.markdown("---")
                 
-# ==================== PAGE ADMIN ====================
-elif st.session_state.active_page == "Admin":
-    st.markdown("## 🔧 Diagnostic Doublons")
-    
-    if st.button("🔍 Analyser la base", use_container_width=True):
-        if USE_POSTGRES:
-            conn = psycopg2.connect(DB_URL)
-        else:
-            conn = sqlite3.connect(DB_NAME)
-        
-        cursor = conn.cursor()
-        
-        # Nombre total
-        cursor.execute("SELECT COUNT(*) FROM metriques_historique")
-        total = cursor.fetchone()[0]
-        st.metric("Total lignes", total)
-        
-        # Doublons par jour
-        if USE_POSTGRES:
-            cursor.execute("""
-                SELECT DATE(date_collecte)::text as jour, COUNT(*) as nb_lignes
-                FROM metriques_historique
-                GROUP BY DATE(date_collecte)
-                ORDER BY DATE(date_collecte) DESC
-                LIMIT 5
-            """)
-        else:
-            cursor.execute("""
-                SELECT date(date_collecte) as jour, COUNT(*) as nb_lignes
-                FROM metriques_historique
-                GROUP BY date(date_collecte)
-                ORDER BY date(date_collecte) DESC
-                LIMIT 5
-            """)
-        
-        results = cursor.fetchall()
-        for row in results:
-            st.write(f"📅 {row[0]} : {row[1]} lignes")
-        
-        conn.close()
-    
-    st.markdown("---")
-    
-    if st.button("🧹 NETTOYER DOUBLONS", type="primary", use_container_width=True):
-        if USE_POSTGRES:
-            conn = psycopg2.connect(DB_URL)
-            cursor = conn.cursor()
-            
-            cursor.execute("""
-                DELETE FROM metriques_historique
-                WHERE id NOT IN (
-                    SELECT MAX(id)
-                    FROM metriques_historique
-                    GROUP BY DATE(date_collecte), id_unique
-                )
-            """)
-            
-            nb = cursor.rowcount
-            conn.commit()
-            conn.close()
-            
-            st.success(f"✅ {nb} doublons supprimés !")
-            st.balloons()
-    
-    st.markdown("---")
-    
-    if st.button("🔄 Vider cache + Recharger", use_container_width=True):
-        st.cache_data.clear()
-        time.sleep(1)
-        st.rerun()
-
 # Footer
 st.divider()
 st.caption("JEK2 Records - MusicTalentRadar | La data au rythme du son | On capte les talents avant qu'ils n'explosent!")
