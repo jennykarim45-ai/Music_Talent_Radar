@@ -1666,7 +1666,7 @@ elif st.session_state.active_page == "Évolution":
                 
                 if not artist_data.empty:
                     artist_data['date_collecte'] = pd.to_datetime(artist_data['date_collecte'])
-                    artist_data['data_jour'] = artist_data['date_collecte'].dt.date
+                    artist_data['date_jour'] = artist_data['date_collecte'].dt.date
                     artist_data = artist_data.sort_values('date_collecte') # type: ignore
                     
                     if 'fans_followers' in artist_data.columns:
