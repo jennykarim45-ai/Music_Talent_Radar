@@ -1,7 +1,5 @@
 """
 ml_prediction.py - Génération des prédictions ML optimisées pour le Music Talent Radar
-
-
 """
 
 import pandas as pd
@@ -14,10 +12,35 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.utils import resample
 from sklearn.metrics import classification_report, confusion_matrix
 from datetime import datetime, timedelta
+import json
 import warnings
 warnings.filterwarnings('ignore')
 
 DB_PATH = 'data/music_talent_radar_v2.db'
+
+def save_ml_metrics(y_true, y_pred, y_pred_proba):
+    """Sauvegarde les métriques ML pour affichage dans Streamlit"""
+    
+    # Matrice de confusion
+    cm = confusion_matrix(y_true, y_pred)
+    
+    # Rapport de classification
+    report = classification_report(y_true, y_pred, output_dict=True)
+    
+    # Sauvegarder dans un fichier JSON
+    metrics = {
+        'confusion_matrix': cm.tolist(),
+        'classification_report': report,
+        'accuracy': report['accuracy'],
+        'total_samples': len(y_true),
+        'stars_count': int(y_true.sum()),
+        'non_stars_count': int((y_true == 0).sum())
+    }
+    
+    with open('data/ml_metrics.json', 'w') as f:
+        json.dump(metrics, f, indent=2)
+    
+    print("Métriques ML sauvegardées dans data/ml_metrics.json")
 
 def calculer_croissance_et_features():
     """Calculer croissance + features avancées"""
@@ -54,14 +77,14 @@ def calculer_croissance_et_features():
     df['date_collecte'] = pd.to_datetime(df['date_collecte'])
     
     artistes_uniques = df['id_unique'].nunique()
-    print(f"{artistes_uniques} artistes uniques")
+    print(f" {artistes_uniques} artistes uniques")
     
     collectes_par_artiste = df.groupby('id_unique').size()
     artistes_avec_historique = (collectes_par_artiste >= 2).sum()
     print(f" {artistes_avec_historique} artistes avec 2+ collectes")
     
     if artistes_avec_historique == 0:
-        print("\n PAS ASSEZ D'ARTISTES AVEC HISTORIQUE !")
+        print(" PAS ASSEZ D'ARTISTES AVEC HISTORIQUE !")
         print(f"   Besoin : 2+ artistes avec au moins 2 collectes")
         print(f"   Actuellement : {artistes_avec_historique} artistes")
         return None
@@ -92,7 +115,6 @@ def calculer_croissance_et_features():
             croissance_pct = 0
             croissance_90j = 0
         
-
         a_explose = 1 if croissance_90j > 30 else 0
         
         # Features avancées
@@ -146,7 +168,7 @@ def calculer_croissance_et_features():
         })
     
     if not croissances:
-        print("\n Aucune croissance calculée !")
+        print(" Aucune croissance calculée !")
         return None
     
     df_croissance = pd.DataFrame(croissances)
@@ -162,13 +184,13 @@ def calculer_croissance_et_features():
 
 def main():
     """Générer prédictions ML optimisées"""
-    print(" GÉNÉRATION DES PRÉDICTIONS ML v3.1 - CORRIGÉE")
+    print(" GÉNÉRATION DES PRÉDICTIONS ML v3.1")
     
     try:
         df = calculer_croissance_et_features()
         
         if df is None or len(df) < 10:
-            print("\n Pas assez de données pour ML optimisé")
+            print(" Pas assez de données pour ML optimisé")
             print("   Besoin de 10+ artistes avec historique")
             
             # Fallback basique
@@ -194,7 +216,7 @@ def main():
         # Compter stars
         nb_stars = (df['a_explose'] == 1).sum()
         
-        print(f"\n Dataset : {len(df)} artistes, {nb_stars} stars")
+        print(f" Dataset : {len(df)} artistes, {nb_stars} stars")
         
         # Features
         feature_cols = [
@@ -215,7 +237,7 @@ def main():
         df_stars = df[df['a_explose'] == 1]
         df_non_stars = df[df['a_explose'] == 0]
         
-        print(f"\n⚖️ Équilibrage des classes...")
+        print(" Équilibrage des classes...")
         print(f"   Avant : {len(df_stars)} stars, {len(df_non_stars)} non-stars")
         
         if len(df_non_stars) > len(df_stars) * 3:
@@ -242,7 +264,7 @@ def main():
         
         # Modèle simple (pas de GridSearch si petit dataset)
         if nb_stars < 10:
-            print("\n🔧 Mode simple (peu de stars, pas de GridSearch)")
+            print("\n Mode simple (peu de stars, pas de GridSearch)")
             model = RandomForestClassifier(
                 n_estimators=200,
                 max_depth=10,
@@ -276,7 +298,7 @@ def main():
         # Validation croisée
         print("\n Validation croisée...")
         try:
-            cv_folds = min(5, (y_train == 1).sum())  # Max 5 folds, ou moins si pas assez de stars
+            cv_folds = min(5, (y_train == 1).sum())
             cv_scores = cross_val_score(model, X_train_scaled, y_train, cv=cv_folds, scoring='accuracy')
             print(f"   Accuracy CV ({cv_folds}-fold): {cv_scores.mean():.1%} ± {cv_scores.std():.1%}")
         except:
@@ -284,16 +306,16 @@ def main():
         
         # Test
         accuracy_test = model.score(X_test_scaled, y_test)
-        y_pred = model.predict(X_test_scaled)
+        y_pred_test = model.predict(X_test_scaled)
         
         print(f"   Accuracy Test : {accuracy_test:.1%}")
         
-        #  CORRECTION : Calibration conditionnelle
+        # Calibration conditionnelle
         print("\n Calibration...")
         
         nb_stars_train = (y_train == 1).sum()
         
-        if nb_stars_train >= 9:  # Au moins 9 stars pour faire 3-fold CV
+        if nb_stars_train >= 9:
             print(f"    Calibration possible ({nb_stars_train} stars en train)")
             try:
                 model_calibre = CalibratedClassifierCV(model, cv=3, method='sigmoid')
@@ -303,12 +325,12 @@ def main():
                 print(f"    Erreur calibration: {e}")
                 print("   → Utilisation modèle non calibré")
                 model_calibre = model
-        elif nb_stars_train >= 4:  # Entre 4 et 8 stars : 2-fold CV
+        elif nb_stars_train >= 4:
             print(f"    Peu de stars ({nb_stars_train}), calibration 2-fold")
             try:
                 model_calibre = CalibratedClassifierCV(model, cv=2, method='sigmoid')
                 model_calibre.fit(X_train_scaled, y_train)
-                print("   Calibration 2-fold réussie")
+                print("    Calibration 2-fold réussie")
             except Exception as e:
                 print(f"    Erreur calibration: {e}")
                 print("   → Utilisation modèle non calibré")
@@ -317,8 +339,13 @@ def main():
             print(f"    Trop peu de stars ({nb_stars_train}), pas de calibration")
             model_calibre = model
         
+        #  SAUVEGARDER MÉTRIQUES POUR STREAMLIT
+        print(" Sauvegarde métriques pour visualisation...")
+        y_pred_proba_test = model_calibre.predict_proba(X_test_scaled)[:, 1]
+        save_ml_metrics(y_test, y_pred_test, y_pred_proba_test)
+        
         # Prédictions finales
-        print("\n Génération des prédictions finales...")
+        print(" Génération des prédictions finales...")
         
         X_all = df[feature_cols]
         X_all_scaled = scaler.transform(X_all)
@@ -327,7 +354,7 @@ def main():
         df['proba_star'] = probas
         
         # Feature importance
-        print(f"\n Top 5 features importantes:")
+        print(f"\ Top 5 features importantes:")
         importances = pd.DataFrame({
             'feature': feature_cols,
             'importance': model.feature_importances_
@@ -342,10 +369,10 @@ def main():
         predictions = predictions.sort_values('proba_star', ascending=False)
         predictions.to_csv('data/predictions_ml.csv', index=False)
         
-        print(f"\n {len(predictions)} prédictions générées")
+        print(f"\ {len(predictions)} prédictions générées")
         
         # Stats
-        print(f"\n Statistiques finales:")
+        print(f"\ Statistiques finales:")
         print(f"   Stars prédites (>30%): {(predictions['proba_star'] > 0.3).sum()}")
         print(f"   Haut potentiel (>20%): {(predictions['proba_star'] > 0.2).sum()}")
         print(f"   Probabilité moyenne: {predictions['proba_star'].mean():.1%}")

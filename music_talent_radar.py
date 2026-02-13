@@ -180,12 +180,12 @@ def get_spotify_token():
     client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
     
     if not client_id or not client_secret:
-        print("❌ ERREUR CRITIQUE : Variables d'environnement manquantes")
-        print(f"   SPOTIFY_CLIENT_ID = {'✅ Présent' if client_id else '❌ MANQUANT'}")
-        print(f"   SPOTIFY_CLIENT_SECRET = {'✅ Présent' if client_secret else '❌ MANQUANT'}")
-        raise ValueError("❌ Variables SPOTIFY_CLIENT_ID et SPOTIFY_CLIENT_SECRET requises")
+        print(" ERREUR CRITIQUE : Variables d'environnement manquantes")
+        print(f"   SPOTIFY_CLIENT_ID = {' Présent' if client_id else '❌ MANQUANT'}")
+        print(f"   SPOTIFY_CLIENT_SECRET = {'Présent' if client_secret else '❌ MANQUANT'}")
+        raise ValueError(" Variables SPOTIFY_CLIENT_ID et SPOTIFY_CLIENT_SECRET requises")
     
-    print(f"🔑 Tentative d'authentification Spotify...")
+    print(f" Tentative d'authentification Spotify...")
     print(f"   Client ID: {client_id[:10]}...")
     
     max_retries = 3
@@ -203,23 +203,23 @@ def get_spotify_token():
             
             if auth_response.status_code == 200:
                 token = auth_response.json()['access_token']
-                print(f"✅ Token Spotify obtenu (tentative {attempt + 1}/{max_retries})")
+                print(f" Token Spotify obtenu (tentative {attempt + 1}/{max_retries})")
                 print(f"   Token: {token[:20]}...")
                 return token
             
             elif auth_response.status_code == 401:
-                print(f"❌ ERREUR 401 : Credentials invalides (tentative {attempt + 1}/{max_retries})")
+                print(f" ERREUR 401 : Credentials invalides (tentative {attempt + 1}/{max_retries})")
                 print(f"   Réponse: {auth_response.text}")
                 
                 if attempt < max_retries - 1:
                     wait_time = 5 * (attempt + 1)
-                    print(f"⏳ Attente {wait_time}s avant retry...")
+                    print(f" Attente {wait_time}s avant retry...")
                     time.sleep(wait_time)
                 else:
-                    raise Exception(f"❌ Authentification échouée après {max_retries} tentatives - Vérifiez vos credentials Spotify")
+                    raise Exception(f" Authentification échouée après {max_retries} tentatives - Vérifiez vos credentials Spotify")
             
             else:
-                print(f"❌ Erreur {auth_response.status_code} (tentative {attempt + 1}/{max_retries})")
+                print(f" Erreur {auth_response.status_code} (tentative {attempt + 1}/{max_retries})")
                 print(f"   Réponse: {auth_response.text}")
                 
                 if attempt < max_retries - 1:
@@ -228,21 +228,21 @@ def get_spotify_token():
                     raise Exception(f"Erreur authentification Spotify: {auth_response.status_code}")
         
         except requests.exceptions.Timeout:
-            print(f"⏱️ Timeout lors de l'authentification (tentative {attempt + 1}/{max_retries})")
+            print(f" Timeout lors de l'authentification (tentative {attempt + 1}/{max_retries})")
             if attempt < max_retries - 1:
                 time.sleep(5)
             else:
-                raise Exception("❌ Timeout persistant lors de l'authentification")
+                raise Exception(" Timeout persistant lors de l'authentification")
         
         except requests.exceptions.ConnectionError as e:
-            print(f"🌐 Erreur réseau lors de l'authentification (tentative {attempt + 1}/{max_retries})")
+            print(f"Erreur réseau lors de l'authentification (tentative {attempt + 1}/{max_retries})")
             print(f"   Détails: {e}")
             if attempt < max_retries - 1:
                 time.sleep(10)
             else:
-                raise Exception("❌ Impossible de se connecter à Spotify API")
+                raise Exception(" Impossible de se connecter à Spotify API")
     
-    raise Exception("❌ Authentification échouée après tous les retries")
+    raise Exception(" Authentification échouée après tous les retries")
 
 # ============================================================================
 # MODULE 1 : COLLECTE SANS BLOCAGE
@@ -250,12 +250,12 @@ def get_spotify_token():
 
 def collecter_donnees():
     """Collecter données depuis artist_urls.csv - SANS BLOCAGE"""
-    print("🔄 MODULE 1 : COLLECTE DES DONNÉES")
-    print(f"📊 Configuration : MAX {MAX_ARTISTS_PER_RUN} artistes | Délai {DELAY_BETWEEN_ARTISTS}s")
-    print(f"⏱️  Temps estimé : ~{ESTIMATED_TIME_MINUTES:.1f} minutes")
+    print(" MODULE 1 : COLLECTE DES DONNÉES")
+    print(f" Configuration : MAX {MAX_ARTISTS_PER_RUN} artistes | Délai {DELAY_BETWEEN_ARTISTS}s")
+    print(f"  Temps estimé : ~{ESTIMATED_TIME_MINUTES:.1f} minutes")
     
     if not os.path.exists(URLS_FILE):
-        print(f"❌ Fichier {URLS_FILE} introuvable")
+        print(f" Fichier {URLS_FILE} introuvable")
         print(f"Créer {URLS_FILE} avec format: nom,url_spotify,url_deezer,categorie")
         return False
     
@@ -264,33 +264,33 @@ def collecter_donnees():
     
     # Vérifier si colonne categorie existe
     if 'categorie' not in df.columns:
-        print("⚠️ Colonne 'categorie' manquante, ajout de 'Autre'")
+        print(" Colonne 'categorie' manquante, ajout de 'Autre'")
         df['categorie'] = 'Autre'
     
     spotify_df = df[df['url_spotify'].notna()].copy() if 'url_spotify' in df.columns else pd.DataFrame()
     deezer_df = df[df['url_deezer'].notna()].copy() if 'url_deezer' in df.columns else pd.DataFrame()
     
-    # 🚨 LIMITER À MAX_ARTISTS_PER_RUN
+    #  LIMITER À MAX_ARTISTS_PER_RUN
     total_spotify = len(spotify_df)
     total_deezer = len(deezer_df)
     
     if len(spotify_df) > MAX_ARTISTS_PER_RUN:
-        print(f"⚠️ Limitation Spotify : {len(spotify_df)} → {MAX_ARTISTS_PER_RUN} artistes")
+        print(f"Limitation Spotify : {len(spotify_df)} → {MAX_ARTISTS_PER_RUN} artistes")
         spotify_df = spotify_df.head(MAX_ARTISTS_PER_RUN)
     
     if len(deezer_df) > MAX_ARTISTS_PER_RUN:
-        print(f"⚠️ Limitation Deezer : {len(deezer_df)} → {MAX_ARTISTS_PER_RUN} artistes")
+        print(f"Limitation Deezer : {len(deezer_df)} → {MAX_ARTISTS_PER_RUN} artistes")
         deezer_df = deezer_df.head(MAX_ARTISTS_PER_RUN)
     
-    print(f"\n📊 Artistes à collecter :")
-    print(f"  🟢 Spotify : {len(spotify_df)}/{total_spotify}")
-    print(f"  🔵 Deezer  : {len(deezer_df)}/{total_deezer}")
+    print(f"\n Artistes à collecter :")
+    print(f"   Spotify : {len(spotify_df)}/{total_spotify}")
+    print(f"   Deezer  : {len(deezer_df)}/{total_deezer}")
     
     # Token Spotify
     try:
         token = get_spotify_token()
     except Exception as e:
-        print(f"❌ Erreur authentification: {e}")
+        print(f" Erreur authentification: {e}")
         return False
     
     # ========================================================================
@@ -298,7 +298,7 @@ def collecter_donnees():
     # ========================================================================
     spotify_data = []
     if len(spotify_df) > 0:
-        print(f"\n🟢 Collecte Spotify ({len(spotify_df)} artistes)...")
+        print(f"\n Collecte Spotify ({len(spotify_df)} artistes)...")
         print(f"   Délai entre requêtes : {DELAY_BETWEEN_REQUESTS}s")
         print(f"   Délai entre artistes : {DELAY_BETWEEN_ARTISTS}s")
         
@@ -318,16 +318,16 @@ def collecter_donnees():
             elapsed = (time.time() - start_time) / 60
             
             if current % 10 == 0:
-                print(f"   📊 Progression : {current}/{len(spotify_df)} ({progress:.0f}%) | {elapsed:.1f} min écoulées")
+                print(f"  Progression : {current}/{len(spotify_df)} ({progress:.0f}%) | {elapsed:.1f} min écoulées")
             
             if not artist_id:
-                print(f"❌ {nom}: URL invalide")
+                print(f" {nom}: URL invalide")
                 error_count += 1
                 continue
             
             # Vérifier blacklist
             if est_en_blacklist(nom):
-                print(f"🚫 {nom}: En blacklist (ignoré)")
+                print(f" {nom}: En blacklist (ignoré)")
                 error_count += 1
                 continue
             
@@ -338,24 +338,24 @@ def collecter_donnees():
             
             while retry_count < max_retries and not success:
                 try:
-                    # 1️⃣ Requête infos artiste
+                    #  Requête infos artiste
                     response = requests.get(
                         f'https://api.spotify.com/v1/artists/{artist_id}',
                         headers={'Authorization': f'Bearer {token}'},
                         timeout=30
                     )
                     
-                    # 🚨 GESTION STRICTE DU RATE LIMIT
+                    # GESTION STRICTE DU RATE LIMIT
                     if response.status_code == 429:
                         retry_after = int(response.headers.get('Retry-After', DELAY_AFTER_RATE_LIMIT))
                         
-                        print(f"\n⛔ RATE LIMIT ATTEINT !")
+                        print(f"\n RATE LIMIT ATTEINT !")
                         print(f"   Artiste : {nom}")
                         print(f"   Retry-After : {retry_after}s ({retry_after/60:.1f} min)")
                         
-                        # 🚨 SI > 1000s (16 min), ARRÊTER LA COLLECTE
+                        #  SI > 1000s (16 min), ARRÊTER LA COLLECTE
                         if retry_after > 1000:
-                            print(f"\n❌ RATE LIMIT TROP LONG ({retry_after}s = {retry_after/60:.1f} min)")
+                            print(f"\n RATE LIMIT TROP LONG ({retry_after}s = {retry_after/60:.1f} min)")
                             print(f"   ARRÊT DE LA COLLECTE POUR AUJOURD'HUI")
                             print(f"   → {success_count} artistes collectés avec succès")
                             print(f"   → Relancer dans {retry_after/3600:.1f} heures")
@@ -372,7 +372,7 @@ def collecter_donnees():
                         
                         # Sinon attendre
                         wait_time = retry_after + 10
-                        print(f"⏳ Attente de {wait_time}s ({wait_time/60:.1f} min)...")
+                        print(f" Attente de {wait_time}s ({wait_time/60:.1f} min)...")
                         time.sleep(wait_time)
                         retry_count += 1
                         rate_limit_count += 1
@@ -380,22 +380,22 @@ def collecter_donnees():
                     
                     # Autres erreurs HTTP
                     if response.status_code == 404:
-                        print(f"❌ {nom}: Artiste introuvable")
+                        print(f" {nom}: Artiste introuvable")
                         error_count += 1
                         break
                     
                     if response.status_code != 200:
-                        print(f"❌ {nom}: Erreur {response.status_code}")
+                        print(f" {nom}: Erreur {response.status_code}")
                         error_count += 1
                         break
                     
-                    # ✅ Succès - récupération des données
+                    #  Succès - récupération des données
                     data = response.json()
                     
-                    # ⏳ DÉLAI ENTRE REQUÊTE ARTISTE ET ALBUMS
+                    #  DÉLAI ENTRE REQUÊTE ARTISTE ET ALBUMS
                     time.sleep(DELAY_BETWEEN_REQUESTS)
                     
-                    # 2️⃣ Requête albums de l'artiste
+                    #  Requête albums de l'artiste
                     albums_response = requests.get(
                         f'https://api.spotify.com/v1/artists/{artist_id}/albums',
                         headers={'Authorization': f'Bearer {token}'},
@@ -440,48 +440,48 @@ def collecter_donnees():
                         'nb_releases_recentes': nb_releases_recentes
                     })
                     
-                    print(f"✅ {nom:30} → {data['followers']['total']:>8,} followers | {nb_releases_recentes} releases")
+                    print(f" {nom:30} → {data['followers']['total']:>8,} followers | {nb_releases_recentes} releases")
                     success = True
                     success_count += 1
                     
                 except requests.exceptions.Timeout:
-                    print(f"⏱️ {nom}: Timeout")
+                    print(f" {nom}: Timeout")
                     error_count += 1
                     break
                 except requests.exceptions.ConnectionError:
-                    print(f"🌐 {nom}: Erreur réseau")
+                    print(f" {nom}: Erreur réseau")
                     error_count += 1
                     break
                 except Exception as e:
-                    print(f"❌ {nom}: {e}")
+                    print(f" {nom}: {e}")
                     error_count += 1
                     break
             
             # Si échec après tous les retries
             if not success and retry_count >= max_retries:
-                print(f"❌ {nom}: Échec après {max_retries} tentatives (rate limit persistant)")
+                print(f" {nom}: Échec après {max_retries} tentatives (rate limit persistant)")
                 error_count += 1
             
-            # ⏳ DÉLAI ENTRE CHAQUE ARTISTE (CRITIQUE POUR RATE LIMITING)
+            #  DÉLAI ENTRE CHAQUE ARTISTE (CRITIQUE POUR RATE LIMITING)
             time.sleep(DELAY_BETWEEN_ARTISTS)
         
         # STATS FINALES SPOTIFY
         total_time = (time.time() - start_time) / 60
-        print(f"\n📊 RÉSULTATS COLLECTE SPOTIFY")
-        print(f"  ✅ Succès        : {success_count}")
-        print(f"  ❌ Erreurs       : {error_count}")
-        print(f"  ⏳ Rate limits   : {rate_limit_count}")
-        print(f"  ⏱️  Temps total   : {total_time:.1f} min")
+        print(f"\n RÉSULTATS COLLECTE SPOTIFY")
+        print(f"  Succès        : {success_count}")
+        print(f"  Erreurs       : {error_count}")
+        print(f"  Rate limits   : {rate_limit_count}")
+        print(f"  Temps total   : {total_time:.1f} min")
         if (success_count + error_count) > 0:
-            print(f"  📈 Taux succès   : {success_count/(success_count+error_count)*100:.1f}%")
-            print(f"  ⚡ Vitesse       : {success_count/total_time:.1f} artistes/min")
+            print(f"   Taux succès   : {success_count/(success_count+error_count)*100:.1f}%")
+            print(f"   Vitesse       : {success_count/total_time:.1f} artistes/min")
     
     # ========================================================================
     # COLLECTE DEEZER
     # ========================================================================
     deezer_data = []
     if len(deezer_df) > 0:
-        print(f"\n🔵 Collecte Deezer ({len(deezer_df)} artistes)...")
+        print(f"\n Collecte Deezer ({len(deezer_df)} artistes)...")
         
         success_count_deezer = 0
         error_count_deezer = 0
@@ -492,13 +492,13 @@ def collecter_donnees():
             categorie = row.get('categorie', 'Autre')
             
             if not artist_id:
-                print(f"❌ {nom}: URL invalide")
+                print(f" {nom}: URL invalide")
                 error_count_deezer += 1
                 continue
             
             # Vérifier blacklist
             if est_en_blacklist(nom):
-                print(f"🚫 {nom}: En blacklist (ignoré)")
+                print(f" {nom}: En blacklist (ignoré)")
                 error_count_deezer += 1
                 continue
             
@@ -507,13 +507,13 @@ def collecter_donnees():
                 response = requests.get(f'https://api.deezer.com/artist/{artist_id}', timeout=30)
                 
                 if response.status_code != 200:
-                    print(f"❌ {nom}: Erreur {response.status_code}")
+                    print(f" {nom}: Erreur {response.status_code}")
                     error_count_deezer += 1
                     continue
                 
                 data = response.json()
                 if 'error' in data:
-                    print(f"❌ {nom}: {data['error']}")
+                    print(f" {nom}: {data['error']}")
                     error_count_deezer += 1
                     continue
                 
@@ -550,22 +550,22 @@ def collecter_donnees():
                     'nb_releases_recentes': nb_releases_recentes
                 })
                 
-                print(f"✅ {nom:30} → {data.get('nb_fan', 0):>8,} fans | {nb_releases_recentes} releases")
+                print(f" {nom:30} → {data.get('nb_fan', 0):>8,} fans | {nb_releases_recentes} releases")
                 success_count_deezer += 1
                 
             except Exception as e:
-                print(f"❌ {nom}: {e}")
+                print(f" {nom}: {e}")
                 error_count_deezer += 1
             
             # Délai entre artistes Deezer (plus permissif)
             time.sleep(0.5)
         
         # STATS FINALES DEEZER
-        print(f"\n📊 RÉSULTATS COLLECTE DEEZER")
-        print(f"  ✅ Succès  : {success_count_deezer}")
-        print(f"  ❌ Erreurs : {error_count_deezer}")
+        print(f"\n RÉSULTATS COLLECTE DEEZER")
+        print(f"   Succès  : {success_count_deezer}")
+        print(f"   Erreurs : {error_count_deezer}")
         if (success_count_deezer + error_count_deezer) > 0:
-            print(f"  📈 Taux    : {success_count_deezer/(success_count_deezer+error_count_deezer)*100:.1f}%")
+            print(f"   Taux    : {success_count_deezer/(success_count_deezer+error_count_deezer)*100:.1f}%")
     
     # ========================================================================
     # SAUVEGARDE
@@ -576,15 +576,15 @@ def collecter_donnees():
         spotify_collected = pd.DataFrame(spotify_data)
         spotify_collected.to_csv(f'data/spotify_collected_{timestamp}.csv', index=False)
         spotify_collected.to_csv('data/spotify_collected_latest.csv', index=False)
-        print(f"\n💾 Spotify : {len(spotify_collected)} artistes sauvegardés")
+        print(f"\n Spotify : {len(spotify_collected)} artistes sauvegardés")
     
     if deezer_data:
         deezer_collected = pd.DataFrame(deezer_data)
         deezer_collected.to_csv(f'data/deezer_collected_{timestamp}.csv', index=False)
         deezer_collected.to_csv('data/deezer_collected_latest.csv', index=False)
-        print(f"💾 Deezer  : {len(deezer_collected)} artistes sauvegardés")
+        print(f" Deezer  : {len(deezer_collected)} artistes sauvegardés")
     
-    print("\n✅ Collecte terminée avec succès")
+    print("\n Collecte terminée avec succès")
     return True
 
 # ============================================================================
@@ -593,11 +593,11 @@ def collecter_donnees():
 
 def decouvrir_nouveaux(seed_urls=None):
     """Découvrir nouveaux artistes et les ajouter automatiquement"""
-    print("🔍 MODULE 2 : DÉCOUVERTE AUTOMATIQUE")
+    print(" MODULE 2 : DÉCOUVERTE AUTOMATIQUE")
     
     if seed_urls is None:
         if not os.path.exists(URLS_FILE):
-            print("❌ Aucun seed disponible")
+            print(" Aucun seed disponible")
             return False
         
         df = pd.read_csv(URLS_FILE)
@@ -613,7 +613,7 @@ def decouvrir_nouveaux(seed_urls=None):
         if not seed_id:
             continue
         
-        print(f"\n🔍 Seed {i}/{len(seed_urls)}: {seed_id}")
+        print(f"\n Seed {i}/{len(seed_urls)}: {seed_id}")
         
         try:
             response = requests.get(
@@ -644,12 +644,12 @@ def decouvrir_nouveaux(seed_urls=None):
                     }
                     print(f"      ✓ {artist['name']:30} ({followers:,} followers)")
         except Exception as e:
-            print(f"❌ Erreur: {e}")
+            print(f" Erreur: {e}")
         
         time.sleep(1.0)
     
     if not discovered:
-        print("\n❌ Aucun nouvel artiste découvert")
+        print("\n Aucun nouvel artiste découvert")
         return False
     
     nouveaux_df = pd.DataFrame(list(discovered.values()))[['nom', 'url_spotify', 'url_deezer']]
@@ -662,12 +662,12 @@ def decouvrir_nouveaux(seed_urls=None):
         if not nouveaux_df.empty:
             merged_df = pd.concat([existing_df[['nom', 'url_spotify', 'url_deezer']], nouveaux_df], ignore_index=True)
             merged_df.to_csv(URLS_FILE, index=False)
-            print(f"\n✅ {len(nouveaux_df)} nouveaux artistes ajoutés")
+            print(f"\n {len(nouveaux_df)} nouveaux artistes ajoutés")
         else:
-            print(f"\n⚠️ Tous déjà présents")
+            print(f"\n Tous déjà présents")
     else:
         nouveaux_df.to_csv(URLS_FILE, index=False)
-        print(f"\n✅ {len(nouveaux_df)} artistes ajoutés")
+        print(f"\n {len(nouveaux_df)} artistes ajoutés")
     
     return True
 
@@ -677,19 +677,19 @@ def decouvrir_nouveaux(seed_urls=None):
 
 def filtrer_emergents():
     """Filtrer les artistes émergents"""
-    print("🔍 MODULE 3 : FILTRAGE DES ÉMERGENTS")
+    print(" MODULE 3 : FILTRAGE DES ÉMERGENTS")
     
     spotify_file = 'data/spotify_collected_latest.csv'
     deezer_file = 'data/deezer_collected_latest.csv'
     
     if not os.path.exists(spotify_file) and not os.path.exists(deezer_file):
-        print("❌ Aucune donnée collectée trouvée")
+        print(" Aucune donnée collectée trouvée")
         return False
     
     # Filtrer Spotify
     if os.path.exists(spotify_file):
         spotify_df = pd.read_csv(spotify_file)
-        print(f"\n🟢 Spotify avant filtrage : {len(spotify_df)}")
+        print(f"\n Spotify avant filtrage : {len(spotify_df)}")
         
         spotify_filtered = spotify_df[
             (spotify_df['followers'] >= SPOTIFY_MIN_FOLLOWERS) &
@@ -705,7 +705,7 @@ def filtrer_emergents():
     # Filtrer Deezer
     if os.path.exists(deezer_file):
         deezer_df = pd.read_csv(deezer_file)
-        print(f"\n🔵 Deezer avant filtrage : {len(deezer_df)}")
+        print(f"\n Deezer avant filtrage : {len(deezer_df)}")
         
         # Vérifier si colonne nb_titres existe
         if 'nb_titres' in deezer_df.columns:
@@ -726,7 +726,7 @@ def filtrer_emergents():
         deezer_filtered.to_csv('data/deezer_filtered.csv', index=False)
         print(f"   Après filtrage : {len(deezer_filtered)} ({len(deezer_filtered)/len(deezer_df)*100:.1f}%)")
     
-    print("\n✅ Filtrage terminé")
+    print("\n Filtrage terminé")
     return True
 
 # ============================================================================
@@ -747,7 +747,7 @@ def verifier_et_ajouter_colonne_date_maj(cursor, conn):
             cursor.execute("UPDATE artistes SET date_maj = ? WHERE date_maj IS NULL", (date_now,))
             conn.commit()
     except Exception as e:
-        print(f"⚠️ Erreur date_maj: {e}")
+        print(f" Erreur date_maj: {e}")
 
 def verifier_et_ajouter_colonnes_recurrence(cursor, conn):
     """Ajouter colonnes pour la récurrence"""
@@ -763,11 +763,11 @@ def verifier_et_ajouter_colonnes_recurrence(cursor, conn):
             cursor.execute("ALTER TABLE metriques_historique ADD COLUMN nb_releases_recentes INTEGER DEFAULT 0")
             conn.commit()
     except Exception as e:
-        print(f"⚠️ Erreur colonnes: {e}")
+        print(f" Erreur colonnes: {e}")
 
 def importer_en_base():
     """Importer données filtrées en base"""
-    print("💾 MODULE 4 : IMPORT EN BASE DE DONNÉES")
+    print(" MODULE 4 : IMPORT EN BASE DE DONNÉES")
     
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -842,7 +842,7 @@ def importer_en_base():
             """, (id_unique, row['nom'], 'Spotify', categorie,
                 row.get('image_url', ''), row['url_spotify'], date_now))
             count += 1
-        print(f"✅ Spotify : {len(spotify_df)} artistes importés")
+        print(f" Spotify : {len(spotify_df)} artistes importés")
     
     # Importer Deezer
     if os.path.exists('data/deezer_filtered.csv'):
@@ -858,13 +858,13 @@ def importer_en_base():
             """, (id_unique, row['nom'], 'Deezer', categorie,
                 row.get('image_url', ''), row['url_deezer'], date_now))
             count += 1
-        print(f"✅ Deezer : {len(deezer_df)} artistes importés")
+        print(f" Deezer : {len(deezer_df)} artistes importés")
     
     conn.commit()
-    print(f"\n📊 Total : {count} artistes dans table 'artistes'")
+    print(f"\n Total : {count} artistes dans table 'artistes'")
     
     # Synchronisation metriques_historique
-    print("\n🔄 Synchronisation metriques_historique...")
+    print("\n Synchronisation metriques_historique...")
     
     try:
         count_inserted = 0
@@ -906,7 +906,7 @@ def importer_en_base():
                     ))
                     count_inserted += 1
                 except Exception as e:
-                    print(f"⚠️ Erreur Spotify - {row['nom']}: {e}")
+                    print(f" Erreur Spotify - {row['nom']}: {e}")
         
         # Insertion Deezer
         if os.path.exists('data/deezer_filtered.csv'):
@@ -945,18 +945,18 @@ def importer_en_base():
                     ))
                     count_inserted += 1
                 except Exception as e:
-                    print(f"⚠️ Erreur Deezer - {row['nom']}: {e}")
+                    print(f" Erreur Deezer - {row['nom']}: {e}")
         
         conn.commit()
         
         cursor.execute("SELECT COUNT(*) FROM metriques_historique")
         count_total = cursor.fetchone()[0]
         
-        print(f"✅ {count_inserted} nouvelles métriques insérées")
-        print(f"📊 Total en base : {count_total} métriques")
+        print(f" {count_inserted} nouvelles métriques insérées")
+        print(f" Total en base : {count_total} métriques")
         
     except Exception as e:
-        print(f"❌ Erreur synchronisation : {e}")
+        print(f" Erreur synchronisation : {e}")
     
     conn.close()
     return True
@@ -967,7 +967,7 @@ def importer_en_base():
 
 def ml_et_alertes():
     """Module ML : Calcul des scores CORRIGÉ + Génération d'alertes"""
-    print("🤖 MODULE 5 : CALCUL SCORES CORRIGÉ + ALERTES")
+    print(" MODULE 5 : CALCUL SCORES CORRIGÉ + ALERTES")
     
     try:
         conn = sqlite3.connect(DB_PATH)
@@ -977,14 +977,14 @@ def ml_et_alertes():
         count = cursor.fetchone()[0]
         
         if count == 0:
-            print("❌ Aucune donnée dans metriques_historique")
+            print(" Aucune donnée dans metriques_historique")
             conn.close()
             return False
         
-        print(f"📊 {count} artistes dans la base")
+        print(f" {count} artistes dans la base")
         
         # CALCUL DES SCORES CORRIGÉ
-        print("\n🔢 Calcul des scores (version corrigée)...")
+        print("\n Calcul des scores (version corrigée)...")
         
         cursor.execute("""
             SELECT 
@@ -1018,9 +1018,7 @@ def ml_et_alertes():
                 'releases': nb_releases_recentes or 0
             }
             
-
             # CRITÈRE 1 : AUDIENCE (35%) - ZONE 100-20,000
-
             audience_score = 0
             
             if fans_followers:
@@ -1042,9 +1040,7 @@ def ml_et_alertes():
             
             debug_info['audience_score'] = round(audience_score, 1)
             
-
             # CRITÈRE 2 : ENGAGEMENT (30%)
-
             engagement_score = 0
             
             if plateforme == 'Spotify':
@@ -1063,9 +1059,7 @@ def ml_et_alertes():
             
             debug_info['engagement_score'] = round(engagement_score, 1)
             
-
             # CRITÈRE 3 : PRODUCTIVITÉ (25%) - UTILISE DIRECTEMENT LA BDD
-
             productivite_score = 0
             
             # Sous-critère A : Releases récentes (15 pts)
@@ -1083,9 +1077,7 @@ def ml_et_alertes():
             
             debug_info['productivite_score'] = round(productivite_score, 1)
             
-
             # CRITÈRE 4 : INFLUENCE (10%)
-
             influence_score = 0
             
             # Sous-critère A : Multi-plateforme (5 pts)
@@ -1105,9 +1097,7 @@ def ml_et_alertes():
             
             debug_info['influence_score'] = round(influence_score, 1)
             
-
             # SCORE FINAL
-
             score_final = audience_score + engagement_score + productivite_score + influence_score
             score_final = round(score_final, 1)
             
@@ -1124,10 +1114,10 @@ def ml_et_alertes():
             scores_updated += 1
         
         conn.commit()
-        print(f"✅ {scores_updated} scores calculés")
+        print(f" {scores_updated} scores calculés")
         
         # GÉNÉRATION D'ALERTES
-        print("\n🔔 Génération d'alertes...")
+        print("\n Génération d'alertes...")
         
         cursor.execute("DELETE FROM alertes")
         
@@ -1151,7 +1141,7 @@ def ml_et_alertes():
                     VALUES (?, ?, ?, ?, ?)
                 """, (
                     nom,
-                    "🔥 POTENTIEL ÉLEVÉ",
+                    " POTENTIEL ÉLEVÉ",
                     f"{nom} a un score de {score:.1f}/100 sur {plateforme}",
                     datetime.now().strftime('%Y-%m-%d'),
                     0
@@ -1177,7 +1167,7 @@ def ml_et_alertes():
                     VALUES (?, ?, ?, ?, ?)
                 """, (
                     nom,
-                    "📈 POPULARITÉ ÉLEVÉE",
+                    " POPULARITÉ ÉLEVÉE",
                     f"{nom} a une popularité de {popularity}/100 sur Spotify",
                     datetime.now().strftime('%Y-%m-%d'),
                     0
@@ -1190,7 +1180,7 @@ def ml_et_alertes():
                     VALUES (?, ?, ?, ?, ?)
                 """, (
                     nom,
-                    "⭐ ÉMERGENT",
+                    " ÉMERGENT",
                     f"{nom} montre un potentiel prometteur (score {score:.1f}/100)",
                     datetime.now().strftime('%Y-%m-%d'),
                     0
@@ -1198,7 +1188,7 @@ def ml_et_alertes():
                 alertes_count += 1
         
         conn.commit()
-        print(f"✅ {alertes_count} alertes générées")
+        print(f" {alertes_count} alertes générées")
         
         cursor.execute("SELECT AVG(score_potentiel) FROM metriques_historique WHERE score_potentiel > 0")
         avg_score = cursor.fetchone()[0]
@@ -1206,18 +1196,18 @@ def ml_et_alertes():
         cursor.execute("SELECT MAX(score_potentiel) FROM metriques_historique")
         max_score = cursor.fetchone()[0]
         
-        print(f"\n📊 Statistiques :")
+        print(f"\n Statistiques :")
         print(f"   Score moyen   : {avg_score:.1f}/100")
         print(f"   Score maximum : {max_score:.1f}/100")
         print(f"   Alertes       : {alertes_count}")
         
         conn.close()
         
-        print("\n✅ Module ML + Alertes terminé")
+        print("\n Module ML + Alertes terminé")
         return True
         
     except Exception as e:
-        print(f"❌ Erreur : {e}")
+        print(f" Erreur : {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -1246,22 +1236,19 @@ def main():
     
     # LOGS MODE AUTO
     if args.auto:
-        print("=" * 70)
-        print("🤖 MODE AUTOMATIQUE (GitHub Actions)")
-        print("=" * 70)
-        print(f"📅 Date          : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"🐍 Python        : {sys.version.split()[0]}")
-        print(f"📂 Working dir   : {os.getcwd()}")
-        print(f"📊 Max artistes  : {MAX_ARTISTS_PER_RUN}")
-        print(f"⏱️  Temps estimé  : ~{ESTIMATED_TIME_MINUTES:.1f} min")
-        print("=" * 70)
+        print(" MODE AUTOMATIQUE (GitHub Actions)")
+        print(f" Date          : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f" Python        : {sys.version.split()[0]}")
+        print(f" Working dir   : {os.getcwd()}")
+        print(f" Max artistes  : {MAX_ARTISTS_PER_RUN}")
+        print(f"  Temps estimé  : ~{ESTIMATED_TIME_MINUTES:.1f} min")
     
     print("\n🎵 MUSIC TALENT RADAR - Workflow Automatique\n")
     
     # WORKFLOW
     if args.all or args.collect:
         if not collecter_donnees():
-            print("\n❌ Erreur lors de la collecte")
+            print("\n Erreur lors de la collecte")
             if args.auto:
                 sys.exit(1)
             return
@@ -1271,14 +1258,14 @@ def main():
     
     if args.all or args.filter:
         if not filtrer_emergents():
-            print("\n❌ Erreur lors du filtrage")
+            print("\n Erreur lors du filtrage")
             if args.auto:
                 sys.exit(1)
             return
     
     if args.all or args.import_db:
         if not importer_en_base():
-            print("\n❌ Erreur lors de l'import")
+            print("\n Erreur lors de l'import")
             if args.auto:
                 sys.exit(1)
             return
@@ -1286,9 +1273,8 @@ def main():
     if args.all or args.ml:
         ml_et_alertes()
     
-    print("\n" + "=" * 70)
-    print("✅ WORKFLOW TERMINÉ AVEC SUCCÈS")
-    print("=" * 70)
+    print(" WORKFLOW TERMINÉ AVEC SUCCÈS")
+
 
 if __name__ == '__main__':
     main()

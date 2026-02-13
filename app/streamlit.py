@@ -2828,6 +2828,108 @@ elif st.session_state.active_page == "Prédictions":
                 with col3:
                     high_potential = (predictions_df['proba_star'] > 0.3).sum()
                     st.metric("⚡ Haut Potentiel (>30%)", high_potential)
+
+                st.markdown("---")
+                st.markdown("### 📊 Performance du Modèle ML")
+                
+                try:
+                    import json
+                    with open('data/ml_metrics.json', 'r') as f:
+                        ml_metrics = json.load(f)
+                    
+                    col_cm, col_report = st.columns(2)
+                    
+                    # COLONNE 1 : MATRICE DE CONFUSION
+                    with col_cm:
+                        st.markdown("#### 🎯 Matrice de Confusion")
+                        
+                        cm = ml_metrics['confusion_matrix']
+                        
+                        # Créer heatmap avec Plotly
+                        import plotly.figure_factory as ff
+                        
+                        z = cm
+                        x = ['Non-Star', 'Star']
+                        y = ['Non-Star', 'Star']
+                        
+                        # Annotations pour afficher les valeurs
+                        annotations = []
+                        for i, row in enumerate(z):
+                            for j, value in enumerate(row):
+                                annotations.append(
+                                    dict(
+                                        x=x[j],
+                                        y=y[i],
+                                        text=str(value),
+                                        font=dict(color='white', size=20),
+                                        showarrow=False
+                                    )
+                                )
+                        
+                        fig = go.Figure(data=go.Heatmap(
+                            z=z,
+                            x=x,
+                            y=y,
+                            colorscale='Blues',
+                            showscale=False
+                        ))
+                        
+                        fig.update_layout(
+                            plot_bgcolor=COLORS['bg_card'],
+                            paper_bgcolor=COLORS['bg_card'],
+                            font_color=COLORS['text'],
+                            height=300,
+                            margin=dict(l=20, r=20, t=40, b=20),
+                            xaxis_title="Prédiction",
+                            yaxis_title="Réalité",
+                            annotations=annotations
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        st.caption(f"**Total :** {ml_metrics['total_samples']} artistes | **Stars :** {ml_metrics['stars_count']} | **Non-Stars :** {ml_metrics['non_stars_count']}")
+                    
+                    # COLONNE 2 : RAPPORT DE CLASSIFICATION
+                    with col_report:
+                        st.markdown("#### 📈 Rapport de Classification")
+                        
+                        report = ml_metrics['classification_report']
+                        
+                        # Créer DataFrame pour affichage
+                        report_data = []
+                        for label, metrics in report.items():
+                            if label in ['0', '1']:  # Classes
+                                class_name = "Non-Star" if label == '0' else "Star"
+                                report_data.append({
+                                    'Classe': class_name,
+                                    'Précision': f"{metrics['precision']:.2%}",
+                                    'Rappel': f"{metrics['recall']:.2%}",
+                                    'F1-Score': f"{metrics['f1-score']:.2%}",
+                                    'Support': int(metrics['support'])
+                                })
+                        
+                        report_df = pd.DataFrame(report_data)
+                        
+                        # Afficher tableau stylisé
+                        st.dataframe(
+                            report_df,
+                            hide_index=True,
+                            use_container_width=True
+                        )
+                        
+                        # Métriques globales
+                        st.markdown(f"""
+                        **Accuracy :** {report['accuracy']:.2%}  
+                        **Macro Avg F1 :** {report['macro avg']['f1-score']:.2%}  
+                        **Weighted Avg F1 :** {report['weighted avg']['f1-score']:.2%}
+                        """)
+                        
+                        st.caption("**Précision** : % de prédictions correctes pour cette classe | **Rappel** : % de vrais cas détectés | **F1-Score** : Équilibre précision/rappel")
+                
+                except FileNotFoundError:
+                    st.info("Métriques ML non disponibles. Relancez `python ml_prediction.py`")
+                except Exception as e:
+                    st.warning(f" Impossible de charger les métriques ML : {e}")
             
         except FileNotFoundError:
             st.error(" Fichier de prédictions non trouvé")
