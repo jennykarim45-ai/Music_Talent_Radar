@@ -84,6 +84,17 @@ jobs:
             echo "⚠️ Script clean_doublon.py non trouvé (ignoré)"
           fi
       
+      - name: 🧹 Nettoyage des doublons renforcé
+        run: |
+          echo "🧹 Suppression des doublons de date..."
+          if [ -f "utils/nettoyage_doublons_cloud.py" ]; then
+            python utils/nettoyage_doublons_cloud.py || {
+              echo "⚠️ Erreur lors du nettoyage (non bloquant)"
+            }
+            echo "✅ Nettoyage terminé"
+          else
+            echo "⚠️ Script nettoyage_doublons_cloud.py non trouvé (ignoré)"
+          fi
       - name: 🤖 Génération prédictions ML
         run: |
           echo "🤖 Génération des prédictions ML..."
