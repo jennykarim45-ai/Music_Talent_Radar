@@ -15,8 +15,6 @@ import base64
 import auth  
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
-import app.cleanup_startup as cleanup_startup
-cleanup_startup.cleanup_duplicates()
 
 # Détection de l'environnement
 try:
