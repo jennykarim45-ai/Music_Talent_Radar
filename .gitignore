@@ -9,8 +9,8 @@ ENV/
 .env
 .env/
 
-# Data
-
+# Dossier utils
+utils/
 
 
 # IDE
