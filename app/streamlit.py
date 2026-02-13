@@ -1666,6 +1666,7 @@ elif st.session_state.active_page == "Évolution":
                 
                 if not artist_data.empty:
                     artist_data['date_collecte'] = pd.to_datetime(artist_data['date_collecte'])
+                    artist_data['data_jour'] = artist_data['date_collecte'].dt.date
                     artist_data = artist_data.sort_values('date_collecte') # type: ignore
                     
                     if 'fans_followers' in artist_data.columns:
@@ -1760,13 +1761,14 @@ elif st.session_state.active_page == "Évolution":
                         with col1:
                             st.markdown("#### 👥 Évolution des Followers/Fans")
                             chart_data = artist_data[artist_data['followers_chart'] > 0]
+                            chart_data = chart_data.drop_duplicates(subset=['date_jour'], keep='last')
                             if len(chart_data) > 0:
                                 fig = px.line(
                                     chart_data, 
-                                    x='date_collecte', 
+                                    x='date_jour', 
                                     y='followers_chart',
                                     markers=True,
-                                    labels={'date_collecte': 'Date', 'followers_chart': 'Followers/Fans'}
+                                    labels={'date_jour': 'Date', 'followers_chart': 'Followers/Fans'}
                                 )
                                 fig.update_traces(
                                     line_color=COLORS['accent3'], 
@@ -1790,12 +1792,14 @@ elif st.session_state.active_page == "Évolution":
                                 
                         with col2:
                             st.markdown("#### ⭐ Évolution du Score")
+                            chart_data_score = artist_data.copy()
+                            chart_data_score = chart_data_score.drop_duplicates(subset=['date_jour'], keep='last')
                             fig = px.line(
-                                artist_data, 
-                                x='date_collecte', 
+                                chart_data_score, 
+                                x='date_jour', 
                                 y='score_potentiel',
                                 markers=True,
-                                labels={'date_collecte': 'Date', 'score_potentiel': 'Score'}
+                                labels={'date_jour': 'Date', 'score_potentiel': 'Score'}
                             )
                             fig.update_traces(
                                 line_color=COLORS['secondary'], 
@@ -2442,6 +2446,7 @@ elif st.session_state.active_page == "Prédictions":
             
             if not artist_data.empty:
                 artist_data['date_collecte'] = pd.to_datetime(artist_data['date_collecte'])
+                artist_data['date_jour'] = artist_data['date_collecte'].dt.date
                 artist_data = artist_data.sort_values('date_collecte')
                 
                 if 'fans_followers' in artist_data.columns:
@@ -2505,11 +2510,14 @@ elif st.session_state.active_page == "Prédictions":
                     
                     with col1:
                         st.markdown("#### 👥 Évolution des Followers/Fans")
-                        chart_data = artist_data[artist_data['followers_chart'] > 0]
+                        chart_data = artist_data.copy()
+                        chart_data['date_jour'] = chart_data['date_collecte'].dt.date
+                        chart_data = chart_data.drop_duplicates(subset=['date_jour'], keep='last')
+                        chart_data = chart_data[chart_data['followers_chart'] > 0]
                         if len(chart_data) > 0:
                             fig = px.line(
                                 chart_data, 
-                                x='date_collecte', 
+                                x='date_jour', 
                                 y='followers_chart',
                                 markers=True,
                                 labels={'date_collecte': 'Date', 'followers_chart': 'Followers/Fans'}
@@ -2534,12 +2542,15 @@ elif st.session_state.active_page == "Prédictions":
                     
                     with col2:
                         st.markdown("#### ⭐ Évolution du Score")
+                        chart_data = artist_data.copy()
+                        chart_data['date_jour'] = chart_data['date_collecte'].dt.date
+                        chart_data = chart_data.drop_duplicates(subset=['date_jour'], keep='last')
                         fig = px.line(
-                            artist_data, 
-                            x='date_collecte', 
+                            chart_data, 
+                            x='date_jour', 
                             y='score_potentiel',
                             markers=True,
-                            labels={'date_collecte': 'Date', 'score_potentiel': 'Score'}
+                            labels={'date_jour': 'Date', 'score_potentiel': 'Score'}
                         )
                         fig.update_traces(
                             line_color=COLORS['secondary'], 
