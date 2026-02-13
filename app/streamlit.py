@@ -452,7 +452,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=600, show_spinner="Chargement des données...")
+@st.cache_data(ttl=10, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:
@@ -1615,13 +1615,6 @@ elif st.session_state.active_page == "Évolution":
     with st.spinner(""):
         st.markdown("## 📈 Évolution")
         
-    # ✅ AJOUTER CE CODE ICI
-    if st.button("🔄 Forcer rechargement données", key="force_reload"):
-        st.cache_data.clear()
-        st.success("✅ Cache vidé ! Rechargement...")
-        time.sleep(1)
-        st.rerun()
-                
         # BOUTON RETOUR
     if st.session_state.get('previous_page'):
         col_back, col_title = st.columns([1, 5])
