@@ -95,7 +95,7 @@ jobs:
           else
             echo "⚠️ Script ml_prediction.py non trouvé (ignoré)"
           fi
-        continue-on-error: true
+        
       
       - name: 🔔 Génération alertes dynamiques
         run: |
@@ -108,7 +108,7 @@ jobs:
           else
             echo "⚠️ Script generer_alertes.py non trouvé (ignoré)"
           fi
-        continue-on-error: true
+        
       
       - name: 📊 Vérifier les changements
         id: check_changes
