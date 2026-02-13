@@ -83,7 +83,7 @@ if not auth.require_authentication(): # type: ignore
 # ============= SIDEBAR =============
 with st.sidebar:
     # Liste des pages
-    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil"]
+    pages = ["Vue d'ensemble", "Les Tops", "Les artistes", "Évolution", "Alertes", "Prédictions", "A propos", "Mon Profil","Admin"]
     
     # Trouver l'index de la page active
     try:
@@ -452,7 +452,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data(ttl=10, show_spinner="Chargement des données...")
+@st.cache_data(ttl=5, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:
@@ -977,7 +977,8 @@ def generer_nuage_points_streamlit():
     else:
         conn = sqlite3.connect(DB_NAME)
     
-    query = """
+    # ✅ SOLUTION : 2 requêtes séparées + concat en Python
+    query_spotify = """
         SELECT 
             nom_artiste,
             plateforme,
@@ -987,25 +988,47 @@ def generer_nuage_points_streamlit():
         FROM metriques_historique
         WHERE score_potentiel > 0 
         AND fans_followers > 0
+        AND plateforme = 'Spotify'
         ORDER BY score_potentiel DESC
         LIMIT 200
     """
     
-    df = pd.read_sql_query(query, conn)
+    query_deezer = """
+        SELECT 
+            nom_artiste,
+            plateforme,
+            score_potentiel,
+            fans_followers,
+            genre
+        FROM metriques_historique
+        WHERE score_potentiel > 0 
+        AND fans_followers > 0
+        AND plateforme = 'Deezer'
+        ORDER BY score_potentiel DESC
+        LIMIT 200
+    """
+    
+    # Exécuter les 2 requêtes
+    df_spotify = pd.read_sql_query(query_spotify, conn)
+    df_deezer = pd.read_sql_query(query_deezer, conn)
+    
+    # Combiner les résultats
+    df = pd.concat([df_spotify, df_deezer], ignore_index=True)
+    
     conn.close()
     
     if df.empty:
         return None
     
-    #  PLOTLY SCATTER 
+    # PLOTLY SCATTER
     fig = px.scatter(
         df,
         x='score_potentiel',
         y='fans_followers',
         color='plateforme',
         color_discrete_map={
-            'Spotify': '#1DB954',  # Vert Spotify
-            'Deezer': '#4169E1'    # Bleu Deezer
+            'Spotify': '#1DB954',
+            'Deezer': '#4169E1'
         },
         labels={
             'score_potentiel': 'Score de Potentiel',
@@ -1021,12 +1044,11 @@ def generer_nuage_points_streamlit():
         }
     )
     
-    #  STYLE IDENTIQUE 
     fig.update_layout(
-        plot_bgcolor=COLORS['bg_card'],     # Fond noir
-        paper_bgcolor=COLORS['bg_card'],    # Fond noir
-        font_color=COLORS['text'],          # Texte doré
-        height=350,                         # Hauteur réduite
+        plot_bgcolor=COLORS['bg_card'],
+        paper_bgcolor=COLORS['bg_card'],
+        font_color=COLORS['text'],
+        height=350,
         margin=dict(l=25, r=25, t=25, b=25),
         showlegend=True,
         legend=dict(
@@ -1044,7 +1066,6 @@ def generer_nuage_points_streamlit():
         )
     )
     
-    # Points plus visibles
     fig.update_traces(
         marker=dict(
             size=8,
@@ -1201,13 +1222,13 @@ if st.session_state.active_page == "Vue d'ensemble":
 
     # COLONNE DROITE : NUAGE DE POINTS PLOTLY
     with col_droite:
-        st.markdown("### 📍 Score vs Followers")
+        st.markdown("### ⭐👥 Score / Followers")
         
         try:
             fig_nuage = generer_nuage_points_streamlit()
             
             if fig_nuage:
-                st.plotly_chart(fig_nuage, use_container_width=True)  # ✅ plotly_chart
+                st.plotly_chart(fig_nuage, use_container_width=True) 
                 
                 st.caption("Ce graphique montre la relation entre score et audience par plateforme")
             else:
@@ -2942,6 +2963,76 @@ elif st.session_state.active_page == "Mon Profil":
                         
                 st.markdown("---")
                 
+# ==================== PAGE ADMIN ====================
+elif st.session_state.active_page == "Admin":
+    st.markdown("## 🔧 Diagnostic Doublons")
+    
+    if st.button("🔍 Analyser la base", use_container_width=True):
+        if USE_POSTGRES:
+            conn = psycopg2.connect(DB_URL)
+        else:
+            conn = sqlite3.connect(DB_NAME)
+        
+        cursor = conn.cursor()
+        
+        # Nombre total
+        cursor.execute("SELECT COUNT(*) FROM metriques_historique")
+        total = cursor.fetchone()[0]
+        st.metric("Total lignes", total)
+        
+        # Doublons par jour
+        if USE_POSTGRES:
+            cursor.execute("""
+                SELECT DATE(date_collecte)::text as jour, COUNT(*) as nb_lignes
+                FROM metriques_historique
+                GROUP BY DATE(date_collecte)
+                ORDER BY DATE(date_collecte) DESC
+                LIMIT 5
+            """)
+        else:
+            cursor.execute("""
+                SELECT date(date_collecte) as jour, COUNT(*) as nb_lignes
+                FROM metriques_historique
+                GROUP BY date(date_collecte)
+                ORDER BY date(date_collecte) DESC
+                LIMIT 5
+            """)
+        
+        results = cursor.fetchall()
+        for row in results:
+            st.write(f"📅 {row[0]} : {row[1]} lignes")
+        
+        conn.close()
+    
+    st.markdown("---")
+    
+    if st.button("🧹 NETTOYER DOUBLONS", type="primary", use_container_width=True):
+        if USE_POSTGRES:
+            conn = psycopg2.connect(DB_URL)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                DELETE FROM metriques_historique
+                WHERE id NOT IN (
+                    SELECT MAX(id)
+                    FROM metriques_historique
+                    GROUP BY DATE(date_collecte), id_unique
+                )
+            """)
+            
+            nb = cursor.rowcount
+            conn.commit()
+            conn.close()
+            
+            st.success(f"✅ {nb} doublons supprimés !")
+            st.balloons()
+    
+    st.markdown("---")
+    
+    if st.button("🔄 Vider cache + Recharger", use_container_width=True):
+        st.cache_data.clear()
+        time.sleep(1)
+        st.rerun()
 
 # Footer
 st.divider()
