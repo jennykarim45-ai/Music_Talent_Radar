@@ -198,6 +198,126 @@ def obtenir_playlists_deezer(limit=15, cache_file='playlists_deezer_cache.json')
 
 # Utiliser la fonction
 PLAYLISTS_DEEZER = obtenir_playlists_deezer(limit=15)
+
+# ============================================================================
+# RÉCUPÉRATION GENRES DEEZER
+# ============================================================================
+
+def get_deezer_artist_genre(artist_id):
+    """Récupère le genre d'un artiste Deezer depuis ses albums"""
+    try:
+        # 1. Récupérer les albums de l'artiste
+        albums_url = f"{BASE_URL_DEEZER}/artist/{artist_id}/albums"
+        response = requests.get(albums_url, timeout=10)
+        
+        if response.status_code != 200:
+            return "Autre"
+        
+        albums = response.json().get('data', [])
+        
+        if not albums:
+            return "Autre"
+        
+        # 2. Prendre le premier album
+        album_id = albums[0].get('id')
+        
+        time.sleep(0.2)  # Rate limiting
+        
+        # 3. Récupérer les détails de l'album
+        album_url = f"{BASE_URL_DEEZER}/album/{album_id}"
+        album_response = requests.get(album_url, timeout=10)
+        
+        if album_response.status_code != 200:
+            return "Autre"
+        
+        album_data = album_response.json()
+        
+        # 4. Extraire le genre
+        genres_data = album_data.get('genres', {}).get('data', [])
+        
+        if genres_data:
+            genre_raw = genres_data[0].get('name', 'Autre')
+            return map_deezer_genre(genre_raw)
+        
+        return "Autre"
+        
+    except Exception as e:
+        return "Autre"
+
+
+def map_deezer_genre(raw_genre):
+    """Mappe un genre Deezer vers nos catégories standardisées"""
+    
+    GENRE_MAPPING_DEEZER = {
+        # Rap / Hip-Hop / RnB
+        'Rap/Hip Hop': 'Rap-HipHop-RnB',
+        'Hip-Hop': 'Rap-HipHop-RnB',
+        'Rap': 'Rap-HipHop-RnB',
+        'R&B': 'Rap-HipHop-RnB',
+        'RnB': 'Rap-HipHop-RnB',
+        'Soul': 'Rap-HipHop-RnB',
+        
+        # Pop
+        'Pop': 'Pop',
+        'Variété française': 'Pop',
+        'Variété Française': 'Pop',
+        'Variété internationale': 'Pop',
+        'Chanson française': 'Pop',
+        'Chanson Française': 'Pop',
+        
+        # Rock / Metal
+        'Rock': 'Rock-Metal',
+        'Metal': 'Rock-Metal',
+        'Hard Rock': 'Rock-Metal',
+        'Rock Alternatif': 'Rock-Metal',
+        
+        # Jazz / Blues
+        'Jazz': 'Jazz-Soul',
+        'Blues': 'Jazz-Soul',
+        
+        # Electro / EDM
+        'Electro': 'Electro',
+        'Dance': 'Electro',
+        'House': 'Electro',
+        'Techno': 'Electro',
+        'EDM': 'Electro',
+        
+        # Afro
+        'Afro': 'Afrobeat-Amapiano',
+        'Afrobeat': 'Afrobeat-Amapiano',
+        'Afropop': 'Afrobeat-Amapiano',
+        'African Music': 'Afrobeat-Amapiano',
+        
+        # Indie / Alternative
+        'Indie': 'Indie-Alternative',
+        'Alternative': 'Indie-Alternative',
+        'Indie Rock': 'Indie-Alternative',
+        
+        # Country / Folk
+        'Country': 'Country-Folk',
+        'Folk': 'Country-Folk',
+        
+        # Reggae / Latin
+        'Reggaeton': 'Reggaeton-Latin',
+        'Latino': 'Reggaeton-Latin',
+        'Latin': 'Reggaeton-Latin',
+        'Reggae': 'Reggaeton-Latin',
+    }
+    
+    if not raw_genre or raw_genre == '':
+        return 'Autre'
+    
+    # Chercher correspondance exacte
+    if raw_genre in GENRE_MAPPING_DEEZER:
+        return GENRE_MAPPING_DEEZER[raw_genre]
+    
+    # Chercher correspondance partielle
+    raw_lower = raw_genre.lower()
+    for key, value in GENRE_MAPPING_DEEZER.items():
+        if key.lower() in raw_lower or raw_lower in key.lower():
+            return value
+    
+    return 'Autre'
 # ============================================================================
 # FILTRES D'EXCLUSION ULTRA-STRICTS
 # ============================================================================
@@ -562,13 +682,16 @@ def rechercher_artistes_deezer():
                             continue
                         
                         #  Artiste valide
+                        genre_api = get_deezer_artist_genre(artist_id)
+
                         artistes_trouves[artist_id] = {
                             'nom': artist.get('name', ''),
                             'url_spotify': '',
                             'url_deezer': artist.get('link', ''),
                             'source': 'Deezer',
                             'fans': nb_fan,
-                            'categorie': genre
+                            'categorie': genre,
+                            'genre': genre_api 
                         }
                         
                         found_count += 1
@@ -705,13 +828,16 @@ def rechercher_artistes_deezer_par_mots_cles():
                         continue
                     
                     #  Artiste valide
+                    genre_api = get_deezer_artist_genre(artist_id)
+
                     artistes_trouves[artist_id] = {
                         'nom': artist.get('name', ''),
                         'url_spotify': '',
                         'url_deezer': artist.get('link', ''),
                         'source': 'Deezer',
                         'fans': nb_fan,
-                        'categorie': 'Autre'  # Défini plus tard
+                        'categorie': 'Autre',
+                        'genre': genre_api 
                     }
                     
                     found_count += 1
@@ -866,7 +992,8 @@ def main():
             'nom': nom_original,
             'url_spotify': data['url_spotify'],
             'url_deezer': '',
-            'categorie': data.get('categorie', 'Autre')
+            'categorie': data.get('categorie', 'Autre'),
+            'genre': data.get('categorie', 'Autre')
         }
         spotify_normalise_to_original[nom_normalise] = nom_original
     
@@ -901,7 +1028,8 @@ def main():
                 'nom': nom_deezer,
                 'url_spotify': '',
                 'url_deezer': data['url_deezer'],
-                'categorie': data.get('categorie', 'Autre')
+                'categorie': data.get('categorie', 'Autre'),
+                'genre': data.get('genre', 'Autre')
             }
             nouveaux_deezer += 1
     
@@ -929,7 +1057,8 @@ def main():
             'nom': data['nom'],
             'url_spotify': data.get('url_spotify', ''),
             'url_deezer': data.get('url_deezer', ''),
-            'categorie': data.get('categorie', 'Autre') 
+            'categorie': data.get('categorie', 'Autre'),
+            'genre': data.get('genre', 'Autre')
         })
 
     df = pd.DataFrame(df_data)
