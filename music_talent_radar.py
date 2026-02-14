@@ -849,13 +849,15 @@ def importer_en_base():
         deezer_df = pd.read_csv('data/deezer_filtered.csv')
         for _, row in deezer_df.iterrows():
             id_unique = f"{row['nom'].lower().strip()}_deezer"
-            categorie = row.get('categorie', 'Autre')
+            
+            # ✅ Lire la colonne 'genre' (pas 'categorie')
+            genre = row.get('genre', row.get('categorie', 'Autre'))
             
             cursor.execute("""
                 INSERT OR REPLACE INTO artistes 
                 (id_unique, nom, source, genre, image_url, url_deezer, date_maj)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (id_unique, row['nom'], 'Deezer', categorie,
+            """, (id_unique, row['nom'], 'Deezer', genre,  # ✅ Utilise 'genre'
                 row.get('image_url', ''), row['url_deezer'], date_now))
             count += 1
         print(f" Deezer : {len(deezer_df)} artistes importés")
@@ -914,7 +916,9 @@ def importer_en_base():
             
             for _, row in deezer_df.iterrows():
                 id_unique = f"{row['nom'].lower().strip()}_deezer"
-                genre_deezer = row.get('categorie', 'Autre')
+                
+                # ✅ Lire la colonne 'genre' (pas 'categorie')
+                genre_deezer = row.get('genre', row.get('categorie', 'Autre'))
                 
                 try:
                     cursor.execute("""
@@ -930,7 +934,7 @@ def importer_en_base():
                         row['nom'],
                         'Deezer',
                         'Deezer',
-                        genre_deezer,
+                        genre_deezer,  # ✅ Utilise 'genre'
                         int(row.get('fans', 0)),
                         None,
                         int(row.get('fans', 0)),
@@ -946,17 +950,17 @@ def importer_en_base():
                     count_inserted += 1
                 except Exception as e:
                     print(f" Erreur Deezer - {row['nom']}: {e}")
-        
-        conn.commit()
-        
-        cursor.execute("SELECT COUNT(*) FROM metriques_historique")
-        count_total = cursor.fetchone()[0]
-        
-        print(f" {count_inserted} nouvelles métriques insérées")
-        print(f" Total en base : {count_total} métriques")
-        
-    except Exception as e:
-        print(f" Erreur synchronisation : {e}")
+                
+                conn.commit()
+                
+                cursor.execute("SELECT COUNT(*) FROM metriques_historique")
+                count_total = cursor.fetchone()[0]
+                
+                print(f" {count_inserted} nouvelles métriques insérées")
+                print(f" Total en base : {count_total} métriques")
+                
+            except Exception as e:
+                print(f" Erreur synchronisation : {e}")
     
     conn.close()
     return True
