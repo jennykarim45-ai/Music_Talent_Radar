@@ -2832,7 +2832,7 @@ elif st.session_state.active_page == "Prédictions":
                     st.metric("⚡ Haut Potentiel (>30%)", high_potential)
 
                 st.markdown("---")
-                st.markdown("### 📊 Performances du Modèle")
+                st.markdown("###  Performances du Modèle")
 
                 try:
                     # Charger les métriques
@@ -2845,46 +2845,60 @@ elif st.session_state.active_page == "Prédictions":
                     col_cm, col_report = st.columns([1, 1])
                     
                     # ============================================================================
-                    # COLONNE 1 : MATRICE DE CONFUSION MODERNE
+                    # COLONNE 1 : MATRICE DE CONFUSION - CONTRASTES FORTS
                     # ============================================================================
                     with col_cm:
                         st.markdown("####  Matrice de Confusion")
                         
-                        # Créer heatmap avec palette personnalisée
+                        # Créer heatmap avec couleurs contrastées
                         fig_cm = go.Figure()
                         
-                        #  PALETTE JEK2 : Noir → Violet → Doré
-                        colorscale = [
-                            [0, '#1a1a1a'],      # Noir
-                            [0.3, '#4a148c'],    # Violet foncé
-                            [0.6, '#7b1fa2'],    # Violet
-                            [1, '#FFD700']       # Doré
-                        ]
-                        
+                        #  PALETTE SIMPLE : Blanc → Violet foncé
                         fig_cm.add_trace(go.Heatmap(
                             z=cm,
                             x=['👤 Non-Star', '⭐ Star'],
                             y=['👤 Non-Star', '⭐ Star'],
-                            colorscale=colorscale,
+                            colorscale=[
+                                [0, '#f0f0f0'],      # Blanc cassé (valeurs basses)
+                                [0.5, '#7b1fa2'],    # Violet moyen
+                                [1, '#4a148c']       # Violet très foncé (valeurs hautes)
+                            ],
                             showscale=False,
                             hovertemplate='Prédit: %{x}<br>Réel: %{y}<br>Valeur: %{z}<extra></extra>'
                         ))
                         
-                        #  ANNOTATIONS - Toujours en BLANC ou DORÉ
+                        # ✅ANNOTATIONS - COULEUR ADAPTATIVE INTELLIGENTE
                         for i in range(len(cm)):
                             for j in range(len(cm[i])):
                                 value = cm[i][j]
                                 
-                                # Texte doré pour les bonnes prédictions, blanc pour les erreurs
-                                is_correct = (i == j)
-                                text_color = '#FFD700' if is_correct else 'white'
-                                font_size = 28 if is_correct else 20
+                                #  Texte NOIR sur fond clair, BLANC sur fond foncé
+                                # Seuil basé sur la valeur normalisée
+                                max_val = cm.max()
+                                normalized = value / max_val if max_val > 0 else 0
+                                
+                                # Si valeur > 50% du max → fond foncé → texte blanc
+                                # Sinon → fond clair → texte noir
+                                if normalized > 0.5:
+                                    text_color = 'white'
+                                    font_weight = 'bold'
+                                else:
+                                    text_color = 'black'
+                                    font_weight = 'normal'
+                                
+                                # Taille plus grande pour diagonale (bonnes prédictions)
+                                is_diagonal = (i == j)
+                                font_size = 32 if is_diagonal else 24
                                 
                                 fig_cm.add_annotation(
                                     x=j,
                                     y=i,
                                     text=f"<b>{value}</b>",
-                                    font=dict(size=font_size, color=text_color, family='Arial Black'),
+                                    font=dict(
+                                        size=font_size, 
+                                        color=text_color,
+                                        family='Arial Black'
+                                    ),
                                     showarrow=False
                                 )
                         
@@ -2910,141 +2924,127 @@ elif st.session_state.active_page == "Prédictions":
                         
                         st.plotly_chart(fig_cm, use_container_width=True)
                         
-                        # Caption stylé
+                        # Caption
                         total = metrics.get('total_samples', 0)
                         stars = metrics.get('stars_count', 0)
                         non_stars = metrics.get('non_stars_count', 0)
                         
                         st.markdown(f"""
-                        <div style='text-align: center; color: #FFD700; font-size: 12px; margin-top: -10px;'>
-                            Total : {total} artistes | ⭐ Stars : {stars} | 👤 Non-Stars : {non_stars}
+                        <div style='text-align: center; color: #FFD700; font-size: 13px; margin-top: -10px;'>
+                            Total : <b>{total}</b> artistes | ⭐ Stars : <b>{stars}</b> | 👤 Non-Stars : <b>{non_stars}</b>
                         </div>
                         """, unsafe_allow_html=True)
                     
                     # ============================================================================
-                    # COLONNE 2 : RAPPORT DE CLASSIFICATION - STYLE JEK2
+                    # COLONNE 2 : RAPPORT CLASSIQUE FORMAT SCIKIT-LEARN
                     # ============================================================================
                     with col_report:
-                            st.markdown("####  Rapport de Classification")
-                            
-                            # Extraire les données
-                            non_star = report.get('0', {})
-                            star = report.get('1', {})
-                            macro_avg = report.get('macro avg', {})
-                            weighted_avg = report.get('weighted avg', {})
-                            accuracy = metrics.get('accuracy', 0)
-                            total_samples = metrics.get('total_samples', 0)
-                            
-                            #  CONSTRUIRE LE RAPPORT FORMAT SCIKIT-LEARN
-                            rapport_text = f"""              precision    recall  f1-score   support
-
-                            0       {non_star.get('precision', 0):.2f}      {non_star.get('recall', 0):.2f}      {non_star.get('f1-score', 0):.2f}       {int(non_star.get('support', 0))}
-                            1       {star.get('precision', 0):.2f}      {star.get('recall', 0):.2f}      {star.get('f1-score', 0):.2f}       {int(star.get('support', 0))}
-
-                        accuracy                           {accuracy:.2f}       {total_samples}
-                    macro avg       {macro_avg.get('precision', 0):.2f}      {macro_avg.get('recall', 0):.2f}      {macro_avg.get('f1-score', 0):.2f}       {total_samples}
-                    weighted avg       {weighted_avg.get('precision', 0):.2f}      {weighted_avg.get('recall', 0):.2f}      {weighted_avg.get('f1-score', 0):.2f}       {total_samples}"""
-                            
-                            #  AFFICHER AVEC STYLE JEK2
-                            st.markdown(f"""
-                            <div style='
-                                background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
-                                padding: 20px;
-                                border-radius: 10px;
-                                border: 1px solid rgba(255, 215, 0, 0.3);
-                                box-shadow: 0 4px 15px rgba(123, 31, 162, 0.3);
-                                margin-bottom: 20px;
-                            '>
-                                <pre style='
-                                    color: #FFD700;
-                                    font-family: "Courier New", monospace;
-                                    font-size: 14px;
-                                    line-height: 1.6;
-                                    margin: 0;
-                                    overflow-x: auto;
-                                '>{rapport_text}</pre>
-                            </div>
-                            """, unsafe_allow_html=True)
-                            
-                            #  LÉGENDE AVEC ÉMOJIS
-                            st.markdown("""
-                            <div style='
-                                background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
-                                padding: 15px;
-                                border-radius: 10px;
-                                border-left: 4px solid #FFD700;
-                                color: #d0d0d0;
-                                font-size: 12px;
-                            '>
-                                <b style='color: #FFD700;'>📊 Classes :</b><br>
-                                • <b>0</b> = 👤 Non-Star (artistes standards)<br>
-                                • <b>1</b> = ⭐ Star (artistes à fort potentiel)
-                                <br><br>
-                                <b style='color: #FFD700;'>📖 Métriques :</b><br>
-                                • <b>Précision</b> : % de prédictions correctes pour cette classe<br>
-                                • <b>Rappel</b> : % de vrais cas détectés<br>
-                                • <b>F1-Score</b> : Moyenne harmonique précision/rappel<br>
-                                • <b>Support</b> : Nombre d'artistes dans la classe
-                            </div>
-                            """, unsafe_allow_html=True)
-                            
-                            # Métriques globales - STYLE JEK2
-                            st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-                            
-                            col1, col2, col3 = st.columns(3)
-                            
-                            # CSS custom pour les métriques
-                            metric_style = """
-                            <style>
-                                div[data-testid="stMetric"] {
-                                    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
-                                    padding: 15px;
-                                    border-radius: 10px;
-                                    border: 1px solid rgba(255, 215, 0, 0.3);
-                                    box-shadow: 0 2px 10px rgba(123, 31, 162, 0.3);
-                                }
-                                div[data-testid="stMetric"] label {
-                                    color: #FFD700 !important;
-                                    font-weight: bold !important;
-                                }
-                                div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-                                    color: white !important;
-                                    font-size: 24px !important;
-                                }
-                            </style>
-                            """
-                            st.markdown(metric_style, unsafe_allow_html=True)
-                            
-                            with col1:
-                                st.metric(" Accuracy", f"{accuracy*100:.1f}%")
-                            
-                            with col2:
-                                st.metric(" Macro avg", f"{macro_avg.get('f1-score', 0)*100:.1f}%")
-                            
-                            with col3:
-                                st.metric("⚖️ Weighted avg", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
+                        st.markdown("####  Rapport de Classification")
                         
-                            # Explications - STYLE JEK2
-                            st.markdown("""
-                            <div style='
+                        # Extraire les données
+                        non_star = report.get('0', {})
+                        star = report.get('1', {})
+                        macro_avg = report.get('macro avg', {})
+                        weighted_avg = report.get('weighted avg', {})
+                        accuracy = metrics.get('accuracy', 0)
+                        total_samples = metrics.get('total_samples', 0)
+                        
+                        #  FORMAT EXACTEMENT COMME SCIKIT-LEARN
+                        rapport_text = f"""              precision    recall  f1-score   support
+
+                        0       {non_star.get('precision', 0):0.2f}      {non_star.get('recall', 0):0.2f}      {non_star.get('f1-score', 0):0.2f}      {int(non_star.get('support', 0)):4d}
+                        1       {star.get('precision', 0):0.2f}      {star.get('recall', 0):0.2f}      {star.get('f1-score', 0):0.2f}      {int(star.get('support', 0)):4d}
+
+                    accuracy                           {accuracy:0.2f}      {total_samples:4d}
+                macro avg       {macro_avg.get('precision', 0):0.2f}      {macro_avg.get('recall', 0):0.2f}      {macro_avg.get('f1-score', 0):0.2f}      {total_samples:4d}
+                weighted avg       {weighted_avg.get('precision', 0):0.2f}      {weighted_avg.get('recall', 0):0.2f}      {weighted_avg.get('f1-score', 0):0.2f}      {total_samples:4d}
+                """
+                        
+                        #  AFFICHAGE STYLE JEK2
+                        st.markdown(f"""
+                        <div style='
+                            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
+                            padding: 25px;
+                            border-radius: 10px;
+                            border: 2px solid #FFD700;
+                            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+                            margin-bottom: 20px;
+                        '>
+                            <pre style='
+                                color: #FFD700;
+                                font-family: "Courier New", Courier, monospace;
+                                font-size: 14px;
+                                line-height: 1.8;
+                                margin: 0;
+                                overflow-x: auto;
+                                font-weight: 500;
+                            '>{rapport_text}</pre>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        #  LÉGENDE COMPACTE
+                        st.markdown("""
+                        <div style='
+                            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
+                            padding: 15px;
+                            border-radius: 8px;
+                            border-left: 4px solid #FFD700;
+                            color: #d0d0d0;
+                            font-size: 12px;
+                            line-height: 1.6;
+                        '>
+                            <b style='color: #FFD700;'> Classes :</b> 
+                            <b>0</b> = 👤 Non-Star &nbsp;|&nbsp; <b>1</b> = ⭐ Star
+                            <br><br>
+                            <b style='color: #FFD700;'> Métriques :</b><br>
+                            • <b>Précision</b> : % prédictions correctes | 
+                            <b>Rappel</b> : % vrais cas détectés | 
+                            <b>F1</b> : Équilibre P/R
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        #  MÉTRIQUES GLOBALES EN BAS
+                        st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+                        
+                        col1, col2, col3 = st.columns(3)
+                        
+                        # CSS custom pour les cards
+                        metric_style = """
+                        <style>
+                            div[data-testid="stMetric"] {
                                 background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
                                 padding: 15px;
                                 border-radius: 10px;
-                                border-left: 4px solid #FFD700;
-                                margin-top: 20px;
-                                color: #d0d0d0;
-                                font-size: 12px;
-                            '>
-                                • <b>Précision</b> : Sur 100 prédits "Star", combien le sont vraiment<br>
-                                • <b>Rappel</b> : Sur 100 vrais "Stars", combien sont détectés<br>
-                                • <b>F1-Score</b> : Équilibre entre précision et rappel
-                            </div>
-                            """, unsafe_allow_html=True)
+                                border: 1px solid rgba(255, 215, 0, 0.4);
+                                box-shadow: 0 2px 10px rgba(123, 31, 162, 0.4);
+                            }
+                            div[data-testid="stMetric"] label {
+                                color: #FFD700 !important;
+                                font-weight: bold !important;
+                                font-size: 13px !important;
+                            }
+                            div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+                                color: white !important;
+                                font-size: 26px !important;
+                                font-weight: bold !important;
+                            }
+                        </style>
+                        """
+                        st.markdown(metric_style, unsafe_allow_html=True)
+                        
+                        with col1:
+                            st.metric(" Accuracy", f"{accuracy*100:.1f}%")
+                        
+                        with col2:
+                            st.metric(" Macro F1", f"{macro_avg.get('f1-score', 0)*100:.1f}%")
+                        
+                        with col3:
+                            st.metric(" Weighted F1", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
 
                 except FileNotFoundError:
-                    st.warning(" Métriques ML non disponibles. Relancez `python ml_prediction.py`")
+                    st.warning("⚠️ Métriques ML non disponibles. Relancez `python ml_prediction.py`")
                 except Exception as e:
-                    st.warning(f"Erreur chargement métriques : {e}")
+                    st.warning(f"❌ Erreur chargement métriques : {e}")
             
         except FileNotFoundError:
             st.error(" Fichier de prédictions non trouvé")
