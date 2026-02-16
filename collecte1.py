@@ -305,7 +305,7 @@ def map_deezer_genre(raw_genre):
     }
     
     if not raw_genre or raw_genre == '':
-        return 'Autre'
+        return 'Rap-HipHop-RnB'  
     
     # Chercher correspondance exacte
     if raw_genre in GENRE_MAPPING_DEEZER:
@@ -317,7 +317,7 @@ def map_deezer_genre(raw_genre):
         if key.lower() in raw_lower or raw_lower in key.lower():
             return value
     
-    return 'Autre'
+    return 'Rap-HipHop-RnB' 
 # ============================================================================
 # FILTRES D'EXCLUSION ULTRA-STRICTS
 # ============================================================================

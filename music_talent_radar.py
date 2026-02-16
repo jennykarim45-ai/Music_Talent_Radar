@@ -850,8 +850,12 @@ def importer_en_base():
         for _, row in deezer_df.iterrows():
             id_unique = f"{row['nom'].lower().strip()}_deezer"
             
-            # ✅ Lire la colonne 'genre' (pas 'categorie')
+            #  Lire la colonne 'genre' (pas 'categorie')
             genre = row.get('genre', row.get('categorie', 'Autre'))
+            
+            #  Si genre est "Autre", mettre Rap-HipHop-RnB par défaut
+            if genre == 'Autre' or not genre or pd.isna(genre):
+            genre = 'Rap-HipHop-RnB'
             
             cursor.execute("""
                 INSERT OR REPLACE INTO artistes 
@@ -919,6 +923,10 @@ def importer_en_base():
                 
                 #  Lire la colonne 'genre'
                 genre_deezer = row.get('genre', row.get('categorie', 'Autre'))
+                
+                #  Si genre est "Autre", mettre Rap-HipHop-RnB
+                if genre_deezer == 'Autre' or not genre_deezer or pd.isna(genre_deezer):
+                genre_deezer = 'Rap-HipHop-RnB'
                 
                 try:
                     cursor.execute("""
