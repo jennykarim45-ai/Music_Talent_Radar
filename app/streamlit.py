@@ -2950,44 +2950,105 @@ elif st.session_state.active_page == "Prédictions":
                         accuracy = metrics.get('accuracy', 0)
                         total_samples = metrics.get('total_samples', 0)
                         
-                        #  CONSTRUIRE LE RAPPORT LIGNE PAR LIGNE
-                        lines = []
-                        lines.append("              precision    recall  f1-score   support")
-                        lines.append("")
-                        lines.append(f"           0       {non_star.get('precision', 0):.2f}      {non_star.get('recall', 0):.2f}      {non_star.get('f1-score', 0):.2f}      {int(non_star.get('support', 0)):>4d}")
-                        lines.append(f"           1       {star.get('precision', 0):.2f}      {star.get('recall', 0):.2f}      {star.get('f1-score', 0):.2f}      {int(star.get('support', 0)):>4d}")
-                        lines.append("")
-                        lines.append(f"    accuracy                           {accuracy:.2f}      {total_samples:>4d}")
-                        lines.append(f"   macro avg       {macro_avg.get('precision', 0):.2f}      {macro_avg.get('recall', 0):.2f}      {macro_avg.get('f1-score', 0):.2f}      {total_samples:>4d}")
-                        lines.append(f"weighted avg       {weighted_avg.get('precision', 0):.2f}      {weighted_avg.get('recall', 0):.2f}      {weighted_avg.get('f1-score', 0):.2f}      {total_samples:>4d}")
-                        
-                        rapport_text = "\n".join(lines)
-                        
-                        #  AFFICHAGE AVEC STYLE JEK2
-                        st.markdown(f"""
-                        <div style='
-                            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
-                            padding: 25px 30px;
-                            border-radius: 10px;
-                            border: 2px solid #FFD700;
-                            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-                            margin-bottom: 20px;
-                        '>
-                            <pre style='
+                        #  TABLEAU HTML STYLE JEK2
+                        html_table = f"""
+                        <style>
+                            .classification-table {{
+                                width: 100%;
+                                border-collapse: collapse;
+                                background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
+                                border-radius: 10px;
+                                overflow: hidden;
+                                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+                                border: 2px solid #FFD700;
+                            }}
+                            .classification-table th {{
+                                background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
                                 color: #FFD700;
-                                font-family: "Courier New", Courier, monospace;
+                                padding: 12px;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 13px;
+                                border-bottom: 2px solid #FFD700;
+                            }}
+                            .classification-table td {{
+                                padding: 10px 12px;
+                                text-align: center;
+                                color: white;
                                 font-size: 14px;
-                                line-height: 2.0;
-                                margin: 0;
-                                padding: 0;
-                                overflow-x: auto;
-                                font-weight: 500;
-                                white-space: pre;
-                            '>{rapport_text}</pre>
-                        </div>
-                        """, unsafe_allow_html=True)
+                                border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+                            }}
+                            .classification-table td:first-child {{
+                                text-align: left;
+                                font-weight: bold;
+                                color: #FFD700;
+                            }}
+                            .classification-table tr:hover {{
+                                background-color: rgba(123, 31, 162, 0.2);
+                            }}
+                            .classification-table .separator {{
+                                height: 10px;
+                                background: transparent;
+                                border: none;
+                            }}
+                            .classification-table .total-row {{
+                                background-color: rgba(123, 31, 162, 0.3);
+                                font-weight: bold;
+                            }}
+                        </style>
                         
-                        #  LÉGENDE COMPACTE
+                        <table class="classification-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">Classe</th>
+                                    <th>Precision</th>
+                                    <th>Recall</th>
+                                    <th>F1-Score</th>
+                                    <th>Support</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>👤 Non-Star (0)</td>
+                                    <td>{non_star.get('precision', 0):.2f}</td>
+                                    <td>{non_star.get('recall', 0):.2f}</td>
+                                    <td>{non_star.get('f1-score', 0):.2f}</td>
+                                    <td>{int(non_star.get('support', 0))}</td>
+                                </tr>
+                                <tr>
+                                    <td>⭐ Star (1)</td>
+                                    <td>{star.get('precision', 0):.2f}</td>
+                                    <td>{star.get('recall', 0):.2f}</td>
+                                    <td>{star.get('f1-score', 0):.2f}</td>
+                                    <td>{int(star.get('support', 0))}</td>
+                                </tr>
+                                <tr class="separator"><td colspan="5"></td></tr>
+                                <tr class="total-row">
+                                    <td> Accuracy</td>
+                                    <td colspan="3">{accuracy:.2f}</td>
+                                    <td>{total_samples}</td>
+                                </tr>
+                                <tr>
+                                    <td> Macro Avg</td>
+                                    <td>{macro_avg.get('precision', 0):.2f}</td>
+                                    <td>{macro_avg.get('recall', 0):.2f}</td>
+                                    <td>{macro_avg.get('f1-score', 0):.2f}</td>
+                                    <td>{total_samples}</td>
+                                </tr>
+                                <tr>
+                                    <td> Weighted Avg</td>
+                                    <td>{weighted_avg.get('precision', 0):.2f}</td>
+                                    <td>{weighted_avg.get('recall', 0):.2f}</td>
+                                    <td>{weighted_avg.get('f1-score', 0):.2f}</td>
+                                    <td>{total_samples}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        """
+                        
+                        st.markdown(html_table, unsafe_allow_html=True)
+                        
+                        #  EXPLICATIONS
                         st.markdown("""
                         <div style='
                             background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
@@ -2997,14 +3058,12 @@ elif st.session_state.active_page == "Prédictions":
                             color: #d0d0d0;
                             font-size: 12px;
                             line-height: 1.6;
+                            margin-top: 15px;
                         '>
-                            <b style='color: #FFD700;'> Classes :</b> 
-                            <b>0</b> = 👤 Non-Star &nbsp;|&nbsp; <b>1</b> = ⭐ Star
-                            <br><br>
-                            <b style='color: #FFD700;'> Métriques :</b><br>
-                            • <b>Précision</b> : % prédictions correctes | 
-                            <b>Rappel</b> : % vrais cas détectés | 
-                            <b>F1</b> : Équilibre P/R
+                            • <b>Precision</b> : Sur 100 prédits "Star", combien le sont vraiment<br>
+                            • <b>Recall</b> : Sur 100 vrais "Stars", combien sont détectés<br>
+                            • <b>F1-Score</b> : Équilibre entre precision et recall<br>
+                            • <b>Support</b> : Nombre d'artistes dans la classe
                         </div>
                         """, unsafe_allow_html=True)
                         
@@ -3041,10 +3100,10 @@ elif st.session_state.active_page == "Prédictions":
                             st.metric(" Accuracy", f"{accuracy*100:.1f}%")
                         
                         with col2:
-                            st.metric(" Macro F1", f"{macro_avg.get('f1-score', 0)*100:.1f}%")
+                            st.metric(" Macro avg", f"{macro_avg.get('f1-score', 0)*100:.1f}%")
                         
                         with col3:
-                            st.metric(" Weighted F1", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
+                            st.metric(" Weighted avg", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
 
                 except FileNotFoundError:
                     st.warning(" Métriques ML non disponibles. Relancez `python ml_prediction.py`")
