@@ -2830,106 +2830,192 @@ elif st.session_state.active_page == "Prédictions":
                     st.metric("⚡ Haut Potentiel (>30%)", high_potential)
 
                 st.markdown("---")
-                st.markdown("### 📊 Performance du Modèle ML")
-                
+                st.markdown("### 📊 Performances du Modèle")
+
                 try:
-                    import json
+                    # Charger les métriques
                     with open('data/ml_metrics.json', 'r') as f:
-                        ml_metrics = json.load(f)
+                        metrics = json.load(f)
                     
-                    col_cm, col_report = st.columns(2)
+                    cm = np.array(metrics['confusion_matrix'])
+                    report = metrics['classification_report']
                     
-                    # COLONNE 1 : MATRICE DE CONFUSION
+                    col_cm, col_report = st.columns([1, 1])
+                    
+                    # ============================================================================
+                    # COLONNE 1 : MATRICE DE CONFUSION AMÉLIORÉE
+                    # ============================================================================
                     with col_cm:
-                        st.markdown("#### 🎯 Matrice de Confusion")
+                        st.markdown("####  Matrice de Confusion")
                         
-                        cm = ml_metrics['confusion_matrix']
+                        # Créer heatmap avec TEXTE ADAPTATIF
+                        fig_cm = go.Figure()
                         
-                        # Créer heatmap avec Plotly
-                        import plotly.figure_factory as ff
-                        
-                        z = cm
-                        x = ['Non-Star', 'Star']
-                        y = ['Non-Star', 'Star']
-                        
-                        # Annotations pour afficher les valeurs
-                        annotations = []
-                        for i, row in enumerate(z):
-                            for j, value in enumerate(row):
-                                annotations.append(
-                                    dict(
-                                        x=x[j],
-                                        y=y[i],
-                                        text=str(value),
-                                        font=dict(color='white', size=20),
-                                        showarrow=False
-                                    )
-                                )
-                        
-                        fig = go.Figure(data=go.Heatmap(
-                            z=z,
-                            x=x,
-                            y=y,
+                        # Ajouter la heatmap
+                        fig_cm.add_trace(go.Heatmap(
+                            z=cm,
+                            x=['Non-Star', 'Star'],
+                            y=['Non-Star', 'Star'],
                             colorscale='Blues',
-                            showscale=False
+                            showscale=False,
+                            hovertemplate='Prédit: %{x}<br>Réel: %{y}<br>Valeur: %{z}<extra></extra>'
                         ))
                         
-                        fig.update_layout(
-                            plot_bgcolor=COLORS['bg_card'],
-                            paper_bgcolor=COLORS['bg_card'],
-                            font_color=COLORS['text'],
-                            height=300,
-                            margin=dict(l=20, r=20, t=40, b=20),
+                        # ANNOTATIONS AVEC COULEUR ADAPTATIVE
+                        for i in range(len(cm)):
+                            for j in range(len(cm[i])):
+                                value = cm[i][j]
+                                
+                                #  Texte BLANC pour cellules foncées, NOIR pour cellules claires
+                                # Seuil : si valeur > 50% du max, texte blanc, sinon noir
+                                text_color = 'white' if value > (cm.max() / 2) else 'black'
+                                
+                                fig_cm.add_annotation(
+                                    x=j,
+                                    y=i,
+                                    text=f"<b>{value}</b>",
+                                    font=dict(size=24, color=text_color),
+                                    showarrow=False
+                                )
+                        
+                        # Layout
+                        fig_cm.update_layout(
                             xaxis_title="Prédiction",
                             yaxis_title="Réalité",
-                            annotations=annotations
+                            plot_bgcolor=COLORS['bg_card'],
+                            paper_bgcolor=COLORS['bg_card'],
+                            font=dict(color='white', size=12),
+                            height=350,
+                            margin=dict(l=80, r=20, t=20, b=80),
+                            xaxis=dict(
+                                side='bottom',
+                                showgrid=False,
+                                tickfont=dict(size=14)
+                            ),
+                            yaxis=dict(
+                                showgrid=False,
+                                tickfont=dict(size=14)
+                            )
                         )
                         
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig_cm, use_container_width=True)
                         
-                        st.caption(f"**Total :** {ml_metrics['total_samples']} artistes | **Stars :** {ml_metrics['stars_count']} | **Non-Stars :** {ml_metrics['non_stars_count']}")
+                        # Caption
+                        total = metrics.get('total_samples', 0)
+                        stars = metrics.get('stars_count', 0)
+                        non_stars = metrics.get('non_stars_count', 0)
+                        
+                        st.caption(f" Total : {total} artistes |  Stars : {stars} |  Non-Stars : {non_stars}")
                     
-                    # COLONNE 2 : RAPPORT DE CLASSIFICATION
+                    # ============================================================================
+                    # COLONNE 2 : RAPPORT DE CLASSIFICATION STYLISÉ
+                    # ============================================================================
                     with col_report:
-                        st.markdown("#### 📈 Rapport de Classification")
+                        st.markdown("####  Rapport de Classification")
                         
-                        report = ml_metrics['classification_report']
+                        # Extraire les données
+                        non_star = report.get('0', {})
+                        star = report.get('1', {})
                         
-                        # Créer DataFrame pour affichage
-                        report_data = []
-                        for label, metrics in report.items():
-                            if label in ['0', '1']:  # Classes
-                                class_name = "Non-Star" if label == '0' else "Star"
-                                report_data.append({
-                                    'Classe': class_name,
-                                    'Précision': f"{metrics['precision']:.2%}",
-                                    'Rappel': f"{metrics['recall']:.2%}",
-                                    'F1-Score': f"{metrics['f1-score']:.2%}",
-                                    'Support': int(metrics['support'])
-                                })
+                        #  CRÉER DATAFRAME AVEC COULEURS
+                        df_report = pd.DataFrame({
+                            'Classe': [' Non-Star', ' Star'],
+                            'Précision': [
+                                f"{non_star.get('precision', 0)*100:.1f}%",
+                                f"{star.get('precision', 0)*100:.1f}%"
+                            ],
+                            'Rappel': [
+                                f"{non_star.get('recall', 0)*100:.1f}%",
+                                f"{star.get('recall', 0)*100:.1f}%"
+                            ],
+                            'F1-Score': [
+                                f"{non_star.get('f1-score', 0)*100:.1f}%",
+                                f"{star.get('f1-score', 0)*100:.1f}%"
+                            ],
+                            'Support': [
+                                int(non_star.get('support', 0)),
+                                int(star.get('support', 0))
+                            ]
+                        })
                         
-                        report_df = pd.DataFrame(report_data)
+                        # STYLE PROFESSIONNEL AVEC COULEURS
+                        def style_dataframe(df):
+                            """Styliser le DataFrame"""
+                            
+                            def color_precision(val):
+                                """Couleur basée sur la valeur"""
+                                try:
+                                    num = float(val.replace('%', ''))
+                                    if num >= 90:
+                                        return 'background-color: #2d5016; color: white'  # Vert foncé
+                                    elif num >= 80:
+                                        return 'background-color: #4a7c2c; color: white'  # Vert moyen
+                                    elif num >= 70:
+                                        return 'background-color: #7a9b5e; color: white'  # Vert clair
+                                    else:
+                                        return 'background-color: #9b6e4a; color: white'  # Orange
+                                except:
+                                    return ''
+                            
+                            # Appliquer le style
+                            styled = df.style\
+                                .applymap(color_precision, subset=['Précision', 'Rappel', 'F1-Score'])\
+                                .set_properties(**{
+                                    'text-align': 'center',
+                                    'font-size': '14px',
+                                    'padding': '10px'
+                                })\
+                                .set_table_styles([
+                                    {'selector': 'th', 'props': [
+                                        ('background-color', COLORS['accent2']),
+                                        ('color', 'white'),
+                                        ('font-weight', 'bold'),
+                                        ('text-align', 'center'),
+                                        ('padding', '12px')
+                                    ]},
+                                    {'selector': 'td', 'props': [
+                                        ('border', '1px solid #444')
+                                    ]}
+                                ])
+                            
+                            return styled
                         
-                        # Afficher tableau stylisé
                         st.dataframe(
-                            report_df,
-                            hide_index=True,
-                            use_container_width=True
+                            style_dataframe(df_report),
+                            use_container_width=True,
+                            hide_index=True
                         )
                         
                         # Métriques globales
-                        st.markdown(f"""
-                        **Accuracy :** {report['accuracy']:.2%}  
-                        **Macro Avg F1 :** {report['macro avg']['f1-score']:.2%}  
-                        **Weighted Avg F1 :** {report['weighted avg']['f1-score']:.2%}
-                        """)
+                        st.markdown("---")
                         
-                        st.caption("**Précision** : % de prédictions correctes pour cette classe | **Rappel** : % de vrais cas détectés | **F1-Score** : Équilibre précision/rappel")
-                
+                        accuracy = metrics.get('accuracy', 0)
+                        macro_f1 = report.get('macro avg', {}).get('f1-score', 0)
+                        weighted_f1 = report.get('weighted avg', {}).get('f1-score', 0)
+                        
+                        col1, col2, col3 = st.columns(3)
+                        
+                        with col1:
+                            st.metric(" Accuracy", f"{accuracy*100:.1f}%")
+                        
+                        with col2:
+                            st.metric(" Macro F1", f"{macro_f1*100:.1f}%")
+                        
+                        with col3:
+                            st.metric(" Weighted F1", f"{weighted_f1*100:.1f}%")
+                        
+                        # Explications
+                        st.caption("""
+                        ** Explications :**
+                        - **Précision** : Sur 100 prédits "Star", combien le sont vraiment
+                        - **Rappel** : Sur 100 vrais "Stars", combien sont détectés
+                        - **F1-Score** : Équilibre entre précision et rappel
+                        """)
+
                 except FileNotFoundError:
-                    st.info("Métriques ML non disponibles. Relancez `python ml_prediction.py`")
+                    st.warning(" Métriques ML non disponibles. Relancez `python ml_prediction.py`")
                 except Exception as e:
-                    st.warning(f" Impossible de charger les métriques ML : {e}")
+                    st.warning(f" Erreur chargement métriques : {e}")
             
         except FileNotFoundError:
             st.error(" Fichier de prédictions non trouvé")
