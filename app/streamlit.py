@@ -3024,22 +3024,22 @@ elif st.session_state.active_page == "Prédictions":
                             with col3:
                                 st.metric("⚖️ Weighted avg", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
                         
-                        # Explications - STYLE JEK2
-                        st.markdown("""
-                        <div style='
-                            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
-                            padding: 15px;
-                            border-radius: 10px;
-                            border-left: 4px solid #FFD700;
-                            margin-top: 20px;
-                            color: #d0d0d0;
-                            font-size: 12px;
-                        '>
-                            • <b>Précision</b> : Sur 100 prédits "Star", combien le sont vraiment<br>
-                            • <b>Rappel</b> : Sur 100 vrais "Stars", combien sont détectés<br>
-                            • <b>F1-Score</b> : Équilibre entre précision et rappel
-                        </div>
-                        """, unsafe_allow_html=True)
+                            # Explications - STYLE JEK2
+                            st.markdown("""
+                            <div style='
+                                background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
+                                padding: 15px;
+                                border-radius: 10px;
+                                border-left: 4px solid #FFD700;
+                                margin-top: 20px;
+                                color: #d0d0d0;
+                                font-size: 12px;
+                            '>
+                                • <b>Précision</b> : Sur 100 prédits "Star", combien le sont vraiment<br>
+                                • <b>Rappel</b> : Sur 100 vrais "Stars", combien sont détectés<br>
+                                • <b>F1-Score</b> : Équilibre entre précision et rappel
+                            </div>
+                            """, unsafe_allow_html=True)
 
                 except FileNotFoundError:
                     st.warning(" Métriques ML non disponibles. Relancez `python ml_prediction.py`")
