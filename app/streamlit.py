@@ -2950,21 +2950,24 @@ elif st.session_state.active_page == "Prédictions":
                         accuracy = metrics.get('accuracy', 0)
                         total_samples = metrics.get('total_samples', 0)
                         
-                        #  FORMAT CLASSIQUE AVEC HEADERS
-                        rapport_text = f"""              precision    recall  f1-score   support
-
-                        0       {non_star.get('precision', 0):>4.2f}      {non_star.get('recall', 0):>4.2f}      {non_star.get('f1-score', 0):>4.2f}      {int(non_star.get('support', 0)):>4d}
-                        1       {star.get('precision', 0):>4.2f}      {star.get('recall', 0):>4.2f}      {star.get('f1-score', 0):>4.2f}      {int(star.get('support', 0)):>4d}
-
-                    accuracy                           {accuracy:>4.2f}      {total_samples:>4d}
-                macro avg       {macro_avg.get('precision', 0):>4.2f}      {macro_avg.get('recall', 0):>4.2f}      {macro_avg.get('f1-score', 0):>4.2f}      {total_samples:>4d}
-                weighted avg       {weighted_avg.get('precision', 0):>4.2f}      {weighted_avg.get('recall', 0):>4.2f}      {weighted_avg.get('f1-score', 0):>4.2f}      {total_samples:>4d}"""
+                        #  CONSTRUIRE LE RAPPORT LIGNE PAR LIGNE
+                        lines = []
+                        lines.append("              precision    recall  f1-score   support")
+                        lines.append("")
+                        lines.append(f"           0       {non_star.get('precision', 0):.2f}      {non_star.get('recall', 0):.2f}      {non_star.get('f1-score', 0):.2f}      {int(non_star.get('support', 0)):>4d}")
+                        lines.append(f"           1       {star.get('precision', 0):.2f}      {star.get('recall', 0):.2f}      {star.get('f1-score', 0):.2f}      {int(star.get('support', 0)):>4d}")
+                        lines.append("")
+                        lines.append(f"    accuracy                           {accuracy:.2f}      {total_samples:>4d}")
+                        lines.append(f"   macro avg       {macro_avg.get('precision', 0):.2f}      {macro_avg.get('recall', 0):.2f}      {macro_avg.get('f1-score', 0):.2f}      {total_samples:>4d}")
+                        lines.append(f"weighted avg       {weighted_avg.get('precision', 0):.2f}      {weighted_avg.get('recall', 0):.2f}      {weighted_avg.get('f1-score', 0):.2f}      {total_samples:>4d}")
                         
-                        #  AFFICHAGE STYLE JEK2
+                        rapport_text = "\n".join(lines)
+                        
+                        #  AFFICHAGE AVEC STYLE JEK2
                         st.markdown(f"""
                         <div style='
                             background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 100%);
-                            padding: 25px;
+                            padding: 25px 30px;
                             border-radius: 10px;
                             border: 2px solid #FFD700;
                             box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
@@ -2973,11 +2976,13 @@ elif st.session_state.active_page == "Prédictions":
                             <pre style='
                                 color: #FFD700;
                                 font-family: "Courier New", Courier, monospace;
-                                font-size: 13px;
-                                line-height: 1.8;
+                                font-size: 14px;
+                                line-height: 2.0;
                                 margin: 0;
+                                padding: 0;
                                 overflow-x: auto;
                                 font-weight: 500;
+                                white-space: pre;
                             '>{rapport_text}</pre>
                         </div>
                         """, unsafe_allow_html=True)
