@@ -2950,16 +2950,15 @@ elif st.session_state.active_page == "Prédictions":
                         accuracy = metrics.get('accuracy', 0)
                         total_samples = metrics.get('total_samples', 0)
                         
-                        #  FORMAT EXACTEMENT COMME SCIKIT-LEARN
+                        #  FORMAT CLASSIQUE AVEC HEADERS
                         rapport_text = f"""              precision    recall  f1-score   support
 
-                        0       {non_star.get('precision', 0):0.2f}      {non_star.get('recall', 0):0.2f}      {non_star.get('f1-score', 0):0.2f}      {int(non_star.get('support', 0)):4d}
-                        1       {star.get('precision', 0):0.2f}      {star.get('recall', 0):0.2f}      {star.get('f1-score', 0):0.2f}      {int(star.get('support', 0)):4d}
+                        0       {non_star.get('precision', 0):>4.2f}      {non_star.get('recall', 0):>4.2f}      {non_star.get('f1-score', 0):>4.2f}      {int(non_star.get('support', 0)):>4d}
+                        1       {star.get('precision', 0):>4.2f}      {star.get('recall', 0):>4.2f}      {star.get('f1-score', 0):>4.2f}      {int(star.get('support', 0)):>4d}
 
-                    accuracy                           {accuracy:0.2f}      {total_samples:4d}
-                macro avg       {macro_avg.get('precision', 0):0.2f}      {macro_avg.get('recall', 0):0.2f}      {macro_avg.get('f1-score', 0):0.2f}      {total_samples:4d}
-                weighted avg       {weighted_avg.get('precision', 0):0.2f}      {weighted_avg.get('recall', 0):0.2f}      {weighted_avg.get('f1-score', 0):0.2f}      {total_samples:4d}
-                """
+                    accuracy                           {accuracy:>4.2f}      {total_samples:>4d}
+                macro avg       {macro_avg.get('precision', 0):>4.2f}      {macro_avg.get('recall', 0):>4.2f}      {macro_avg.get('f1-score', 0):>4.2f}      {total_samples:>4d}
+                weighted avg       {weighted_avg.get('precision', 0):>4.2f}      {weighted_avg.get('recall', 0):>4.2f}      {weighted_avg.get('f1-score', 0):>4.2f}      {total_samples:>4d}"""
                         
                         #  AFFICHAGE STYLE JEK2
                         st.markdown(f"""
@@ -2974,7 +2973,7 @@ elif st.session_state.active_page == "Prédictions":
                             <pre style='
                                 color: #FFD700;
                                 font-family: "Courier New", Courier, monospace;
-                                font-size: 14px;
+                                font-size: 13px;
                                 line-height: 1.8;
                                 margin: 0;
                                 overflow-x: auto;
