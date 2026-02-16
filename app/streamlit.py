@@ -2657,8 +2657,9 @@ elif st.session_state.active_page == "Prédictions":
                 )
                 st.plotly_chart(fig, use_container_width=True)
                 
-                st.markdown("### Cliquez pour voir l'évolution détaillée")
+                st.caption("Ce graphique montre les 10 meilleurs artistes émergents avec la plus forte probabilité de succès.")
                 
+                st.markdown("---")
                 # FONCTION DE NORMALISATION AMÉLIORÉE
                 def normalize_name(name):
                     """Normalise un nom pour le matching - VERSION STRICTE"""
@@ -2867,7 +2868,7 @@ elif st.session_state.active_page == "Prédictions":
                             hovertemplate='Prédit: %{x}<br>Réel: %{y}<br>Valeur: %{z}<extra></extra>'
                         ))
                         
-                        # ✅ANNOTATIONS - COULEUR ADAPTATIVE INTELLIGENTE
+                        # ANNOTATIONS - COULEUR ADAPTATIVE INTELLIGENTE
                         for i in range(len(cm)):
                             for j in range(len(cm[i])):
                                 value = cm[i][j]
@@ -3042,9 +3043,9 @@ elif st.session_state.active_page == "Prédictions":
                             st.metric(" Weighted F1", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
 
                 except FileNotFoundError:
-                    st.warning("⚠️ Métriques ML non disponibles. Relancez `python ml_prediction.py`")
+                    st.warning(" Métriques ML non disponibles. Relancez `python ml_prediction.py`")
                 except Exception as e:
-                    st.warning(f"❌ Erreur chargement métriques : {e}")
+                    st.warning(f" Erreur chargement métriques : {e}")
             
         except FileNotFoundError:
             st.error(" Fichier de prédictions non trouvé")
