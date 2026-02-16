@@ -3096,14 +3096,6 @@ elif st.session_state.active_page == "Prédictions":
                         """
                         st.markdown(metric_style, unsafe_allow_html=True)
                         
-                        with col1:
-                            st.metric(" Accuracy", f"{accuracy*100:.1f}%")
-                        
-                        with col2:
-                            st.metric(" Macro avg", f"{macro_avg.get('f1-score', 0)*100:.1f}%")
-                        
-                        with col3:
-                            st.metric(" Weighted avg", f"{weighted_avg.get('f1-score', 0)*100:.1f}%")
 
                 except FileNotFoundError:
                     st.warning(" Métriques ML non disponibles. Relancez `python ml_prediction.py`")
