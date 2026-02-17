@@ -926,7 +926,7 @@ def importer_en_base():
                 
                 #  Si genre est "Autre", mettre Rap-HipHop-RnB
                 if genre_deezer == 'Autre' or not genre_deezer or pd.isna(genre_deezer):
-                genre_deezer = 'Rap-HipHop-RnB'
+                    genre_deezer = 'Rap-HipHop-RnB'
                 
                 try:
                     cursor.execute("""
