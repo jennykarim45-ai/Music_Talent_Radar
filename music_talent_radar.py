@@ -36,7 +36,7 @@ BLACKLIST_ARTISTS = [
     'emma stone', 'Nour', 'Oasis de musique jazz', 'elyasbitum93200', 'John Weezy B','Jazz de bonne humeur',
     'Ebony',' ZZ', 'Lauren Spencer-Smith', 'Keshi','SG Lewis','Francis Lalanne','Église Momentum', 
     'Limsa d\'aulnay', 'Justin Hurwitz','A Flock of Seagulls','Prefab Sprout','Gary Numan','Rema Loseke','Vanou','91','Zaka Lavista','SoulWaxx Records','RIVIIERA',
-    'RDN','Ultravox', 'Ryflo', 'Nakk Mendosa', 'La Clinique', 'Rich Chigga','Momentum Musique',
+    'RDN','Ultravox', 'Ryflo', 'Nakk Mendosa', 'La Clinique', 'Rich Chigga','Momentum Musique','Balla Diabaté','shad Hottaboy','Alliance Ethnkik','tn_490','MC Yoshi','Parishmita Phukan',
     'OPINEL 21', 'ATK', 'Tookie2Beriz','93PUNX','Adrian von Ziegler','Aztec Camera','Rap and Hip Hop Beat Mister',
     'Grandmaster Flash & The Furious Five', 'Gorillaz', 'Gary Numan', 'Tubeway Army','François Dal\'s',
     'Philip Oakey', 'Rich Brian', 'Nicola Sirkis', 'PLK','Kheops', 'Janet Jackson','Barbie François',
@@ -69,10 +69,10 @@ DEEZER_MIN_TITRES = 0
 MAX_NB_ALBUMS = 10
 
 # ============================================================================
-# CONFIGURATION RATE LIMITING - OPTIMISÉ POUR 300 ARTISTES
+# CONFIGURATION RATE LIMITING - OPTIMISÉ POUR 800 ARTISTES
 # ============================================================================
 
-MAX_ARTISTS_PER_RUN = 500
+MAX_ARTISTS_PER_RUN = 800
 DELAY_BETWEEN_REQUESTS = 0.5  # Délai entre requête artiste et albums (secondes)
 DELAY_BETWEEN_ARTISTS = 2.0  # Délai entre chaque artiste (secondes)
 DELAY_AFTER_RATE_LIMIT = 1000  # Attente si rate limit (10 minutes)
