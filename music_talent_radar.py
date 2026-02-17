@@ -855,7 +855,7 @@ def importer_en_base():
             
             #  Si genre est "Autre", mettre Rap-HipHop-RnB par défaut
             if genre == 'Autre' or not genre or pd.isna(genre):
-            genre = 'Rap-HipHop-RnB'
+                genre = 'Rap-HipHop-RnB'
             
             cursor.execute("""
                 INSERT OR REPLACE INTO artistes 
