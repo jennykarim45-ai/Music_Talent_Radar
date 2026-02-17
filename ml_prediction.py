@@ -115,7 +115,7 @@ def calculer_croissance_et_features():
             croissance_pct = 0
             croissance_90j = 0
         
-        a_explose = 1 if croissance_90j > 30 else 0
+        a_explose = 1 if croissance_90j > 25 else 0
         
         # Features avancées
         ratio_followers_albums = derniere['fans_followers'] / max(derniere['nb_albums'], 1)
