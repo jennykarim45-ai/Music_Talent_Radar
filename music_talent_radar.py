@@ -35,7 +35,7 @@ BLACKLIST_ARTISTS = [
     'ryan gosling', 'Missan', 'La Plaie', 'Jungle Jack', 'Bleu Soleil','Soul Blues Icons','New Old Blues','91 Days',
     'emma stone', 'Nour', 'Oasis de musique jazz', 'elyasbitum93200', 'John Weezy B','Jazz de bonne humeur',
     'Ebony',' ZZ', 'Lauren Spencer-Smith', 'Keshi','SG Lewis','Francis Lalanne','Église Momentum', 
-    'Limsa d\'aulnay', 'Justin Hurwitz','A Flock of Seagulls','Prefab Sprout','Gary Numan',
+    'Limsa d\'aulnay', 'Justin Hurwitz','A Flock of Seagulls','Prefab Sprout','Gary Numan','Rema Loseke','Vanou','91','Zaka Lavista','SoulWaxx Records','RIVIIERA',
     'RDN','Ultravox', 'Ryflo', 'Nakk Mendosa', 'La Clinique', 'Rich Chigga','Momentum Musique',
     'OPINEL 21', 'ATK', 'Tookie2Beriz','93PUNX','Adrian von Ziegler','Aztec Camera','Rap and Hip Hop Beat Mister',
     'Grandmaster Flash & The Furious Five', 'Gorillaz', 'Gary Numan', 'Tubeway Army','François Dal\'s',
