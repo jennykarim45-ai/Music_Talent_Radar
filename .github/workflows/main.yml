@@ -59,6 +59,7 @@ jobs:
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "🚀 Début du workflow complet..."
           echo "📅 Date: $(date +'%Y-%m-%d %H:%M:%S')"
@@ -96,6 +97,8 @@ jobs:
             echo "⚠️ Script nettoyage_doublons_cloud.py non trouvé (ignoré)"
           fi
       - name: 🤖 Génération prédictions ML
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "🤖 Génération des prédictions ML..."
           if [ -f "ml_prediction.py" ]; then
@@ -109,6 +112,8 @@ jobs:
         
       
       - name: 🔔 Génération alertes dynamiques
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "🔔 Génération des alertes..."
           if [ -f "generer_alertes.py" ]; then
