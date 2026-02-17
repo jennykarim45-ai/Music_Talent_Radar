@@ -1,12 +1,12 @@
 {
   "confusion_matrix": [
     [
-      30,
+      26,
       0
     ],
     [
       0,
-      10
+      8
     ]
   ],
   "classification_report": {
@@ -14,30 +14,30 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 30.0
+      "support": 26.0
     },
     "1": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 10.0
+      "support": 8.0
     },
     "accuracy": 1.0,
     "macro avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 40.0
+      "support": 34.0
     },
     "weighted avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 40.0
+      "support": 34.0
     }
   },
   "accuracy": 1.0,
-  "total_samples": 40,
-  "stars_count": 10,
-  "non_stars_count": 30
+  "total_samples": 34,
+  "stars_count": 8,
+  "non_stars_count": 26
 }
