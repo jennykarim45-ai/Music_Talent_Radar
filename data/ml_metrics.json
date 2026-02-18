@@ -5,39 +5,39 @@
       0
     ],
     [
-      1,
+      0,
       7
     ]
   ],
   "classification_report": {
     "0": {
-      "precision": 0.9583333333333334,
+      "precision": 1.0,
       "recall": 1.0,
-      "f1-score": 0.9787234042553191,
+      "f1-score": 1.0,
       "support": 23.0
     },
     "1": {
       "precision": 1.0,
-      "recall": 0.875,
-      "f1-score": 0.9333333333333333,
-      "support": 8.0
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 7.0
     },
-    "accuracy": 0.967741935483871,
+    "accuracy": 1.0,
     "macro avg": {
-      "precision": 0.9791666666666667,
-      "recall": 0.9375,
-      "f1-score": 0.9560283687943263,
-      "support": 31.0
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 30.0
     },
     "weighted avg": {
-      "precision": 0.9690860215053764,
-      "recall": 0.967741935483871,
-      "f1-score": 0.9670098375657745,
-      "support": 31.0
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 30.0
     }
   },
-  "accuracy": 0.967741935483871,
-  "total_samples": 31,
-  "stars_count": 8,
+  "accuracy": 1.0,
+  "total_samples": 30,
+  "stars_count": 7,
   "non_stars_count": 23
 }

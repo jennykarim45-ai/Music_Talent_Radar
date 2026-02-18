@@ -50,6 +50,7 @@ BLACKLIST_ARTISTS = [
     'Oasis de musique jazz relaxant','The Paris Match','Baroque Jazz Trio','Jeremstar','K-Pop Demon Hunter','K-Pop','Coco','François Sentinelle',
     'Algéric','Elyon','Francis M','Félix Radu','KLN 93','Kham Meslien','Killemv','Lila-May','Marius Psalmiste','Mirella','Molière l\'opéra urbain',
     'Pinpin OSP','RORI','Rock Bones','SKUNK','Sam Sauvage','Tommy Lyon','ZZCCMXTP','jean','Marseille Capitale du Rap','Sons de la Nature Projet France','Francis sentinelle',
+    'Mani Deïz','Kozi','Bengous','Jeff Le Nerf','Lucio Bukowski','Jungle Jack','H JeuneCrack','USKY','Elh Kmer','Souffrance','Lacraps','Tuerie','Flynt','Rocca','X-Men','Grems','Tekilla','Le Juiice'
 ]
     
 
