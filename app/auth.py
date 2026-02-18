@@ -174,7 +174,7 @@ def public_page_about():
             <tbody>
                 <tr style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05)); border-bottom: 2px solid rgba(239, 68, 68, 0.3);">
                     <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Audience</td>
-                    <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;">40%</td>
+                    <td style="color: #fca5a5; padding: 1rem; font-weight: 700; font-size: 1.05rem;">35%</td>
                     <td style="color: #e5e7eb; padding: 1rem;">Taille de la communauté (100 - 40 000 followers/fans)</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(251, 146, 60, 0.05)); border-bottom: 2px solid rgba(251, 146, 60, 0.3);">
@@ -184,7 +184,7 @@ def public_page_about():
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)); border-bottom: 2px solid rgba(34, 197, 94, 0.3);">
                     <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Récurrance</td>
-                    <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;">20%</td>
+                    <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;">25%</td>
                     <td style="color: #e5e7eb; padding: 1rem;">Régularité des sorties</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));">
