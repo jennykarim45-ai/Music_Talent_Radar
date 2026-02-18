@@ -2605,7 +2605,7 @@ elif st.session_state.active_page == "Prédictions":
         <h4 style="color: {COLORS['accent3']};">💡 Comment ça marche ?</h4>
         <p style="font-size: 1.05rem; line-height: 1.6;">
         Notre modèle d'Intelligence Artificielle identifie les artistes émergents avec le plus fort potentiel.
-        Cliquez sur "Voir évolution" pour voir les détails !
+        
         </p>
         </div>
         """, unsafe_allow_html=True)
