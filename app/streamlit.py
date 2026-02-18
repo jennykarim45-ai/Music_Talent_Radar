@@ -1269,6 +1269,10 @@ if st.session_state.active_page == "Vue d'ensemble":
     df_collectes = pd.read_sql_query(query_collectes, conn)
     conn.close()
 
+    conn = psycopg2.connect('data/music_talent_radar_v2.db')
+    df_collectes = pd.read_sql_query(query_collectes, conn)
+    conn.close()
+    
     if len(df_collectes) > 0:
         # Calculer artistes existants = total - nouveaux
         df_collectes['artistes_existants'] = df_collectes['nb_artistes'] - df_collectes['nouveaux_artistes']
