@@ -42,7 +42,7 @@ BLACKLIST_ARTISTS = [
     'Philip Oakey', 'Rich Brian', 'Nicola Sirkis', 'PLK','Kheops', 'Janet Jackson','Barbie François',
     'Luther Vandross', 'Eric Elmosnino','Sons de la Nature Projet France',' Marseille Capitale du Rap',
     'FUNK DEMON', 'Ashvma','Lully Hill','DL91 Era','Jeez Suave', 'Thisizlondon','Coco','Gospel Wave Music','New Old Blues','91 Days',
-    'The Soul Jazz Era','Jamso', 'Lenaïg', 'Theomaa','19s Soulers','FRENCHGRL','Les Folies Françoises',
+    'The Soul Jazz Era','Jamso', 'Lenaïg', 'Theomaa','19s Soulers','FRENCHGRL','Les Folies Françoises','Selecta Killa',
     'Pescado Rabioso', 'Jean-Luc Lahaye', 'Starley', 'Ici c\'est Paris', 'PARIS.','Walk in Paris','soul flying star',
     'Nicola Sirkis', 'Alain Chamfort', 'Francis Lalanne', 'David Castello-Lopes', 'ATK', 'F.F.F.','Nouvelle Donne',
     'Frànçois & The Atlas Mountains', 'Francis And The Lights', 'Francis Mercier', 'Charles Pasi', 'Ryan Paris', 'Stardust', 'Pop Will Eat Itself', 'Soulive',
