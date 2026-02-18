@@ -34,7 +34,7 @@ load_dotenv()
 BLACKLIST_ARTISTS = [
     'ryan gosling', 'Missan', 'La Plaie', 'Jungle Jack', 'Bleu Soleil','Soul Blues Icons','New Old Blues','91 Days',
     'emma stone', 'Nour', 'Oasis de musique jazz', 'elyasbitum93200', 'John Weezy B','Jazz de bonne humeur',
-    'Ebony',' ZZ', 'Lauren Spencer-Smith', 'Keshi','SG Lewis','Francis Lalanne','Église Momentum', 
+    'Ebony',' ZZ', 'Lauren Spencer-Smith', 'Keshi','SG Lewis','Francis Lalanne','Église Momentum', 'AMOR',
     'Limsa d\'aulnay', 'Justin Hurwitz','A Flock of Seagulls','Prefab Sprout','Gary Numan','Rema Loseke','Vanou','91','Zaka Lavista','SoulWaxx Records','RIVIIERA',
     'RDN','Ultravox', 'Ryflo', 'Nakk Mendosa', 'La Clinique', 'Rich Chigga','Momentum Musique','Balla Diabaté','shad Hottaboy','Alliance Ethnkik','tn_490','MC Yoshi','Parishmita Phukan',
     'OPINEL 21', 'ATK', 'Tookie2Beriz','93PUNX','Adrian von Ziegler','Aztec Camera','Rap and Hip Hop Beat Mister',
