@@ -39,7 +39,7 @@ BLACKLIST_ARTISTS = [
     'RDN','Ultravox', 'Ryflo', 'Nakk Mendosa', 'La Clinique', 'Rich Chigga','Momentum Musique','Balla Diabaté','shad Hottaboy','Alliance Ethnkik','tn_490','MC Yoshi','Parishmita Phukan',
     'OPINEL 21', 'ATK', 'Tookie2Beriz','93PUNX','Adrian von Ziegler','Aztec Camera','Rap and Hip Hop Beat Mister',
     'Grandmaster Flash & The Furious Five', 'Gorillaz', 'Gary Numan', 'Tubeway Army','François Dal\'s','Alliance Ethnik',
-    'Philip Oakey', 'Rich Brian', 'Nicola Sirkis', 'PLK','Kheops', 'Janet Jackson','Barbie François',
+    'Philip Oakey', 'Rich Brian', 'Nicola Sirkis', 'PLK','Kheops', 'Janet Jackson','Barbie François','& The Gospel',
     'Luther Vandross', 'Eric Elmosnino','Sons de la Nature Projet France',' Marseille Capitale du Rap',
     'FUNK DEMON', 'Ashvma','Lully Hill','DL91 Era','Jeez Suave', 'Thisizlondon','Coco','Gospel Wave Music','New Old Blues','91 Days',
     'The Soul Jazz Era','Jamso', 'Lenaïg', 'Theomaa','19s Soulers','FRENCHGRL','Les Folies Françoises','Selecta Killa',
