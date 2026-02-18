@@ -1251,28 +1251,25 @@ if st.session_state.active_page == "Vue d'ensemble":
     # Requête SQL : compter artistes par jour
     query_collectes = """
         SELECT 
-            DATE(date_collecte) as date_jour,
+            CAST(date_collecte AS DATE) as date_jour,
             COUNT(DISTINCT id_unique) as nb_artistes,
             COUNT(DISTINCT CASE 
-                WHEN DATE(date_collecte) = (
-                    SELECT MIN(DATE(date_collecte)) 
+                WHEN CAST(date_collecte AS DATE) = (
+                    SELECT MIN(CAST(date_collecte AS DATE))
                     FROM metriques_historique m2 
                     WHERE m2.id_unique = metriques_historique.id_unique
                 ) 
                 THEN id_unique 
             END) as nouveaux_artistes
         FROM metriques_historique
-        GROUP BY DATE(date_collecte)
+        GROUP BY CAST(date_collecte AS DATE)
         ORDER BY date_jour ASC
     """
     conn = sqlite3.connect('data/music_talent_radar_v2.db')
     df_collectes = pd.read_sql_query(query_collectes, conn)
     conn.close()
-
-    conn = psycopg2.connect('data/music_talent_radar_v2.db')
-    df_collectes = pd.read_sql_query(query_collectes, conn)
-    conn.close()
     
+
     if len(df_collectes) > 0:
         # Calculer artistes existants = total - nouveaux
         df_collectes['artistes_existants'] = df_collectes['nb_artistes'] - df_collectes['nouveaux_artistes']
