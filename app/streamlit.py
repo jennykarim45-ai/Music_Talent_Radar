@@ -1248,141 +1248,165 @@ if st.session_state.active_page == "Vue d'ensemble":
     st.markdown("---")
     st.subheader("📅 Activité de collecte quotidienne")
 
-    # Requête SQL : compter artistes par jour
+    #  REQUÊTE SIMPLE (compatible SQLite + PostgreSQL)
     query_collectes = """
         SELECT 
-            CAST(date_collecte AS DATE) as date_jour,
-            COUNT(DISTINCT id_unique) as nb_artistes,
-            COUNT(DISTINCT CASE 
-                WHEN CAST(date_collecte AS DATE) = (
-                    SELECT MIN(CAST(date_collecte AS DATE))
-                    FROM metriques_historique m2 
-                    WHERE m2.id_unique = metriques_historique.id_unique
-                ) 
-                THEN id_unique 
-            END) as nouveaux_artistes
+            date_collecte,
+            id_unique
         FROM metriques_historique
-        GROUP BY CAST(date_collecte AS DATE)
-        ORDER BY date_jour ASC
+        ORDER BY date_collecte ASC
     """
+
     conn = sqlite3.connect('data/music_talent_radar_v2.db')
-    df_collectes = pd.read_sql_query(query_collectes, conn)
-    conn.close()
-    
 
-    if len(df_collectes) > 0:
-        # Calculer artistes existants = total - nouveaux
-        df_collectes['artistes_existants'] = df_collectes['nb_artistes'] - df_collectes['nouveaux_artistes']
+    try:
+        df_raw = pd.read_sql_query(query_collectes, conn)
         
-        #  GRAPHIQUE EN AIRES EMPILÉES (nouveau type !)
-        fig_collectes = go.Figure()
-        
-        # Aire 1 : Artistes existants (fond violet foncé)
-        fig_collectes.add_trace(go.Scatter(
-            x=df_collectes['date_jour'],
-            y=df_collectes['artistes_existants'],
-            mode='none',
-            name='Artistes existants',
-            fill='tozeroy',
-            fillcolor='rgba(123, 31, 162, 0.3)',  # Violet transparent
-            hovertemplate='<b>%{x}</b><br>Existants: %{y}<extra></extra>'
-        ))
-        
-        # Aire 2 : Nouveaux artistes (doré au-dessus)
-        fig_collectes.add_trace(go.Scatter(
-            x=df_collectes['date_jour'],
-            y=df_collectes['nb_artistes'],
-            mode='none',
-            name='Nouveaux artistes',
-            fill='tonexty',  # Rempli jusqu'à la trace précédente
-            fillcolor='rgba(255, 215, 0, 0.5)',  # Or transparent
-            hovertemplate='<b>%{x}</b><br>Nouveaux: %{customdata}<extra></extra>',
-            customdata=df_collectes['nouveaux_artistes']
-        ))
-        
-        # Ligne du total (bordure supérieure)
-        fig_collectes.add_trace(go.Scatter(
-            x=df_collectes['date_jour'],
-            y=df_collectes['nb_artistes'],
-            mode='lines+markers',
-            name='Total artistes',
-            line=dict(color='#FFD700', width=2),
-            marker=dict(
-                size=8,
-                color='#FFD700',
-                line=dict(color='#FFA500', width=2)
-            ),
-            hovertemplate='<b>%{x}</b><br>Total: %{y}<extra></extra>'
-        ))
-        
-        # Style du graphique
-        fig_collectes.update_layout(
-            title={
-                'text': "",
-                'font': {'size': 20, 'color': 'white', 'family': 'Arial Black'} 
-            },
-            xaxis_title="Date",
-            yaxis_title="Nombre d'artistes",
-            plot_bgcolor='#1a1a1a',
-            paper_bgcolor='#1a1a1a',
-            font=dict(color='white'), 
-            hovermode='x unified',
-            showlegend=True,
-            legend=dict(
-                bgcolor='rgba(0,0,0,0.5)',
-                bordercolor='#FFD700',
-                borderwidth=1,
-                font=dict(color='white')  
-            ),
-            xaxis=dict(
-                gridcolor='rgba(255, 255, 255, 0.1)',
-                showgrid=True,
-                #  FORMAT DATE  DD/MM/YYYY
-                tickformat='%d/%m/%Y',
-                dtick=86400000,  # 1 jour en millisecondes
-                tickfont=dict(color='white'),  
-                title_font=dict(color='white') 
-            ),
-            yaxis=dict(
-                gridcolor='rgba(255, 255, 255, 0.1)',
-                showgrid=True,
-                tickfont=dict(color='white'),  
-                title_font=dict(color='white')  
-            ),
-            height=400
-        )
-        
-        st.plotly_chart(fig_collectes, use_container_width=True)
-        
-        #  Métriques en dessous
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            total_jours = len(df_collectes)
-            st.metric(
-                " Jours de collecte",
-                total_jours,
-                delta=None
+        if len(df_raw) > 0:
+            #  CONVERTIR dates en Python
+            df_raw['date_collecte'] = pd.to_datetime(df_raw['date_collecte'])
+            df_raw['date_jour'] = df_raw['date_collecte'].dt.date
+            
+            #  CALCULER nouveaux artistes
+            # Pour chaque artiste, trouver sa première date
+            premieres_dates = df_raw.groupby('id_unique')['date_jour'].min().reset_index()
+            premieres_dates.columns = ['id_unique', 'premiere_collecte']
+            
+            # Fusionner
+            df_raw = df_raw.merge(premieres_dates, on='id_unique')
+            df_raw['est_nouveau'] = (df_raw['date_jour'] == df_raw['premiere_collecte']).astype(int)
+            
+            #  GROUPER par jour
+            df_collectes = df_raw.groupby('date_jour').agg({
+                'id_unique': 'nunique',
+                'est_nouveau': 'sum'
+            }).reset_index()
+            
+            df_collectes.columns = ['date_jour', 'nb_artistes', 'nouveaux_artistes']
+            
+            #  CONVERTIR date_jour en string pour Plotly
+            df_collectes['date_jour'] = df_collectes['date_jour'].astype(str)
+            
+            # Calculer artistes existants
+            df_collectes['artistes_existants'] = df_collectes['nb_artistes'] - df_collectes['nouveaux_artistes']
+            
+            #  GRAPHIQUE EN AIRES EMPILÉES
+            fig_collectes = go.Figure()
+            
+            # Aire 1 : Artistes existants (fond violet foncé)
+            fig_collectes.add_trace(go.Scatter(
+                x=df_collectes['date_jour'],
+                y=df_collectes['artistes_existants'],
+                mode='none',
+                name='Artistes existants',
+                fill='tozeroy',
+                fillcolor='rgba(123, 31, 162, 0.3)',
+                hovertemplate='<b>%{x}</b><br>Existants: %{y}<extra></extra>',
+                stackgroup='one'  
+            ))
+            
+            # Aire 2 : Nouveaux artistes (doré)
+            fig_collectes.add_trace(go.Scatter(
+                x=df_collectes['date_jour'],
+                y=df_collectes['nouveaux_artistes'],
+                mode='none',
+                name='Nouveaux artistes',
+                fill='tonexty',
+                fillcolor='rgba(255, 215, 0, 0.5)',
+                hovertemplate='<b>%{x}</b><br>Nouveaux: %{y}<extra></extra>',
+                stackgroup='one'  
+            ))
+            
+            # Ligne du total (bordure supérieure)
+            fig_collectes.add_trace(go.Scatter(
+                x=df_collectes['date_jour'],
+                y=df_collectes['nb_artistes'],
+                mode='lines+markers',
+                name='Total artistes',
+                line=dict(color='#FFD700', width=2),
+                marker=dict(
+                    size=8,
+                    color='#FFD700',
+                    line=dict(color='#FFA500', width=2)
+                ),
+                hovertemplate='<b>%{x}</b><br>Total: %{y}<extra></extra>'
+            ))
+            
+            # Style du graphique
+            fig_collectes.update_layout(
+                title={
+                    'text': "",
+                    'font': {'size': 20, 'color': 'white', 'family': 'Arial Black'}
+                },
+                xaxis_title="Date",
+                yaxis_title="Nombre d'artistes",
+                plot_bgcolor='#1a1a1a',
+                paper_bgcolor='#1a1a1a',
+                font=dict(color='white'),
+                hovermode='x unified',
+                showlegend=True,
+                legend=dict(
+                    bgcolor='rgba(0,0,0,0.5)',
+                    bordercolor='#FFD700',
+                    borderwidth=1,
+                    font=dict(color='white')
+                ),
+                xaxis=dict(
+                    gridcolor='rgba(255, 255, 255, 0.1)',
+                    showgrid=True,
+                    tickfont=dict(color='white'),
+                    title_font=dict(color='white'),
+                    type='category'  
+                ),
+                yaxis=dict(
+                    gridcolor='rgba(255, 255, 255, 0.1)',
+                    showgrid=True,
+                    tickfont=dict(color='white'),
+                    title_font=dict(color='white')
+                ),
+                height=400
             )
+            
+            st.plotly_chart(fig_collectes, use_container_width=True)
+            
+            # Métriques en dessous
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                total_jours = len(df_collectes)
+                st.metric(
+                    "📅 Jours de collecte",
+                    total_jours,
+                    delta=None
+                )
+            
+            with col2:
+                total_nouveaux = int(df_collectes['nouveaux_artistes'].sum())
+                dernier_nouveau = int(df_collectes['nouveaux_artistes'].iloc[-1])
+                st.metric(
+                    "✨ Nouveaux artistes",
+                    total_nouveaux,
+                    delta=f"{dernier_nouveau} aujourd'hui" if dernier_nouveau > 0 else None
+                )
+            
+            with col3:
+                moyenne_jour = int(df_collectes['nb_artistes'].mean())
+                st.metric(
+                    "📊 Moyenne par jour",
+                    moyenne_jour,
+                    delta=None
+                )
         
-        with col2:
-            total_nouveaux = df_collectes['nouveaux_artistes'].sum()
-            st.metric(
-                " Nouveaux artistes",
-                total_nouveaux,
-                delta=f"{df_collectes['nouveaux_artistes'].iloc[-1]} aujourd'hui"
-            )
-        
-        with col3:
-            moyenne_jour = int(df_collectes['nb_artistes'].mean())
-            st.metric(
-                " Moyenne par jour",
-                moyenne_jour,
-                delta=None
-            )
+        else:
+            st.info(" Pas encore assez de données pour afficher l'activité de collecte")
 
-    else:
-        st.info(" Pas encore assez de données pour afficher l'activité de collecte")
+    except Exception as e:
+        st.error(f" Erreur lors du chargement des données de collecte : {e}")
+        import traceback
+        st.code(traceback.format_exc())
+
+    finally:
+        conn.close()
 # ==================== TAB 2: LES TOP ====================
 elif st.session_state.active_page == "Les Tops":
     with st.spinner(""):
