@@ -115,7 +115,7 @@ def calculer_croissance_et_features():
             croissance_pct = 0
             croissance_90j = 0
         
-        a_explose = 1 if croissance_90j > 25 else 0
+        a_explose = 1 if croissance_90j > 20 else 0
         
         # Features avancées
         ratio_followers_albums = derniere['fans_followers'] / max(derniere['nb_albums'], 1)
@@ -177,7 +177,7 @@ def calculer_croissance_et_features():
     nb_non_stars = (df_croissance['a_explose']==0).sum()
     
     print(f" {len(df_croissance)} artistes avec historique")
-    print(f"    Stars (>30% croissance): {nb_stars}")
+    print(f"    Stars (>20% croissance): {nb_stars}")
     print(f"    Non-stars: {nb_non_stars}")
     
     return df_croissance
@@ -373,8 +373,8 @@ def main():
         
         # Stats
         print(f"\ Statistiques finales:")
-        print(f"   Stars prédites (>30%): {(predictions['proba_star'] > 0.3).sum()}")
-        print(f"   Haut potentiel (>20%): {(predictions['proba_star'] > 0.2).sum()}")
+        print(f"   Stars prédites (>20%): {(predictions['proba_star'] > 0.2).sum()}")
+        print(f"   Haut potentiel (>10%): {(predictions['proba_star'] > 0.1).sum()}")
         print(f"   Probabilité moyenne: {predictions['proba_star'].mean():.1%}")
         print(f"   Min: {predictions['proba_star'].min():.1%}, Max: {predictions['proba_star'].max():.1%}")
         
