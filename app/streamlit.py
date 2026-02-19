@@ -2511,10 +2511,10 @@ elif st.session_state.active_page == "A propos":
 
     #  LISTE SIMPLE AVEC BOUTONS
     morceaux_soundcloud = [
-        ("🎵 Princesse Licorne", "https://soundcloud.com/jenny/princesse-licorne"),
-        ("🎵 Ma Famille", "https://soundcloud.com/jenny/ma-famille-qui-brille"),
-        ("🎵 Qui suis-je?", "https://soundcloud.com/jenny/qui-suis-je"),
-        ("🎵 Je ne comprends pas l'Humain", "https://soundcloud.com/jenny/je-ne-comprends-pas-lhumain"),
+        ("🎵 Princesse Licorne", "https://soundcloud.com/jenny-789042437/licorne"),
+        ("🎵 Ma Famille", "https://soundcloud.com/jenny-789042437/ma-famille-qui-brille"),
+        ("🎵 Qui suis-je?", "https://soundcloud.com/jenny-789042437/qui-suis-je"),
+        ("🎵 Je ne comprends pas l'Humain", "https://soundcloud.com/jenny-789042437/je-ne-comprends-pas-lhumain-1")
     ]
 
     for titre, url in morceaux_soundcloud:
