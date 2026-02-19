@@ -145,9 +145,6 @@ if bg_image:
 else:
     bg_style = f"background: linear-gradient(135deg, {COLORS['bg_dark']} 0%, #1a0a2e 100%);"
 
-with open(os.path.join(BASE_DIR, "assets", "style.css")) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)   
-
 
 @st.cache_data(ttl=3600, show_spinner="Chargement des données...")
 def load_data():
@@ -297,7 +294,7 @@ def create_bar_chart(data, x, y, color, title):
     )
     return fig
 
-@st.cache_data(ttl=3600)  
+@st.cache_data(ttl=600)  
 def get_latest_metrics(metriques_df_json):
     """Récupère les dernières métriques par artiste/plateforme - CACHED"""
     # Convertir JSON → DataFrame
@@ -370,7 +367,7 @@ try:
     # ==================== TRAITEMENT DES MÉTRIQUES ====================
     
     # Fonction cachée pour ajouter les URLs
-    @st.cache_data(ttl=3600)
+    @st.cache_data(ttl=600)
     def add_urls_to_metrics(metrics_json, artistes_json):
         """Ajoute les URLs aux métriques - CACHED"""
         metrics_df = pd.read_json(metrics_json, orient='split')
@@ -2216,36 +2213,34 @@ elif st.session_state.active_page == "A propos":
     st.markdown(f"""
     <h4 style="color: {COLORS['accent3']}; font-weight: 700;">🎹 MES OEUVRES MUSICALES</h4>
     <p style="color: {COLORS['text']}; font-size: 1.05rem;">
-    En parallèle de mon parcours en data, j'écris et je chante mes propres chansons. Je ne me revendique pas chanteuse mais surtout parolière. 
-    Ayant peu de moyens, j'utilise un microphone basique, Audacity et Bandlab.
-    Découvrez mes créations musicales :
+    Découvrez mes créations musicales sur SoundCloud :
     </p>
     """, unsafe_allow_html=True)
 
-    #  LISTE DES MORCEAUX
-    audio_files = [
-        ("🎵 Princesse Licorne", "Licorne.mp3"),
-        ("🎵 Ma Famille", "ma_famille.m4a"),
-        ("🎵 Je Suis", "je_suis.m4a"),
-        ("🎵 L'Humain", "Humain.m4a"),
-        ("🎵 Personne ne voit", "personne_ne_voit.m4a")
+    #  LISTE SIMPLE AVEC BOUTONS
+    morceaux_soundcloud = [
+        ("🎵 Princesse Licorne", "https://soundcloud.com/jenny/princesse-licorne"),
+        ("🎵 Ma Famille", "https://soundcloud.com/jenny/ma-famille-qui-brille"),
+        ("🎵 Je Suis", "https://soundcloud.com/jenny/qui-suis-je"),
+        ("🎵 L'Humain", "https://soundcloud.com/jenny/je-ne-comprends-pas-lhumain"),
     ]
 
-    #  AFFICHER AVEC EXPANDER (1 seul ouvert à la fois)
-    for idx, (titre, filename) in enumerate(audio_files):
-        audio_path = os.path.join(BASE_DIR, "assets", filename)
+    for titre, url in morceaux_soundcloud:
+        col_titre, col_bouton = st.columns([3, 1])
         
-        if os.path.isfile(audio_path):
-            # Utiliser expander pour lazy loading
-            with st.expander(titre, expanded=(idx == 0)):  # Premier ouvert par défaut
-                try:
-                    #  st.audio() charge le fichier seulement quand l'expander est ouvert
-                    st.audio(audio_path, format='audio/mp4' if filename.endswith('.m4a') else 'audio/mp3')
-                except Exception as e:
-                    st.warning(f" Erreur de lecture : {e}")
-        else:
-            with st.expander(titre):
-                st.info(f" Fichier non trouvé : {filename}")
+        with col_titre:
+            st.markdown(f"**{titre}**")
+        
+        with col_bouton:
+            st.link_button("🎧 Écouter", url, use_container_width=True)
+
+    st.markdown("---")
+    st.link_button(
+        "🎵 Mon Profil SoundCloud Complet",
+        "https://soundcloud.com/jenny",
+        use_container_width=True,
+        type="primary"
+    )
 
 
 
