@@ -145,316 +145,11 @@ if bg_image:
 else:
     bg_style = f"background: linear-gradient(135deg, {COLORS['bg_dark']} 0%, #1a0a2e 100%);"
 
-st.markdown(f"""
-    <style>
-    
-    /* MASQUER BARRE STREAMLIT */
-    [data-testid="stHeader"] {{ display: none !important; }}
-    #MainMenu {{ visibility: hidden !important; }}
-    footer {{ visibility: hidden !important; }}
-    [data-testid="stToolbar"] {{ display: none !important; }}
+with open(os.path.join(BASE_DIR, "assets", "style.css")) as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)   
 
-    /* HEADER FIXE */
-    .fixed-header {{
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 999;
-        background: linear-gradient(135deg, #070707 0%, #1a0a2e 100%);
-        padding: 1rem 2rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        border-bottom: 2px solid #FF1B8D;
-    }}
 
-    .fixed-header::before {{
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(7, 7, 7, 0.85);
-        z-index: -1;
-    }}
-
-    /* MODIFIER CETTE LIGNE EXISTANTE (cherche ".main > div") */
-    .main > div {{
-        padding-top: 180px !important;  /* Au lieu de 1rem */
-        position: relative;
-        z-index: 1;
-    }}
-
-    /* RESPONSIVE */
-    @media (max-width: 768px) {{
-        .fixed-header {{ padding: 0.5rem 1rem; }}
-        .main > div {{ padding-top: 140px !important; }}
-        .fixed-header img {{ width: 80px !important; }}
-    }}
-    /* Fond principal avec image */
-    .stApp {{
-        {bg_style}
-        font-size: 0.99rem !important;
-    }}
-    
-    /* Overlay semi-transparent */
-    .stApp::before {{
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(7, 7, 7, 0.7);
-        z-index: 0;
-        pointer-events: none;
-    }}
-    
-    /* Contenu au-dessus de l'overlay */
-    .main > div {{
-        position: relative;
-        z-index: 1;
-    }}
-    
-    /* RÉDUCTION GLOBALE DRASTIQUE */
-    .main {{
-        padding-top: 180px !important;
-        padding-bottom: 1rem !important;
-        max-width: 1400px !important;
-    }}
-    
-    /* Header principal - TRÈS RÉDUIT */
-    .main-header {{
-        font-size: 1.5rem !important;
-        font-weight: 900;
-        background: linear-gradient(90deg, {COLORS['primary']}, {COLORS['secondary']}, {COLORS['accent1']});
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center;
-        margin: 0.3rem 0 !important;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }}
-    
-    .subtitle {{
-        color: {COLORS['accent3']};
-        text-align: center;
-        font-size: 0.99rem !important;
-        margin-bottom: 0.5rem !important;
-    }}
-    
-    /* Sidebar ULTRA COMPACT */
-    [data-testid="stSidebar"] {{
-        background: linear-gradient(180deg, {COLORS['bg_card']} 0%, #1a0a2e 100%);
-        padding-top: 0 !important;
-        min-width: 200px !important;
-        max-width: 240px !important;
-    }}
-    
-    [data-testid="stSidebar"] > div:first-child {{
-        padding-top: 0.5rem !important;
-        margin-top: 0 !important;
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }}
-    
-    /* Labels sidebar */
-    [data-testid="stSidebar"] label {{
-        font-size: 0.99rem !important;
-        margin-bottom: 0.2rem !important;
-    }}
-    
-    /* Selectbox sidebar */
-    [data-testid="stSidebar"] .stSelectbox {{
-        margin-bottom: 0.5rem !important;
-    }}
-    
-    /* Slider sidebar */
-    [data-testid="stSidebar"] .stSlider {{
-        margin-bottom: 0.5rem !important;
-    }}
-    
-    /* Radio buttons sidebar */
-    [data-testid="stSidebar"] .stRadio {{
-        font-size: 0.99rem !important;
-    }}
-    
-    [data-testid="stSidebar"] .stRadio > label {{
-        font-size: 0.99rem !important;
-        padding: 0.3rem 0 !important;
-    }}
-    
-    /* Logo sidebar */
-    [data-testid="stSidebar"] img {{
-        max-width: 120px !important;
-        margin: 0.5rem auto !important;
-    }}
-    
-    /* Boutons - TRÈS RÉDUITS */
-    .stButton button {{
-        background: linear-gradient(90deg, {COLORS['primary']}, {COLORS['accent2']});
-        color: white;
-        border: none;
-        border-radius: 15px !important;
-        padding: 0.3rem 1rem !important;
-        font-weight: bold !important;
-        font-size: 0.99rem !important;
-        min-height: 30px !important;
-    }}
-    
-    /* Link buttons */
-    .stLinkButton a {{
-        padding: 0.3rem 1rem !important;
-        font-size: 0.99rem !important;
-        min-height: 30px !important;
-    }}
-    
-    /* Titres h1, h2, h3 - TRÈS RÉDUITS */
-    h1, h2, h3 {{
-        color: {COLORS['accent3']} !important;
-        font-weight: 900 !important;
-        font-size: 1.5rem !important;
-        margin-top: 0.3rem !important;
-        margin-bottom: 0.3rem !important;
-        line-height: 1.3 !important;
-    }}
-    
-    h2 {{
-        font-size: 1.5rem !important;
-    }}
-    
-    h3 {{
-        font-size: 1.1rem !important;
-    }}
-    
-    /* Markdown headers */
-    .stMarkdown h1 {{
-        font-size: 1.5rem !important;
-    }}
-    
-    .stMarkdown h2 {{
-        font-size: 1.5rem !important;
-    }}
-    
-    .stMarkdown h3 {{
-        font-size: 1.1rem !important;
-    }}
-    
-    /* Métriques - TRÈS RÉDUITES */
-    [data-testid="stMetricValue"] {{
-        color: white !important;
-        font-size: 1.5rem !important;
-        font-weight: bold !important;
-    }}
-    
-    [data-testid="stMetricLabel"] {{
-        color: {COLORS['text']} !important;
-        font-weight: 600 !important;
-        font-size: 0.99rem !important;
-    }}
-    
-    [data-testid="stMetric"] {{
-        padding: 0.3rem !important;
-        background: rgba(0,0,0,0.3) !important;
-        border-radius: 8px !important;
-    }}
-    
-    /* Cartes métriques - TRÈS RÉDUITES */
-    .metric-card {{
-        background: linear-gradient(135deg, {COLORS['bg_card']} 0%, #2a1a3e 100%);
-        padding: 0.8rem !important;
-        border-radius: 8px !important;
-        border-left: 2px solid {COLORS['primary']} !important;
-        box-shadow: 0 4px 8px rgba(255, 27, 141, 0.2) !important;
-        margin: 0.5rem 0 !important;
-    }}
-    
-    .metric-card h3 {{
-        font-size: 1.1rem !important;
-        margin-bottom: 0.5rem !important;
-    }}
-    
-    .metric-card p {{
-        font-size: 0.99rem !important;
-        line-height: 1.4 !important;
-        margin-bottom: 0.3rem !important;
-    }}
-    
-    /* Textes */
-    .stMarkdown, p, li {{
-        color: {COLORS['text']} !important;
-        font-size: 0.99rem !important;
-        line-height: 1.4 !important;
-    }}
-    
-    .info-box {{
-        background: linear-gradient(135deg, #1a0a2e 0%, #2a1a3e 100%);
-        padding: 0.8rem !important;
-        border-radius: 8px !important;
-        border-left: 2px solid {COLORS['accent1']} !important;
-        margin: 0.5rem 0 !important;
-    }}
-    
-    .info-box h4 {{
-        font-size: 1.5rem !important;
-        margin-bottom: 0.4rem !important;
-    }}
-    
-    .info-box p {{
-        font-size: 0.99rem !important;
-    }}
-    
-    /* Captions */
-    .stCaption {{
-        font-size: 0.99rem !important;
-        line-height: 1.3 !important;
-    }}
-    
-    /* Espacement des colonnes - TRÈS RÉDUIT */
-    [data-testid="column"] {{
-        padding: 0.3rem !important;
-    }}
-    
-    /* Dividers */
-    hr {{
-        margin: 0.8rem 0 !important;
-        border-color: rgba(255,255,255,0.1) !important;
-    }}
-    
-    /* Checkbox */
-    .stCheckbox {{
-        font-size: 0.99rem !important;
-    }}
-    
-    /* Images artistes */
-    [data-testid="stImage"] {{
-        margin-bottom: 0.3rem !important;
-    }}
-    
-    /* Graphiques Plotly - RÉDUIRE MARGES */
-    .js-plotly-plot {{
-        margin-bottom: 0.5rem !important;
-    }}
-    
-    /* Espacement entre sections */
-    .element-container {{
-        margin-bottom: 0.5rem !important;
-    }}
-    
-    /* RESPONSIVE */
-    @media (max-width: 768px) {{
-        .main-header {{
-            font-size: 1.5rem !important;
-        }}
-        
-        .subtitle {{
-            font-size: 0.99rem !important;
-        }}
-    }}
-    </style>
-""", unsafe_allow_html=True)
-
-@st.cache_data(ttl=600, show_spinner="Chargement des données...")
+@st.cache_data(ttl=3600, show_spinner="Chargement des données...")
 def load_data():
     """Charge les données depuis PostgreSQL ou SQLite"""
     try:
@@ -554,10 +249,20 @@ def load_data():
 # APRÈS la fonction load_data()
 
 @st.cache_data(ttl=3600)
-def get_latest_metrics_cached(metriques_df_json):
-    """Version cachée de get_latest_metrics"""
-    metriques_df = pd.read_json(metriques_df_json)
-    return get_latest_metrics(metriques_df)
+def get_latest_metrics(metriques_df):
+    """Récupère les dernières métriques - DIRECT"""
+    if metriques_df.empty:
+        return pd.DataFrame()
+    
+    metriques_df['date_collecte'] = pd.to_datetime(metriques_df['date_collecte'], errors='coerce')
+    metriques_df = metriques_df.sort_values('date_collecte', ascending=False)
+    
+    if 'id_unique' in metriques_df.columns and 'plateforme' in metriques_df.columns:
+        latest = metriques_df.drop_duplicates(subset=['id_unique', 'plateforme'], keep='first')
+    else:
+        latest = metriques_df.drop_duplicates(subset=['nom_artiste'], keep='first')
+    
+    return latest.reset_index(drop=True)
 
 @st.cache_data(ttl=3600)
 def apply_filters(df, plateforme, genre, fans_cat, min_score, max_fans):
@@ -693,7 +398,7 @@ try:
         return metrics_df
     
     # Récupérer les dernières métriques (avec cache)
-    latest_metrics_df = get_latest_metrics(metriques_df.to_json(orient='split'))
+    latest_metrics_df = get_latest_metrics(metriques_df)
     
     # Ajouter les URLs (CACHED)
     latest_metrics_df = add_urls_to_metrics(
@@ -899,7 +604,35 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+@st.cache_data(ttl=3600)
+def create_histogram_cached(df_json, x, color):
+    """Graphique histogram caché"""
+    df = pd.read_json(df_json, orient='split')
+    fig = px.histogram(
+        df, x=x, color=color,
+        color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
+        barmode='group', nbins=20
+    )
+    fig.update_layout(
+        plot_bgcolor=COLORS['bg_card'],
+        paper_bgcolor=COLORS['bg_card'],
+        font_color=COLORS['text'],
+        height=350
+    )
+    return fig
 
+@st.cache_data(ttl=3600)
+def create_pie_cached(df_json, values, names):
+    """Graphique pie caché"""
+    df = pd.read_json(df_json, orient='split')
+    fig = px.pie(values=df[values].values, names=df[names].values, hole=0.5)
+    fig.update_layout(
+        plot_bgcolor=COLORS['bg_card'],
+        paper_bgcolor=COLORS['bg_card'],
+        font_color=COLORS['text'],
+        height=350
+    )
+    return fig
 # ==================== AFFICHAGE SELON PAGE ACTIVE ====================
 
 # Initialiser session_state pour la navigation
@@ -1131,26 +864,10 @@ if st.session_state.active_page == "Vue d'ensemble":
     with col1:
         st.markdown("### 📊 Distribution des scores")
         if len(filtered_df) > 0:
-            fig = px.histogram(
-                filtered_df, 
-                x='score_potentiel',
-                color='plateforme',
-                color_discrete_map={'Spotify': COLORS['accent3'], 'Deezer': COLORS['secondary']},
-                labels={'count': "Nombre d'artistes", 'score_potentiel': 'Score'},
-                barmode='group',
-                nbins=20
-            )
-            fig.update_layout(
-                plot_bgcolor=COLORS['bg_card'], 
-                paper_bgcolor=COLORS['bg_card'], 
-                font_color=COLORS['text'],
-                yaxis_title="Nombre d'artistes",
-                xaxis_title="Score",
-                legend=dict(font=dict(color='white', size=12)),
-                bargap=0.1,
-                bargroupgap=0.05,
-                height=350,
-                margin=dict(l=40, r=20, t=20, b=40)  
+            fig = create_histogram_cached(
+                filtered_df.to_json(orient='split'),
+                'score_potentiel',
+                'plateforme'
             )
             st.plotly_chart(fig, use_container_width=True)
             st.caption("Ce graphique montre la répartition des scores de potentiel.Il permet d'identifier la concentration des artistes autour de certains niveaux de score, et de comparer les distributions entre Spotify et Deezer.")
@@ -2686,7 +2403,7 @@ elif st.session_state.active_page == "Prédictions":
         
         st.markdown(f"""
         <div class="info-box">
-        <h4 style="color: {COLORS['accent3']};">💡 Comment ça marche ?</h4>
+        <h4 style="color: {COLORS['accent3']};"></h4>
         <p style="font-size: 1.05rem; line-height: 1.6;">
         Notre modèle d'Intelligence Artificielle identifie les artistes émergents avec le plus fort potentiel.
         
