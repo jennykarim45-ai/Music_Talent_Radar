@@ -2591,7 +2591,7 @@ elif st.session_state.active_page == "A propos":
             st.warning("Impossible de charger le fichier audio")
     else:
         st.info(f" Fichier audio non trouvé : {audio_path}")
-        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")    
+        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
     
     audio_path = os.path.join(BASE_DIR, "assets", "personne_ne_voit.mp3")
     if os.path.isfile(audio_path):
