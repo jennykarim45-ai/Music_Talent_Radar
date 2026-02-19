@@ -459,7 +459,7 @@ try:
         return metrics_df
     
     # Récupérer les dernières métriques (avec cache)
-    latest_metrics_df = get_latest_metrics(metriques_df)
+    latest_metrics_df = get_latest_metrics(metriques_df.to_json(orient='split'))
     
     # Ajouter les URLs (CACHED)
     latest_metrics_df = add_urls_to_metrics(
