@@ -2571,7 +2571,7 @@ elif st.session_state.active_page == "A propos":
         st.info(f"Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
     
-    audio_path = os.path.join(BASE_DIR, "assets", "Humain.mp3")
+    audio_path = os.path.join(BASE_DIR, "assets", "Humain.m4a")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
@@ -2591,9 +2591,9 @@ elif st.session_state.active_page == "A propos":
             st.warning("Impossible de charger le fichier audio")
     else:
         st.info(f" Fichier audio non trouvé : {audio_path}")
-        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
+        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")    
     
-    audio_path = os.path.join(BASE_DIR, "assets", "personne_ne_voit.mp3")
+    audio_path = os.path.join(BASE_DIR, "assets", "personne_ne_voit.m4a")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
