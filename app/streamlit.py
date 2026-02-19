@@ -2216,75 +2216,36 @@ elif st.session_state.active_page == "A propos":
     st.markdown(f"""
     <h4 style="color: {COLORS['accent3']}; font-weight: 700;">🎹 MES OEUVRES MUSICALES</h4>
     <p style="color: {COLORS['text']}; font-size: 1.05rem;">
-    En parallèle de mon parcours en data, j'écris et je chante mes propres chansons. 
-    Je ne me revendique pas chanteuse mais surtout parolière. 
+    En parallèle de mon parcours en data, j'écris et je chante mes propres chansons. Je ne me revendique pas chanteuse mais surtout parolière. 
     Ayant peu de moyens, j'utilise un microphone basique, Audacity et Bandlab.
+    Découvrez mes créations musicales :
     </p>
     """, unsafe_allow_html=True)
 
-    # SELECTBOX au lieu d'expanders (1 seul fichier chargé à la fois)
-    morceaux = {
-        "🎵 Princesse Licorne": "Licorne.mp3",
-        "🎵 Ma Famille": "ma_famille.m4a",
-        "🎵 L'Humain": "Humain.m4a",
-        "🎵 Personne ne voit": "personne_ne_voit.m4a"
-    }
+    #  LISTE DES MORCEAUX
+    audio_files = [
+        ("🎵 Princesse Licorne", "Licorne.mp3"),
+        ("🎵 Ma Famille", "ma_famille.m4a"),
+        ("🎵 Je Suis", "je_suis.m4a"),
+        ("🎵 L'Humain", "Humain.m4a"),
+        ("🎵 Personne ne voit", "personne_ne_voit.m4a")
+    ]
 
-    # Initialiser sélection dans session_state
-    if 'selected_music' not in st.session_state:
-        st.session_state.selected_music = list(morceaux.keys())[0]
-
-    # Sélecteur
-    selected_morceau = st.selectbox(
-        "Choisir un morceau",
-        list(morceaux.keys()),
-        index=list(morceaux.keys()).index(st.session_state.selected_music),
-        key="music_selector"
-    )
-
-    st.session_state.selected_music = selected_morceau
-
-    #  Charger SEULEMENT le morceau sélectionné
-    filename = morceaux[selected_morceau]
-    audio_path = os.path.join(BASE_DIR, "assets", filename)
-
-    st.markdown(f"### {selected_morceau}")
-
-    if os.path.isfile(audio_path):
-        try:
-            #  Déterminer le format correct
-            if filename.endswith('.m4a'):
-                audio_format = 'audio/mp4'  # m4a = mp4 audio
-            elif filename.endswith('.mp3'):
-                audio_format = 'audio/mpeg'  # Format correct pour mp3
-            else:
-                audio_format = 'audio/wav'
-            
-            #  Charger SEULEMENT ce fichier
-            st.audio(audio_path, format=audio_format)
-            
-            #  Afficher taille du fichier
-            file_size = os.path.getsize(audio_path) / (1024 * 1024)  # en MB
-            st.caption(f" Taille : {file_size:.2f} MB")
-            
-        except Exception as e:
-            st.error(f" Erreur de lecture : {e}")
-            st.info(" Le fichier existe mais ne peut pas être lu. Vérifiez le format.")
-            
-            # Debug info
-            st.code(f"""
-            Chemin : {audio_path}
-            Existe : {os.path.isfile(audio_path)}
-            Format : {audio_format}
-            """)
-    else:
-        st.warning(f"📭 Fichier non trouvé : {audio_path}")
+    #  AFFICHER AVEC EXPANDER (1 seul ouvert à la fois)
+    for idx, (titre, filename) in enumerate(audio_files):
+        audio_path = os.path.join(BASE_DIR, "assets", filename)
         
-        # Lister les fichiers disponibles
-        assets_path = os.path.join(BASE_DIR, "assets")
-        if os.path.isdir(assets_path):
-            fichiers = [f for f in os.listdir(assets_path) if f.endswith(('.mp3', '.m4a', '.wav'))]
-            st.info(f" Fichiers audio dans assets/ : {fichiers}")
+        if os.path.isfile(audio_path):
+            # Utiliser expander pour lazy loading
+            with st.expander(titre, expanded=(idx == 0)):  # Premier ouvert par défaut
+                try:
+                    #  st.audio() charge le fichier seulement quand l'expander est ouvert
+                    st.audio(audio_path, format='audio/mp4' if filename.endswith('.m4a') else 'audio/mp3')
+                except Exception as e:
+                    st.warning(f" Erreur de lecture : {e}")
+        else:
+            with st.expander(titre):
+                st.info(f" Fichier non trouvé : {filename}")
 
 
 
