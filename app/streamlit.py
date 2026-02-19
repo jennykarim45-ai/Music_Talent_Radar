@@ -2684,7 +2684,6 @@ elif st.session_state.active_page == "Prédictions":
         
         st.markdown(f"""
         <div class="info-box">
-        <h4 style="color: {COLORS['accent3']};"></h4>
         <p style="font-size: 1.05rem; line-height: 1.6;">
         Notre modèle d'Intelligence Artificielle identifie les artistes émergents avec le plus fort potentiel.
         

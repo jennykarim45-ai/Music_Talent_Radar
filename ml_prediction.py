@@ -373,8 +373,8 @@ def main():
         
         # Stats
         print(f"\ Statistiques finales:")
-        print(f"   Stars prédites (>15%): {(predictions['proba_star'] > 0.15).sum()}")
-        print(f"   Haut potentiel (>5%): {(predictions['proba_star'] > 0.05).sum()}")
+        print(f"   Stars prédites (>50%): {(predictions['proba_star'] > 0.5).sum()}")
+        print(f"   Haut potentiel (>30%): {(predictions['proba_star'] > 0.3).sum()}")
         print(f"   Probabilité moyenne: {predictions['proba_star'].mean():.1%}")
         print(f"   Min: {predictions['proba_star'].min():.1%}, Max: {predictions['proba_star'].max():.1%}")
         
