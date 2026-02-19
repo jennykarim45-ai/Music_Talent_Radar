@@ -2222,92 +2222,69 @@ elif st.session_state.active_page == "A propos":
     </p>
     """, unsafe_allow_html=True)
 
-    #  DICTIONNAIRE DES MORCEAUX
+    # SELECTBOX au lieu d'expanders (1 seul fichier chargé à la fois)
     morceaux = {
         "🎵 Princesse Licorne": "Licorne.mp3",
         "🎵 Ma Famille": "ma_famille.m4a",
-        "🎵 Je Suis": "je_suis.m4a",
         "🎵 L'Humain": "Humain.m4a",
         "🎵 Personne ne voit": "personne_ne_voit.m4a"
     }
 
-    #  INITIALISATION SÉCURISÉE
-    if not hasattr(st.session_state, 'selected_music'):
-        st.session_state.selected_music = "🎵 Princesse Licorne"
+    # Initialiser sélection dans session_state
+    if 'selected_music' not in st.session_state:
+        st.session_state.selected_music = list(morceaux.keys())[0]
 
-    #  VÉRIFIER QUE LA SÉLECTION EST VALIDE
-    if st.session_state.selected_music not in morceaux:
-        st.session_state.selected_music = "🎵 Princesse Licorne"
-
-    #  SELECTBOX
-    try:
-        current_index = list(morceaux.keys()).index(st.session_state.selected_music)
-    except (ValueError, AttributeError):
-        current_index = 0
-
+    # Sélecteur
     selected_morceau = st.selectbox(
         "Choisir un morceau",
-        options=list(morceaux.keys()),
-        index=current_index,
-        key="music_selector_v2"
+        list(morceaux.keys()),
+        index=list(morceaux.keys()).index(st.session_state.selected_music),
+        key="music_selector"
     )
 
-    # Mettre à jour la sélection
     st.session_state.selected_music = selected_morceau
 
-    #  AFFICHAGE DU MORCEAU SÉLECTIONNÉ
+    #  Charger SEULEMENT le morceau sélectionné
+    filename = morceaux[selected_morceau]
+    audio_path = os.path.join(BASE_DIR, "assets", filename)
+
     st.markdown(f"### {selected_morceau}")
 
-    filename = morceaux.get(selected_morceau, "")
-
-    if not filename:
-        st.error(" Nom de fichier invalide")
-    else:
-        audio_path = os.path.join(BASE_DIR, "assets", filename)
-        
-        if os.path.isfile(audio_path):
-            try:
-                # Déterminer format
-                if filename.endswith('.m4a'):
-                    audio_format = 'audio/mp4'
-                elif filename.endswith('.mp3'):
-                    audio_format = 'audio/mpeg'
-                else:
-                    audio_format = 'audio/wav'
-                
-                # Charger audio
-                st.audio(audio_path, format=audio_format)
-                
-                # Info fichier
-                file_size_mb = os.path.getsize(audio_path) / (1024 * 1024)
-                st.caption(f" Taille : {file_size_mb:.2f} MB")
-                
-            except Exception as e:
-                st.error(f" Erreur lecture : {str(e)}")
-                
-                # Debug
-                with st.expander("🔍 Détails de l'erreur"):
-                    st.code(f"""
-    Fichier : {filename}
-    Chemin : {audio_path}
-    Existe : {os.path.isfile(audio_path)}
-    Format : {audio_format}
-    Erreur : {type(e).__name__}
-                    """)
-        else:
-            st.warning(f" Fichier non trouvé : {filename}")
+    if os.path.isfile(audio_path):
+        try:
+            #  Déterminer le format correct
+            if filename.endswith('.m4a'):
+                audio_format = 'audio/mp4'  # m4a = mp4 audio
+            elif filename.endswith('.mp3'):
+                audio_format = 'audio/mpeg'  # Format correct pour mp3
+            else:
+                audio_format = 'audio/wav'
             
-            # Lister fichiers disponibles
-            try:
-                assets_dir = os.path.join(BASE_DIR, "assets")
-                if os.path.isdir(assets_dir):
-                    audio_files = [
-                        f for f in os.listdir(assets_dir) 
-                        if f.endswith(('.mp3', '.m4a', '.wav'))
-                    ]
-                    st.info(f" Fichiers audio trouvés : {', '.join(audio_files) if audio_files else 'Aucun'}")
-            except Exception as e:
-                st.error(f"Erreur liste fichiers : {e}")
+            #  Charger SEULEMENT ce fichier
+            st.audio(audio_path, format=audio_format)
+            
+            #  Afficher taille du fichier
+            file_size = os.path.getsize(audio_path) / (1024 * 1024)  # en MB
+            st.caption(f" Taille : {file_size:.2f} MB")
+            
+        except Exception as e:
+            st.error(f" Erreur de lecture : {e}")
+            st.info(" Le fichier existe mais ne peut pas être lu. Vérifiez le format.")
+            
+            # Debug info
+            st.code(f"""
+            Chemin : {audio_path}
+            Existe : {os.path.isfile(audio_path)}
+            Format : {audio_format}
+            """)
+    else:
+        st.warning(f"📭 Fichier non trouvé : {audio_path}")
+        
+        # Lister les fichiers disponibles
+        assets_path = os.path.join(BASE_DIR, "assets")
+        if os.path.isdir(assets_path):
+            fichiers = [f for f in os.listdir(assets_path) if f.endswith(('.mp3', '.m4a', '.wav'))]
+            st.info(f" Fichiers audio dans assets/ : {fichiers}")
 
 
 
