@@ -3013,7 +3013,9 @@ elif st.session_state.active_page == "Prédictions":
                         
                         st.markdown(f"""
                         <div style='text-align: center; color: #FFD700; font-size: 13px; margin-top: -10px;'>
+                            Echantillon de 20% des données |
                             Total : <b>{total}</b> artistes | ⭐ Stars : <b>{stars}</b> | 👤 Non-Stars : <b>{non_stars}</b>
+                            
                         </div>
                         """, unsafe_allow_html=True)
                     
