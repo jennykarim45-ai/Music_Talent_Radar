@@ -2527,12 +2527,6 @@ elif st.session_state.active_page == "A propos":
             st.link_button("🎧 Écouter", url, use_container_width=True)
 
     st.markdown("---")
-    st.link_button(
-        "🎵 Mon Profil SoundCloud Complet",
-        "https://soundcloud.com/jenny",
-        use_container_width=True,
-        type="primary"
-    )
 
 
 
