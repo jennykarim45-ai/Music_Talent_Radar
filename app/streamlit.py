@@ -2499,7 +2499,7 @@ elif st.session_state.active_page == "A propos":
     st.markdown(f"""
     <h4 style="color: {COLORS['accent3']}; font-weight: 700;">🎹 MES OEUVRES MUSICALES</h4>
     <p style="color: {COLORS['text']}; font-size: 1.05rem;">
-    En parallèle de mon parcours en data, j'écris et je chante mes propres chansons'. 
+    En parallèle de mon parcours en data, j'écris et je chante mes propres chansons. Je ne me revendique pas chanteuse mais surtout parolière. 
     Ayant peu de moyens, j'utilise un microphone basique, Audacity et Bandlab.
     Découvrez mes créations musicales :
     </p>
@@ -2527,7 +2527,51 @@ elif st.session_state.active_page == "A propos":
         st.info(f" Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
     
-    audio_path = os.path.join(BASE_DIR, "assets", "Humain.m4a")
+    audio_path = os.path.join(BASE_DIR, "assets", "ma_famille.m4a")
+    if os.path.isfile(audio_path):
+        st.markdown(f"""
+        <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
+        🎵 Ma Famille
+        </p>
+        """, unsafe_allow_html=True)
+        
+        audio_base64 = get_base64_image(audio_path)
+        if audio_base64:
+            st.markdown(f"""
+                <audio controls style="width: 100%; margin-bottom: 1.5rem;">
+                    <source src="data:audio/mp4;base64,{audio_base64}" type="audio/mp4">
+                    Votre navigateur ne supporte pas la lecture audio.
+                </audio>
+            """, unsafe_allow_html=True)
+        else:
+            st.warning("Impossible de charger le fichier audio")
+    else:
+        st.info(f" Fichier audio non trouvé : {audio_path}")
+        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")    
+    
+    audio_path = os.path.join(BASE_DIR, "assets", "je_suis.m4a")
+    if os.path.isfile(audio_path):
+        st.markdown(f"""
+        <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
+        🎵 Je Suis
+        </p>
+        """, unsafe_allow_html=True)
+        
+        audio_base64 = get_base64_image(audio_path)
+        if audio_base64:
+            st.markdown(f"""
+                <audio controls style="width: 100%; margin-bottom: 1.5rem;">
+                    <source src="data:audio/mp4;base64,{audio_base64}" type="audio/mp4">
+                    Votre navigateur ne supporte pas la lecture audio.
+                </audio>
+            """, unsafe_allow_html=True)
+        else:
+            st.warning("Impossible de charger le fichier audio")
+    else:
+        st.info(f"Fichier audio non trouvé : {audio_path}")
+        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
+    
+    audio_path = os.path.join(BASE_DIR, "assets", "Humain.mp3")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
@@ -2549,29 +2593,7 @@ elif st.session_state.active_page == "A propos":
         st.info(f" Fichier audio non trouvé : {audio_path}")
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")    
     
-    audio_path = os.path.join(BASE_DIR, "assets", "ma_famille.m4a")
-    if os.path.isfile(audio_path):
-        st.markdown(f"""
-        <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
-        🎵 Ma Famille
-        </p>
-        """, unsafe_allow_html=True)
-        
-        audio_base64 = get_base64_image(audio_path)
-        if audio_base64:
-            st.markdown(f"""
-                <audio controls style="width: 100%; margin-bottom: 1.5rem;">
-                    <source src="data:audio/mp4;base64,{audio_base64}" type="audio/mp4">
-                    Votre navigateur ne supporte pas la lecture audio.
-                </audio>
-            """, unsafe_allow_html=True)
-        else:
-            st.warning("Impossible de charger le fichier audio")
-    else:
-        st.info(f" Fichier audio non trouvé : {audio_path}")
-        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
-
-    audio_path = os.path.join(BASE_DIR, "assets", "Personne_ne_voit.mp3")
+    audio_path = os.path.join(BASE_DIR, "assets", "personne_ne_voit.mp3")
     if os.path.isfile(audio_path):
         st.markdown(f"""
         <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
@@ -2594,27 +2616,7 @@ elif st.session_state.active_page == "A propos":
         st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
 
 
-    audio_path = os.path.join(BASE_DIR, "assets", "je_suis.m4a")
-    if os.path.isfile(audio_path):
-        st.markdown(f"""
-        <p style="color: {COLORS['text']}; font-weight: 700; margin-top: 1rem;">
-        🎵 Je Suis
-        </p>
-        """, unsafe_allow_html=True)
-        
-        audio_base64 = get_base64_image(audio_path)
-        if audio_base64:
-            st.markdown(f"""
-                <audio controls style="width: 100%; margin-bottom: 1.5rem;">
-                    <source src="data:audio/mp4;base64,{audio_base64}" type="audio/mp4">
-                    Votre navigateur ne supporte pas la lecture audio.
-                </audio>
-            """, unsafe_allow_html=True)
-        else:
-            st.warning("Impossible de charger le fichier audio")
-    else:
-        st.info(f"Fichier audio non trouvé : {audio_path}")
-        st.caption("Ajoutez vos fichiers .m4a dans le dossier assets/")
+
 # ==================== TAB 6: PRÉDICTIONS ====================
 elif st.session_state.active_page == "Prédictions":
     with st.spinner(""):
