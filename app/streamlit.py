@@ -145,6 +145,85 @@ if bg_image:
 else:
     bg_style = f"background: linear-gradient(135deg, {COLORS['bg_dark']} 0%, #1a0a2e 100%);"
 
+st.markdown(f"""
+    <style>
+    /* MASQUER BARRE STREAMLIT */
+    [data-testid="stHeader"] {{ display: none !important; }}
+    #MainMenu {{ visibility: hidden !important; }}
+    footer {{ visibility: hidden !important; }}
+    [data-testid="stToolbar"] {{ display: none !important; }}
+
+    /* HEADER FIXE */
+    .fixed-header {{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: linear-gradient(135deg, #070707 0%, #1a0a2e 100%);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        border-bottom: 2px solid #FF1B8D;
+    }}
+
+    /* Fond principal */
+    .stApp {{
+        {bg_style}
+        font-size: 0.99rem !important;
+    }}
+    
+    /* Overlay semi-transparent */
+    .stApp::before {{
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(7, 7, 7, 0.7);
+        z-index: 0;
+        pointer-events: none;
+    }}
+    
+    /* Contenu au-dessus de l'overlay */
+    .main > div {{
+        position: relative;
+        z-index: 1;
+        padding-top: 180px !important;
+    }}
+    
+    /* Sidebar */
+    [data-testid="stSidebar"] {{
+        background: linear-gradient(180deg, {COLORS['bg_card']} 0%, #1a0a2e 100%);
+        padding-top: 0 !important;
+    }}
+    
+    /* Boutons */
+    .stButton button {{
+        background: linear-gradient(90deg, {COLORS['primary']}, {COLORS['accent2']});
+        color: white;
+        border: none;
+        border-radius: 15px !important;
+        padding: 0.5rem 1.5rem !important;
+    }}
+    
+    /* Titres */
+    h1, h2, h3 {{
+        color: {COLORS['accent3']} !important;
+        font-weight: 900 !important;
+    }}
+    
+    /* Métriques */
+    [data-testid="stMetricValue"] {{
+        color: white !important;
+        font-size: 1.8rem !important;
+    }}
+    
+    [data-testid="stMetricLabel"] {{
+        color: {COLORS['text']} !important;
+    }}
+    </style>
+""", unsafe_allow_html=True)
 
 @st.cache_data(ttl=3600, show_spinner="Chargement des données...")
 def load_data():
