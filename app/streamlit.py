@@ -2279,7 +2279,7 @@ elif st.session_state.active_page == "A propos":
             Format : {audio_format}
             """)
     else:
-        st.warning(f" Fichier non trouvé : {audio_path}")
+        st.warning(f"📭 Fichier non trouvé : {audio_path}")
         
         # Lister les fichiers disponibles
         assets_path = os.path.join(BASE_DIR, "assets")
