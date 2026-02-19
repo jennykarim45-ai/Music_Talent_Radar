@@ -322,23 +322,8 @@ def load_data():
         import traceback
         st.error(traceback.format_exc())
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
-# APRÈS la fonction load_data()
 
-@st.cache_data(ttl=3600)
-def get_latest_metrics(metriques_df):
-    """Récupère les dernières métriques - DIRECT"""
-    if metriques_df.empty:
-        return pd.DataFrame()
-    
-    metriques_df['date_collecte'] = pd.to_datetime(metriques_df['date_collecte'], errors='coerce')
-    metriques_df = metriques_df.sort_values('date_collecte', ascending=False)
-    
-    if 'id_unique' in metriques_df.columns and 'plateforme' in metriques_df.columns:
-        latest = metriques_df.drop_duplicates(subset=['id_unique', 'plateforme'], keep='first')
-    else:
-        latest = metriques_df.drop_duplicates(subset=['nom_artiste'], keep='first')
-    
-    return latest.reset_index(drop=True)
+
 
 @st.cache_data(ttl=3600)
 def apply_filters(df, plateforme, genre, fans_cat, min_score, max_fans):
