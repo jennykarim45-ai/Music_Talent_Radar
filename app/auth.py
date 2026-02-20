@@ -183,7 +183,7 @@ def public_page_about():
                     <td style="color: #e5e7eb; padding: 1rem;">Interactions avec les fans</td>
                 </tr>
                 <tr style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)); border-bottom: 2px solid rgba(34, 197, 94, 0.3);">
-                    <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Récurrance</td>
+                    <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;"> Récurrence</td>
                     <td style="color: #86efac; padding: 1rem; font-weight: 700; font-size: 1.05rem;">25%</td>
                     <td style="color: #e5e7eb; padding: 1rem;">Régularité des sorties</td>
                 </tr>
