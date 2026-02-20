@@ -2188,7 +2188,6 @@ elif st.session_state.active_page == "Alertes":
     
     if alertes_df.empty:
         st.success(" Aucune alerte pour le moment")
-        st.info(" Lancez `python generer_alertes.py` pour détecter les évolutions significatives")
     else:
         # Convertir date_alerte en datetime
         alertes_df['date_alerte'] = pd.to_datetime(alertes_df['date_alerte'], errors='coerce')
