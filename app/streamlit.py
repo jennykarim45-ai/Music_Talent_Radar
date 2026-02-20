@@ -2188,6 +2188,7 @@ elif st.session_state.active_page == "Alertes":
     
     if alertes_df.empty:
         st.success(" Aucune alerte pour le moment")
+        st.info(" Les alertes vous permettent de suivre les évolutions importantes de vos artistes (croissance, baisse, tendances).")
     else:
         # Convertir date_alerte en datetime
         alertes_df['date_alerte'] = pd.to_datetime(alertes_df['date_alerte'], errors='coerce')
