@@ -1,7 +1,7 @@
 {
   "confusion_matrix": [
     [
-      39,
+      40,
       0
     ],
     [
@@ -14,7 +14,7 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 39.0
+      "support": 40.0
     },
     "1": {
       "precision": 1.0,
@@ -27,17 +27,17 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 52.0
+      "support": 53.0
     },
     "weighted avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 52.0
+      "support": 53.0
     }
   },
   "accuracy": 1.0,
-  "total_samples": 52,
+  "total_samples": 53,
   "stars_count": 13,
-  "non_stars_count": 39
+  "non_stars_count": 40
 }
