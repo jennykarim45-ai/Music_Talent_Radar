@@ -1,43 +1,43 @@
 {
   "confusion_matrix": [
     [
-      43,
+      45,
       0
     ],
     [
       3,
-      11
+      12
     ]
   ],
   "classification_report": {
     "0": {
-      "precision": 0.9347826086956522,
+      "precision": 0.9375,
       "recall": 1.0,
-      "f1-score": 0.9662921348314607,
-      "support": 43.0
+      "f1-score": 0.967741935483871,
+      "support": 45.0
     },
     "1": {
       "precision": 1.0,
-      "recall": 0.7857142857142857,
-      "f1-score": 0.88,
-      "support": 14.0
+      "recall": 0.8,
+      "f1-score": 0.8888888888888888,
+      "support": 15.0
     },
-    "accuracy": 0.9473684210526315,
+    "accuracy": 0.95,
     "macro avg": {
-      "precision": 0.9673913043478262,
-      "recall": 0.8928571428571428,
-      "f1-score": 0.9231460674157304,
-      "support": 57.0
+      "precision": 0.96875,
+      "recall": 0.9,
+      "f1-score": 0.9283154121863799,
+      "support": 60.0
     },
     "weighted avg": {
-      "precision": 0.9508009153318079,
-      "recall": 0.9473684210526315,
-      "f1-score": 0.9450975753991722,
-      "support": 57.0
+      "precision": 0.953125,
+      "recall": 0.95,
+      "f1-score": 0.9480286738351253,
+      "support": 60.0
     }
   },
-  "accuracy": 0.9473684210526315,
-  "total_samples": 57,
-  "stars_count": 14,
-  "non_stars_count": 43
+  "accuracy": 0.95,
+  "total_samples": 60,
+  "stars_count": 15,
+  "non_stars_count": 45
 }
