@@ -1,7 +1,7 @@
 {
   "confusion_matrix": [
     [
-      45,
+      44,
       0
     ],
     [
@@ -11,10 +11,10 @@
   ],
   "classification_report": {
     "0": {
-      "precision": 0.9782608695652174,
+      "precision": 0.9777777777777777,
       "recall": 1.0,
-      "f1-score": 0.989010989010989,
-      "support": 45.0
+      "f1-score": 0.9887640449438202,
+      "support": 44.0
     },
     "1": {
       "precision": 1.0,
@@ -22,22 +22,22 @@
       "f1-score": 0.9655172413793104,
       "support": 15.0
     },
-    "accuracy": 0.9833333333333333,
+    "accuracy": 0.9830508474576272,
     "macro avg": {
-      "precision": 0.9891304347826086,
+      "precision": 0.9888888888888889,
       "recall": 0.9666666666666667,
-      "f1-score": 0.9772641151951498,
-      "support": 60.0
+      "f1-score": 0.9771406431615652,
+      "support": 59.0
     },
     "weighted avg": {
-      "precision": 0.983695652173913,
-      "recall": 0.9833333333333333,
-      "f1-score": 0.9831375521030695,
-      "support": 60.0
+      "precision": 0.983427495291902,
+      "recall": 0.9830508474576272,
+      "f1-score": 0.9828538406477585,
+      "support": 59.0
     }
   },
-  "accuracy": 0.9833333333333333,
-  "total_samples": 60,
+  "accuracy": 0.9830508474576272,
+  "total_samples": 59,
   "stars_count": 15,
-  "non_stars_count": 45
+  "non_stars_count": 44
 }
