@@ -6,7 +6,7 @@
     ],
     [
       0,
-      15
+      16
     ]
   ],
   "classification_report": {
@@ -20,24 +20,24 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 15.0
+      "support": 16.0
     },
     "accuracy": 1.0,
     "macro avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 62.0
+      "support": 63.0
     },
     "weighted avg": {
       "precision": 1.0,
       "recall": 1.0,
       "f1-score": 1.0,
-      "support": 62.0
+      "support": 63.0
     }
   },
   "accuracy": 1.0,
-  "total_samples": 62,
-  "stars_count": 15,
+  "total_samples": 63,
+  "stars_count": 16,
   "non_stars_count": 47
 }
